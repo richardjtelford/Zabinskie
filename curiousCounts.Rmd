@@ -1,0 +1,221 @@
+---
+title: "Curious counts"
+author: "Richard J. Telford"
+date: '2016-05-01'
+output: html_document
+---
+```{r importChunk, results = "hide", echo = FALSE}
+library(readxl)
+
+fname <- "/home//gbsrt//Downloads/zabinskie2015cit.xls"
+excel_sheets(fname)
+spp <- read_excel(fname, sheet = "Training species")
+env <- read_excel(fname, sheet = "Training temperature")
+fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages")
+fos_counts <- read_excel(fname, sheet = "Chironomids Zabinskie counts")
+recon <- read_excel(fname, sheet = "Reconstruction ")
+names(recon) <- c("date", "temperature")
+
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+rownames(env) <- env[, 1]
+env <- env[, 2, drop = FALSE]
+
+lowCount <- c("SAL", "LEK", "TRZ", "WAS", "SZOS", "GOR", "KOS", "ZAB")
+#spp <- spp[!rownames(spp) %in% lowCount, ]
+#env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
+identical(rownames(spp), rownames(env))
+env <- env$Temp
+
+chron <- fos[, 1]
+fos <- fos[, -c(1, ncol(fos))]
+ncount <- fos_counts[, ncol(fos_counts)]
+fos_counts <- fos_counts[, -c(1, ncol(fos_counts))]
+
+####check names####
+setdiff(names(fos), names(spp))
+setdiff(names(spp), names(fos))
+```
+
+> "rarity is the attribute of a vast number of species of all classes, in all countries." (Charles Darwin)[http://literature.org/authors/darwin-charles/the-origin-of-species-6th-edition/chapter-11.html]
+
+
+In any census of any species rich community, the rarest taxa are likely to be represented by a single individual. 
+
+
+```{r BCIchunk}
+library(vegan)
+library(ggplot2)
+library(plyr)
+data(BCI)
+BCI2 <- adply(BCI, .margins = 1, function(samp){
+  y <- sort(samp[samp>0], decreasing = TRUE)
+  x <-1:length(y)
+  data.frame(x, y = y + runif(1, -0.3, 0.3), z = rownames(samp))
+})
+
+g <- ggplot(BCI2, aes(x = x, y = y, colour = z)) + 
+  geom_line(show.legend = FALSE) + 
+  scale_y_log10() + 
+  labs(x = "Rank", y = "Abundance")
+print(g)
+round(table(BCI[BCI > 0])/sum(BCI > 0) * 100, 1)
+sum(BCI == 1)/sum(BCI > 0)
+```
+
+```{r}
+rad.preempt(BCI, family=poisson)
+```
+
+recall first round - only likely explanation was that counts were <50
+
+training set counts admitted low counts
+
+fossil counts admitted <50
+
+
+
+```{r Zradchunk}
+#not inspired
+rownames(fos_counts) <- chron
+fos_counts2 <- adply(fos_counts, .margins = 1, function(samp){
+  y <- sort(samp[samp>0], decreasing = TRUE)
+  x <-1:length(y)
+  data.frame(x, y = y + runif(1, -0.05, 0.05), z = rownames(samp), min1 = min(y)<=1)
+})
+
+g <- ggplot(fos_counts2, aes(x = x, y = y, colour = z)) + 
+  geom_line(show.legend = FALSE) + 
+  scale_y_log10() + facet_wrap(~min1) +
+  labs(x = "Rank", y = "Abundance")
+
+g <- ggplot(fos_counts2, aes(x = x, y = y, colour = z)) + 
+  geom_line(show.legend = FALSE) + 
+  scale_y_log10() + facet_wrap(~z) +
+  labs(x = "Rank", y = "Abundance")
+
+print(g)
+round(table(fos_counts[fos_counts > 0])/sum(fos_counts > 0) * 100, 1)
+sum(fos_counts == 1)/sum(fos_counts > 0)
+sum(fos_counts <= 1)/sum(fos_counts > 0)
+```
+
+
+
+
+
+
+```{r trainingCountChunk}
+min0 <- function(x) min(x[x > 0])
+lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
+
+lowCountRichness <- data.frame(minpc = apply(spp[1:50, ], 1, min0),
+  richness =rowSums(spp[1:50, ] > 0),
+  lowCount = rownames(spp[1:50, ]) %in% lowCount)
+
+g <- ggplot(lowCountRichness, aes(x = minpc, y = richness, colour = lowCount)) + 
+  geom_point() + 
+  geom_vline(xintercept = 2, linetype = "dashed") + 
+  labs(x = "Minimum Percentage", y = "Taxonomic richness", colour = "Low Count") 
+  
+print(g)
+```
+
+minc <- apply(fos_counts, 1, min0)
+table(round(minc,1))
+ggplot(data.frame(chron, minc), aes(chron, minc)) + geom_point() 
+ggplot(data.frame(chron, ncount), aes(chron, ncount)) + geom_point() 
+
+
+pos <- function(x)if(is.null(dim(x))){x[x>0]} else{x[,colSums(x)>0, drop  = FALSE]}
+
+plot(minc, ncount)
+pos(fos_counts[minc == 4,][1,])
+apply(fos_counts[minc>2,], 1, pos)
+
+
+ggplot(data.frame(x = as.vector(dist(fos_counts>0, method = "manhattan"))), aes(x)) + geom_histogram(binwidth = 1)
+```{r}
+D <- as.matrix(dist(fos_counts>0,  method = "manhattan"))
+table(D)
+sdup<-which(D==3, arr.ind = TRUE)
+sdup <-unique(adply(sdup, 1, sort)[,-1])
+
+alply(sdup, 1, function(i)pos(fos_counts[unlist(i),]))
+D <- as.matrix(vegdist(fos))
+diag(D) <- Inf
+table(D)
+sdup<-which(D < 0.2, arr.ind = TRUE)
+sdup <-unique(adply(sdup, 1, sort)[,-1])
+
+alply(sdup, 1, function(i){z <- pos(fos_counts[unlist(i),]); plot(t(z));z})
+
+ggplot(data.frame(env = as.vector(dist(recon$temperature)), spp = as.vector(vegdist(fos))), aes(env, spp)) + geom_point(alpha = 0.4)
+plot(dist(env), vegdist(spp))
+
+table(round(unlist(fos_counts), 1))
+
+
+
+
+
+
+
+zab <- read_excel('/home/gbsrt/Dropbox/clean/Zabinskie chiro 1886AD.xlsx', sheet = 1)
+zabchron <- zab$Chron
+zab$Chron <- NULL
+
+pos(zab[apply(round(zab, 2) == 11.11 | zab == 0, 1, all),])
+zabchron[apply(round(zab, 2) == 11.11 | zab == 0, 1, all)]
+pos(fos_counts[chron%in%zabchron[apply(round(zab, 2) == 11.11 | zab == 0, 1, all)],])
+
+pos(zab[apply(round(zab) == 14 | zab == 0, 1, all),])
+zabchron[apply(round(zab) == 14 | zab == 0, 1, all)]
+pos(fos_counts[chron%in%zabchron[apply(round(zab) == 14 | zab == 0, 1, all)],])
+
+pos(zab[apply(zab, 1, function(r)round(min0(r)) == 14), ])
+pos(fos_counts[chron%in%zabchron[apply(zab, 1, function(r)round(min0(r)) == 14)],])
+```
+
+>Taxa not included in the transfer function or not found in 3 percent in at least 3 samples were removed. In consequence, the number of taxa was reduced from 76 to 50.
+
+Caption to corrigendum figure 1
+> Four taxa (Brillia, Eukiefferiella, Krenopelopia and Stictochironomus) present in only 3 samples are not displayed. 
+
+setdiff(names(zab), names(fos))
+[1] "Paratendipes nubisquama" "Tanytarsus chinyensis"   "Tanytarsus glabrescens"  "Paracladius"             "Parochlus"               "Zavrelymia"             
+setdiff(names(fos), names(zab))
+[1] "Paratendipes nudisquama"
+colSums((zab>0)[,setdiff(names(zab), names(fos))])
+Paratendipes nubisquama   Tanytarsus chinyensis  Tanytarsus glabrescens             Paracladius               Parochlus              Zavrelymia 
+                      9                       2                       3                       1                       8                       1 
+                      pos(zab$Parochlus)
+mean(!apply(fos_counts==1, 1, any))       
+mean(!apply(fos_counts==0.5, 1, any)) 
+```{r}
+fos_counts1 <- round(fos_counts, 1)
+fos_counts1[fos_counts1%%1 == 0.5] <- fos_counts1[fos_counts1%%1 == 0.5] + 0.5
+alpha1 <- apply(fos_counts1, 1, function(r)coef(rad.preempt(r)))
+summary(alpha1)
+
+simulateMinAbun <- function(alpha, maxRank = 50, n = 10000, J = 30){ 
+  rank <- 1:maxRank
+  abun <- J * alpha * (1 - alpha)^(rank - 1)
+  sims <- rmultinom(n = n, size = J, prob = abun)
+  table(apply(sims, 2, min0))/n 
+}
+simulateMinAbun(max(alpha1), J = 20)
+simulateMinAbun(max(alpha1), J = 30)
+simulateMinAbun(max(alpha1), J = 70)
+
+simulateMinAbun(median(alpha1))
+simulateMinAbun(min(alpha1), n = 1000000)
+
+alpha <-median(alpha1)
+abun <- J*alpha*(1-alpha)^(rank-1)
+plot(rank, abun, log = "y")
+sims <- rmultinom(n = 10000, size = J, prob = abun)
+table(apply(sims, 2, min0)) 
+
+pbinom(q = sum(minc>1), size = nrow(fos_counts), 0.06, lower.tail = FALSE)
+```

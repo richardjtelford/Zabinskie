@@ -1,0 +1,202 @@
+---
+title: "Ordinating Lake Żabińskie's chironomids"
+author: "Richard J. Telford"
+date: '2016-04-26'
+output:
+  html_document:
+    keep_md: yes
+---
+
+
+```{r importChunk, results = "hide", echo = FALSE}
+library(readxl)
+
+fname <- "/home//gbsrt//Downloads/zabinskie2015cit.xls"
+excel_sheets(fname)
+spp <- read_excel(fname, sheet = "Training species")
+env <- read_excel(fname, sheet = "Training temperature")
+fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages")
+recon <- read_excel(fname, sheet = "Reconstruction ")
+names(recon) <- c("date", "temperature")
+
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+rownames(env) <- env[, 1]
+env <- env[, 2, drop = FALSE]
+
+lowCount <- c("SAL", "LEK", "TRZ", "WAS", "SZOS", "GOR", "KOS", "ZAB")
+spp <- spp[!rownames(spp) %in% lowCount, ]
+env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
+identical(rownames(spp), rownames(env))
+env <- env$Temp
+
+chron <- fos[, 1]
+fos <- fos[, -c(1, ncol(fos))]
+
+####check names####
+setdiff(names(fos), names(spp))
+setdiff(names(spp), names(fos))
+
+source("ggscreeplot.R")
+```
+
+Down-core species stratigraphies are highly multidimensional - many species, many samples - which makes it difficult to visualise the main patterns in the data. One way to cope is to use [ordinations](http://ordination.okstate.edu/) to find the main axes of variability in the data. I run ordinations on every core I analyse. In this post, I will run a variety of ordinations on the Lake Żabińskie chironomid stratigraph form Larocque-Tobler et al (2015). I will compare the results with analyses of the chironomid training set and of the Round Loch of Glenhead diatom stratigraphy which shows the response to acid rain over a 140 year period.
+
+This post will inevitably include an alphabet soup of methods that I don't have space enough or time to fully explain the theory behind. 
+
+##Detrended correspondance analysis
+
+I always start my ordination analysis with a [detrended correspondence analysis](http://ordination.okstate.edu/DCA.htm) (DCA). I'm interested in the length of the first axis of the DCA in standard deviation (SD) units, a measure of the amount of species turnover along the ecological gradient. A axis length of 4 SD would give almost complete turnover of species (think of a normal distribution, four standard deviations goes from one side to the other).
+
+```{r unimodal plot, echo = FALSE}
+library(ggplot2)
+x <- seq(-2.5, 2.5, length = 100)
+y <- dnorm(x)
+ggplot(data.frame(x, y), aes(x, y)) + geom_path() + geom_vline(xintercept = -2:2, linetype = 2, colour = "red") + scale_y_continuous(name = "Taxon abundance", labels = NULL) + xlab("Environmental gradient, SD units")
+
+```
+
+This axis length helps me choose an appropriate ordination method for further analyses (linear methods for short gradients, unimodal for long). 
+
+```{r decoranaChunk, message=FALSE}
+library(vegan)
+library(rioja)
+data(RLGH)#load Round Loch of Glenhead data
+zdca <- decorana(sqrt(fos))
+rdca <- decorana(sqrt(RLGH$spec))
+
+keep <- colSums(spp > 0) >= 3
+cdca <- decorana(sqrt(spp[, keep]))#training set
+```
+The length of the first axis of the Round Loch of Glenhead diatom stratigtaphy is `r round(max(rdca$rproj[,1]), 2)` SD. This short axis length is typical for a core. The length of the first axis of the Żabińskie chironomid stratigraphy is `r round(max(zdca$rproj[,1]), 2)` SD. This is remarkably long. By comparison, the first axis length of the chironomid training set is `r round(max(cdca$rproj[,1]), 2)` SD. So although the temperature range spanned by the training set (`r paste(min(env), "-", max(env))`°C), is more than `r english::as.english(floor(diff(range(env))/diff(range(recon$temp))))` times larger than the 20th Century temperature range at Żabińskie (`r paste(min(recon$temp), "-", max(recon$temp))`°C estimated from the reconstructions), and the training set covers a diverse range of lake depths and other ecologically important environmental variables, the first axis lengths are practically the same. This, like so much with the Żabińskie record is remarkable.
+
+
+##Unconstrained ordination
+
+The first axis of an ordination is always the most important one. We can visualise how much more important than the other axes it is with a screeplot. 
+
+```{r RLGHscreeplotChunk}
+library(ggplot2)
+
+g1 <- ggscreeplot(rda(sqrt(RLGH$spec)), bstick = FALSE, title = "Round Loch of Glenhead PCA")
+g2 <- ggscreeplot(cca(sqrt(spp[, keep])), bstick = FALSE, title = "Chironomid training set CA")
+g3 <- ggscreeplot(cca(sqrt(fos)), bstick = FALSE, title = "Żabińskie chironomids CA")
+#ggscreeplot(rda(sqrt(fos)), bstick = FALSE)
+
+```
+```{r plotScreeplots, echo = FALSE, fig.width=10}
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+multiplot(g1, g2, g3, cols = 3)
+```
+
+For the Round Loch of Glenhead, the first axis is very much more important than the remaining axis. The samples form a baguette-shaped cloud. This implies that there is a single environmental gradient (probably pH) is responsible the changes in the diatom stratigraphy. 
+
+For the chironomid training set, the first axis is much more important than the second, which in turn is much more important than the third. The importance of the second axis is probably inflated by an arch effect (visible in a biplot of the ordination), a common artefact in correspondence analysis which could be corrected with a DCA. The samples form a croissant-shaped cloud. This shape implies that there is one main environmental gradient throught the training set - almost certainly temperature or something highly correlated with temperature.   
+
+For the Żabińskie chrionomid record, the first axis is only slightly longer than the second. The samples form the shape of a slightly deflated football. This shape, together with the long DCA axis 1, would only be expected if 1) the chironomid community was being driven by multiple strong and uncorrelated environmental variables, or 2) the chironomid count sums are very small so there is lots of counting noise. In either case a very poor temperature reconstruction would be expected. But yet the reconstruction is near-perfect. Remarkable.
+
+We can ask if the environmental variable of interest is correlated with the first few ordination axes. This cannot really be done for the Round Loch of Glenhead as we only have a reconstruction of pH. For Żabińskie, we should use the measured temperatures, but these have not been archived so I am going to use the reconstruction instead which will bias the result in favour of the temperature being important.
+
+```{r unconstrainedChunkmod}
+camodm <-cca(sqrt(spp[,keep]))
+#plot(camodm)
+envfit(camodm, env, choices = 1:2)
+```
+With the chironomid training set, temperature is associated with the first axis (CA1) of the ordination, and the r<sup2</sup> is relatively good. This is expected from a training set with a large temperature range.
+
+
+```{r unconstrainedChunkz, }
+camod <-cca(sqrt(fos))
+#plot(camod)
+envfit(camod, recon$temp, choices = 1:2)
+envfit(camod, recon$temp, choices = 1:3)
+```
+With the Żabińskie chrionomid record, reconstructed temperature is not significantly correlated with the first two ordination axes. It is, however, correlated with the third with a moderate r<sup>2</sup>. This suggests that temperature is not particularly important in driving community composition.
+
+
+##Constrained ordinations
+
+Constrained ordinations let us know in a more direct way how important an environmental variable is.
+
+```{r constrainedChunkmod}
+mod1 <- cca(sqrt(spp[, keep]) ~ env)
+mod1
+```
+With the chironomid training set, temperature explains about `r round(mod1$CCA$eig[1]/mod1$tot.chi*100)`% of the inertia (which is low but not unreasonable), and the ratio of the inertia of the constrained axis to the first unconstrained axis is `r round(mod1$CCA$eig[1]/mod1$CA$eig[1], 2)`. If temperature was (correlated with) the most important ecological gradient in the data set, we would expect this ratio to be greater than one.
+
+```{r constrainedChunkfos}
+mod2 <-cca(sqrt(fos) ~ temperature, recon)
+mod2
+```
+With the Żabińskie chironomid record, reconstructed temperature explains about `r round(mod2$CCA$eig[1]/mod2$tot.chi*100)`% of the variance, and the ratio of the inertia of the constrained axis to the first unconstrained axis is only `r round(mod2$CCA$eig[1]/mod2$CA$eig[1], 2)`. Even the eighth unconstained axis has more inertia than the axis constrained by temperature. All this suggests, yet again, that temperature is not the most important control on chironomid assemblages in Lake Żabińskie.
+
+It is very difficult to reconcile the weird ordinations and the poor performance of temperature as a predictor of the chironomid communities with the remarkably good performance of the August-air temperature reconstruction.
+
+
+```{r otherChunk, eval = FALSE, echo = FALSE}
+#####WAPLS#####
+keep <- colSums(spp > 0) >= 3
+mod <- rioja::crossval(WAPLS(sqrt(spp[, keep]), env))
+rioja::performance(mod)$crossval
+RMSEP <- performance(mod)$crossval[2, "RMSE"]
+
+ggplot(data.frame(measured = mod$x, predicted = mod$predicted[, 2]), aes(x = measured, y = predicted)) + geom_abline(slope = 1, intercept = c(-RMSEP, 0, RMSEP), colour = "grey20", linetype = c(2, 1, 2)) + geom_point() + geom_smooth(fill = NA, colour = "red") + labs(x = "Observed temperature °C", y  = "Predicted temperature °C")
+
+
+daft <- crossval(WAPLS(sqrt(cbind(env, spp[, keep])), env))
+performance(daft)
+
+pred <- predict(mod, sqrt(fos))$fit[,2]
+
+ggplot(data.frame(chron, pred), aes(chron, pred)) + geom_path() + geom_path(aes(x = date, y = temperature), recon, colour = "red")
+
+####
+
+
+  
+
+
+#####palaeoSig####
+library(palaeoSig)
+rtf <- randomTF(sqrt(spp[, keep]), env, sqrt(fos), n = 999, fun = WAPLS, col = 2, ord = cca)
+plot(rtf, vnames = "Temperature")
+obsc <- obs.cor(sqrt(spp[, keep]), env, sqrt(fos), n = 999, ord = cca, min.occur = 5)
+plot(obsc, which = 1)
+plot(obsc, which = 2)
+
+```

@@ -1,0 +1,22 @@
+---
+title: "Untitled"
+author: "Richard J. Telford"
+date: "May 19, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Perhaps the most contentious scientific argument of the early twenty-first century concerns whether "data" is plural or singular. To accidentally say "data is" at a prestigious conference is to lob a metaphorical lettuce into the traditionalist audience. Submit a manuscript with "data are" and expect scathing reviews impugning your pet goat's morels[^1] from an avant-garde grammatician. Fortunately, there was concensus on one topic (no mere 97% here), the chironomid date from Lake Żabińskie were plural.
+
+brief history of data uploads
+shiny app - choose year get year by version table of values
+
+It is not even clear that the currently uploaded data are the correct data.
+
+
+[^1]: Admit it, if the morels weren't fly-blown, your amoral goat would have eaten them (and you would be amorel).
+

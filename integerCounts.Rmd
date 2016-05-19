@@ -1,0 +1,34 @@
+---
+title: "Integer Counts"
+author: "Richard J. Telford"
+date: '2016-05-01'
+output:
+  html_document:
+    keep_md: yes
+---
+
+Of one thing I am certain: count data should be integers (or half integers if partial individuals are counted as one half). The chironomid data from Lake Żabińskie are remarkable in many respects; surely they meet this most basic expectation.
+
+```{r importChunk, results = "hide"}
+#load the data
+library(readxl)
+
+fname <- "/home//gbsrt//Downloads/zabinskie2015cit.xls"
+excel_sheets(fname)
+fos_counts <- read_excel(fname, sheet = "Chironomids Zabinskie counts")
+chron <- fos_counts[, 1]
+fos_counts <- fos_counts[, -c(1, ncol(fos_counts))]
+```
+
+Let's look at the top left corner of the data matrix
+```{r}
+knitr::kable(fos_counts[1:3, 1:3])
+```
+
+Non-integer values!
+
+In the fossil data set, `r round(sum((fos_counts * 2) %%1 != 0) / sum(fos_counts>0) * 100, 1)`% have non-integer (or half integer) values. These non-integer counts have a probabilty of occuring of exactly zero. [Cromwell's rule](https://en.wikipedia.org/wiki/Cromwell's_rule) is over. 
+
+After Oliver Cromwell's death, the monarchy was restored and Cromwell was posthumously executed. Other [regicides](https://en.wikipedia.org/wiki/List_of_regicides_of_Charles_I) were even less fortunate.
+
+We can be absolutely certain that these data are not the original counts. Most likely, they are back-transformed from percent data that had been rounded. Why would anybody do that? Perhaps the authors lost the original counts. That would be unfortunate.

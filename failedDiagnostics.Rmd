@@ -1,0 +1,109 @@
+---
+title: "Reconstruction diagnostics for the Żabińskie chironomid reconstruction"
+author: "Richard J. Telford"
+date: '2016-04-25'
+output:
+  html_document:
+    keep_md: yes
+---
+
+The evaluation of [reconstruction diagonstics](https://quantpalaeo.wordpress.com/2014/05/03/transfer-function-and-palaeoenvironmenal-reconstruction-diagnostics/) is an essential part of the process of generating palaeoenvironmental reconstructions from microfossil assemblages using transfer functions. If the reconstruction diagnostics are bad, we should be especially cautious about interpreting the reconstruction. The problems is that "good" and "bad" are not well defined and we rely on various rules-of-thumb to guide us.
+
+Since the chironomid-based reconstruction of August air temperature presented by Larocque-Tobler et al (2015; hereafter LT15) from Lake Żabińskie is so remarkably good, it should be an interesting case to test how well reconstruction diagnostics work.
+
+LT15 use [analogue quality](https://quantpalaeo.wordpress.com/2014/05/11/analogue-quality-reconstruction-quality/) as their main diagnostic method 
+
+> For the combined transfer function, to determine whether the modern calibration models had adequate analogues for the fossil assemblages, the modern analogue technique (MAT) was performed using C2 (Juggins, 2005), with squared chord distance as the dissimilarity coefficient (DC) (Overpeck et al., 1985). Confidence intervals were based on minimum DC distance within the calibration sets (Laing et al., 1999). Fossil assemblages above the 95% confidence interval were considered to have no analogues in the calibration set; samples between 75% and 95% were considered to have fair analogues (Francis et al., 2006). 
+
+This text from LT15 is not entirely clear - what confidence intervals? Time to read [Francis et al (2006)](http://www.sciencedirect.com/science/article/pii/S0031018206000277?np=y).
+
+> In order to determine whether the modern calibration model had adequate analogs for the fossil assemblages, modern analog testing (MAT) was performed using the computer program C2, with squared chord distance as the dissimilarity coefficient (Overpeck et al., 1985). Confidence intervals were based on minimum DC distance within the calibration set following Laing et al. (1999). Fossil assemblages above the 95% confidence interval were considered to have no analogs in the calibration set, samples between 75% and 95% were considered to have fair analogs.
+
+I get a slight sense that I've read this before somewhere. I'm sure it is just a coincidence. But having read it twice, I understand what is being done. The squared-chord distances between each fossil sample and its closest analogue in the calibration set is being compared with the 75^th^ and 95^th^ percentiles of the distribution of distances between each calibration-set sample and its nearest neighbour. 
+
+LT15 report that 
+
+> No sample had chironomid assemblages outside the 95% confidence interval suggesting that the transfer function can be applied to the downcore samples. 
+
+but don't show this with a figure (no complaint here, I would do the same if the analogues were good). I want to see a figure showing the analogue distances.
+
+
+First we need to load the data, which can be downloaded from [NOAA](https://www.ncdc.noaa.gov/cdo/f?p=519:1:0::::P1_STUDY_ID:19501).
+
+```{r importChunk, results = "hide"}
+library(readxl)
+
+fname <- "/home//gbsrt//Downloads/zabinskie2015cit.xls"
+excel_sheets(fname)
+spp <- read_excel(fname, sheet = "Training species")
+env <- read_excel(fname, sheet = "Training temperature")
+fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages")
+recon <- read_excel(fname, sheet = "Reconstruction ")
+names(recon) <- c("date", "temperature")
+
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+rownames(env) <- env[, 1]
+env <- env[, 2, drop = FALSE]
+
+lowCount <- c("SAL", "LEK", "TRZ", "WAS", "SZOS", "GOR", "KOS", "ZAB")
+spp <- spp[!rownames(spp) %in% lowCount, ]
+env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
+identical(rownames(spp), rownames(env))
+env <- env$Temp
+
+chron <- fos[, 1]
+fos <- fos[, -c(1, ncol(fos))]
+
+####check names####
+setdiff(names(fos), names(spp))
+setdiff(names(spp), names(fos))
+
+```
+
+Distances to the nearest analogue are easily calculated with the rioja package which should give the same result as C2.
+
+```{r analogueChunk, fig.cap = "Analogue quality against date", message=FALSE}
+library(rioja)
+library(ggplot2)
+
+matmod <- MAT(spp, env)
+matpred <- predict(matmod, fos)
+goodpoorbad <- quantile(matmod$dist.n[, 1], prob=c(0.75, 0.95))
+qualitybands <- data.frame(xmin = rep(-Inf, 3), 
+                           xmax = rep(Inf, 3), 
+                           ymax = c(goodpoorbad, Inf), 
+                           ymin = c(-Inf, goodpoorbad), 
+                           fill = factor(c("Good", "Fair", "None"), levels = c("None", "Fair", "Good")))
+
+fillscale <-  scale_fill_manual(values = c("salmon", "lightyellow", "skyblue"), name = "Analogue Quality")
+
+g <- ggplot(data.frame(chron, analogue =  matpred$dist.n[,1])) + 
+  geom_point(aes(x = chron, y = analogue)) + 
+  labs(x = "Date CE", y = "Squared chord distance to nearest analogue") +
+  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill), qualitybands, alpha = .5) + 
+  fillscale
+print(g)
+```  
+
+`r sub("^(\\w{1})", "\\U\\1", english::as.english(sum(matpred$dist.n[,1] > goodpoorbad[2])), perl = TRUE)` of the `r nrow(fos)` samples have no modern analogues under the definition used by LT15. Only `r sum(matpred$dist.n[,1] < goodpoorbad[1])` samples have good analogues. This is difficult to reconcile with the claim by LT15 that 
+
+> No sample had chironomid assemblages outside the 95% confidence interval 
+
+The reconstruction of August air-temperature in LT15 is remarkably good, almost as good as what would be expected if chironomids were perfect thermometers, yet the analogue quality is fairly awful ([squared residual length](https://quantpalaeo.wordpress.com/2014/05/17/beyond-nearest-analogue-distance/) is also fairly awful). Does this mean that these diagnostics are utterly useless guides to the utility of reconstructions? Or is this another remarkable feature of the Lake Żabińskie chironomid reconstruction?
+
+Perhaps some ordinations would be useful to investigate what is going on. I'll show some in a future post.
+
+
+
+```{r residlenChunk, eval = FALSE, echo = FALSE}
+####residlen####
+rlen<-analogue::residLen(sqrt(spp[, keep]), env, sqrt(fos), method="cca")
+  
+ggplot(data.frame(chron, rlen = rlen$passive), aes(chron, rlen)) + geom_point() + geom_hline(yintercept = quantile(rlen$train, probs = c(0.5, 0.9, 0.95, 0.99)), colour = c("blue", "orange", "red", "red"), linetype = c(1, 1, 1, 2))
+
+sum(rlen$passive > quantile(rlen$train, probs = 0.99))
+sum(rlen$passive > quantile(rlen$train, probs = 0.95))
+sum(rlen$passive > quantile(rlen$train, probs = 0.90))
+nrow(fos)
+```
