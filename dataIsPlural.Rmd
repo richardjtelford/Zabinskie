@@ -2,7 +2,9 @@
 title: "Untitled"
 author: "Richard J. Telford"
 date: "May 19, 2016"
-output: html_document
+output:
+  html_document:
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -10,13 +12,55 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-Perhaps the most contentious scientific argument of the early twenty-first century concerns whether "data" is plural or singular. To accidentally say "data is" at a prestigious conference is to lob a metaphorical lettuce into the traditionalist audience. Submit a manuscript with "data are" and expect scathing reviews impugning your pet goat's morels[^1] from an avant-garde grammatician. Fortunately, there was concensus on one topic (no mere 97% here), the chironomid date from Lake Żabińskie were plural.
+Perhaps the most contentious scientific argument of the early twenty-first century concerns whether "data" is plural or singular. To accidentally say "data is" at a prestigious conference is to lob a metaphorical lettuce into the traditionalist audience. Submit a manuscript with "data are" and expect scathing reviews impugning your pet goat's morels[^1] from an avant-garde grammatician. Fortunately, there was concensus on one topic (no mere 97% here), the chironomid data from Lake Żabińskie are plural.
 
-brief history of data uploads
-shiny app - choose year get year by version table of values
+## Version One - January 2015
 
-It is not even clear that the currently uploaded data are the correct data.
+The published version of the chironomid stratigraphy which has not been archived and is now acknoweleged by the corrigendum to be incorrect. None of the archived files match it.
 
+## Version Two - January 2015
 
-[^1]: Admit it, if the morels weren't fly-blown, your amoral goat would have eaten them (and you would be amorel).
+The version of the data archived at [http://www.chirosindex.com/](http://www.chirosindex.com/) in January differed substantially from the published stratigraphy and contained [patterns](https://quantpalaeo.wordpress.com/2016/04/25/curious-chironomid-counts/) best described as implausible.
 
+## Version Three - June 2015 
+
+After enquiring about the discrepancies between the archived data and the published stratigraphy, I was emailed a [C2](https://www.staff.ncl.ac.uk/stephen.juggins/software/C2Home.htm) file with a new version of the data. It has five fewer taxa than V2. These are mostly rare, except for _Parochlus_ which occurred eight times in V2 (four times if the unexpected duplicate assemblages are ignored). Fifty-three of eighty-four assemblages are identical. Some other assemblages have large differences, for example 1931 where most of the _Criotopus_ is replaced by _Nanocladius branchio_.
+
+## Version Four - July 2015
+This version was uploaded onto [http://www.chirosindex.com/](http://www.chirosindex.com/) in mid-July. It has the same taxa as V3 but gained samples for 1970, 1969, 1966, 1955 and 1941 and has a sample for 1927 instead of 1925. Only four samples have identical assemblages in both versions: 1986 has complete taxonomic turnover!
+
+## Version Five - August 2015
+V5 was uploaded onto [http://www.chirosindex.com/](http://www.chirosindex.com/) in August. Seventeen samples have different compositions (more than just rounding errors), for example in the sample from 2002, _Paratanytarsus_ had an relative abundance of 27% in V4 but 0% in V5. It is partially replaced by _Tanytarsus_ sp (14%), while all other taxa also increase in relative abundance. V5 is the first version to show the count sums. As expected, they are generally much lower (median 32.5) than the 50 promised by the paper. 
+
+## Version Six - September 2015
+Another month, another version of the Lake Żabińskie chironomid stratigraphy. This version is mostly the same as V5 rounded to one decimal place, but in 1931 _Cricotopus_ loses 2% and _Limnophyes_ gains 2%.
+
+## Version Seven - October 2015
+V7 is not rounded to one decimal place as V6 was, nor is it identical to V5. The largest change from V6 is in the sample from 1940, in which 12% _Criotopus_ appears, with all other taxa losing one or two percent.
+V7 also includes what are purported to be the raw counts. They have non-integer (or half integer) values which are [impossible](https://quantpalaeo.wordpress.com/2016/05/02/cromwells-rule-is-over/). I suspect the counts are back-calculated from percent data and then the percentages recalculated.
+
+## Version Eight - October 2015
+V8 only includes count data which are identical to four decimal places to the previous count data.
+
+## Version Nine - November 2015
+V9 was uploaded onto NOAA in November. The count data in the excel file are identical to the counts in V7 and V8, those in the text file have been rounded. The percent data are V7 rounded to one decimal place.
+
+FIGURE
+
+## Version ten? 
+It is not clear that the version of the data described in the corrigendum is the same as V9. The corrigendum details the taxon inclusion rules
+
+ > Taxa not included in the transfer function or not found in 3 percent in at least 3 samples were removed. In consequence, the number of taxa was reduced from 76 to 50.
+ 
+ Figure 1 caption
+ 
+ >  Four taxa (Brillia, Eukiefferiella, Krenopelopia and Stictochironomus) present in only 3 samples are not displayed. 
+
+However, in V9 (which has 50 taxa), all these taxa have only one or two occurrences.
+
+Of course, I understand that most people have multiple versions of their data: the initial low resolution counts; taxonomic revisions; corrections of transcribing errors. But this should all be sorted out before publication. Post-publication it should be easy to identify the correct file. To archive an incorrect version once is unfortunate; to archive six different versions (none of which match the published stratigraphy) is beginning to look like carelessness. 
+
+Note, all the archived data versions[^2] have file creation dates that post-date publication. 
+
+[^1]: Admit it, if the morels weren't fly-blown, your amoral goat would have eaten them (and then would be amorel).
+[^2]: Data and code are archived on [github](https://github.com/richardjtelford/Zabinskie)
