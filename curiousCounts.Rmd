@@ -2,220 +2,142 @@
 title: "Curious counts"
 author: "Richard J. Telford"
 date: '2016-05-01'
-output: html_document
+output:
+  html_document:
+    keep_md: yes
 ---
-```{r importChunk, results = "hide", echo = FALSE}
-library(readxl)
 
-fname <- "/home//gbsrt//Downloads/zabinskie2015cit.xls"
-excel_sheets(fname)
-spp <- read_excel(fname, sheet = "Training species")
-env <- read_excel(fname, sheet = "Training temperature")
-fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages")
-fos_counts <- read_excel(fname, sheet = "Chironomids Zabinskie counts")
-recon <- read_excel(fname, sheet = "Reconstruction ")
-names(recon) <- c("date", "temperature")
-
-rownames(spp) <- spp[, 1]
-spp[, 1] <- NULL
-rownames(env) <- env[, 1]
-env <- env[, 2, drop = FALSE]
-
-lowCount <- c("SAL", "LEK", "TRZ", "WAS", "SZOS", "GOR", "KOS", "ZAB")
-#spp <- spp[!rownames(spp) %in% lowCount, ]
-#env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
-identical(rownames(spp), rownames(env))
-env <- env$Temp
-
-chron <- fos[, 1]
-fos <- fos[, -c(1, ncol(fos))]
-ncount <- fos_counts[, ncol(fos_counts)]
-fos_counts <- fos_counts[, -c(1, ncol(fos_counts))]
-
-####check names####
-setdiff(names(fos), names(spp))
-setdiff(names(spp), names(fos))
-```
-
-> "rarity is the attribute of a vast number of species of all classes, in all countries." (Charles Darwin)[http://literature.org/authors/darwin-charles/the-origin-of-species-6th-edition/chapter-11.html]
+> "rarity is the attribute of a vast number of species of all classes, in all countries." [Charles Darwin](http://literature.org/authors/darwin-charles/the-origin-of-species-6th-edition/chapter-11.html)
 
 
-In any census of any species rich community, the rarest taxa are likely to be represented by a single individual. 
+In any census of any species rich community, the rarest taxa are likely to be represented by a single individual. This can be visualised with rank abundance curves, shown here for Barro Colorado Island tree counts.
 
 
-```{r BCIchunk}
+```{r BCIchunk, results="hide", message=FALSE}
 library(vegan)
 library(ggplot2)
 library(plyr)
 data(BCI)
-BCI2 <- adply(BCI, .margins = 1, function(samp){
-  y <- sort(samp[samp>0], decreasing = TRUE)
-  x <-1:length(y)
-  data.frame(x, y = y + runif(1, -0.3, 0.3), z = rownames(samp))
-})
-
+BCI2 <- adply(BCI, .margins = 1, function(samp) {
+  y <- sort(samp[samp > 0], decreasing = TRUE)
+  y <- y + runif(1,-0.3, 0.3) # jitter for clarity
+  x <- 1:length(y)
+  data.frame(x = x, y = y, z = rownames(samp))
+})[, c("x", "y", "z")]
+  
 g <- ggplot(BCI2, aes(x = x, y = y, colour = z)) + 
   geom_line(show.legend = FALSE) + 
   scale_y_log10() + 
   labs(x = "Rank", y = "Abundance")
 print(g)
-round(table(BCI[BCI > 0])/sum(BCI > 0) * 100, 1)
-sum(BCI == 1)/sum(BCI > 0)
 ```
 
-```{r}
-rad.preempt(BCI, family=poisson)
+In the BCI data, every sample contains many taxa represented by a single individual. Across all samples, `r round(sum(BCI == 1)/sum(BCI > 0) * 100)`% of taxon occurrences are of a single individual.
+
+```{r importChunk, results = "hide", echo = TRUE}
+library(readxl)
+
+fos_counts <- read_excel("data/zabinskie2015cit.xls", sheet = "Chironomids Zabinskie counts")
+chron <- fos_counts[, 1]
+ncount <- fos_counts$Total
+fos_counts <- fos_counts[, -c(1, ncol(fos_counts))] # remove chronology & count sum
+fos_counts <- round(fos_counts, 1)# remove rounding errors!
+
+pos <- function(x)
+  if(is.null(dim(x))) {
+     x[x > 0]
+  } else{
+    x[, colSums(x) > 0, drop  = FALSE]
+  }
+
+min0 <- function(x) min(x[x > 0])
 ```
 
-recall first round - only likely explanation was that counts were <50
-
-training set counts admitted low counts
-
-fossil counts admitted <50
-
-
+This is not the case for the Lake Żabińskie chironomid counts where `r sum(apply(fos_counts, 1, min0) > 1)` of `r nrow(fos_counts)` lack any taxa represented by a single (or a half) head.
 
 ```{r Zradchunk}
-#not inspired
 rownames(fos_counts) <- chron
 fos_counts2 <- adply(fos_counts, .margins = 1, function(samp){
   y <- sort(samp[samp>0], decreasing = TRUE)
+  min1 <- min(y) <= 1
+  y <- y + runif(1, -0.05, 0.05)#jitter
   x <-1:length(y)
-  data.frame(x, y = y + runif(1, -0.05, 0.05), z = rownames(samp), min1 = min(y)<=1)
-})
+  data.frame(x, y = y, z = rownames(samp), min1 = min1)
+})[, c("x", "y", "z", "min1")]
 
 g <- ggplot(fos_counts2, aes(x = x, y = y, colour = z)) + 
   geom_line(show.legend = FALSE) + 
   scale_y_log10() + facet_wrap(~min1) +
   labs(x = "Rank", y = "Abundance")
 
-g <- ggplot(fos_counts2, aes(x = x, y = y, colour = z)) + 
-  geom_line(show.legend = FALSE) + 
-  scale_y_log10() + facet_wrap(~z) +
-  labs(x = "Rank", y = "Abundance")
-
-print(g)
-round(table(fos_counts[fos_counts > 0])/sum(fos_counts > 0) * 100, 1)
-sum(fos_counts == 1)/sum(fos_counts > 0)
-sum(fos_counts <= 1)/sum(fos_counts > 0)
-```
-
-
-
-
-
-
-```{r trainingCountChunk}
-min0 <- function(x) min(x[x > 0])
-lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
-
-lowCountRichness <- data.frame(minpc = apply(spp[1:50, ], 1, min0),
-  richness =rowSums(spp[1:50, ] > 0),
-  lowCount = rownames(spp[1:50, ]) %in% lowCount)
-
-g <- ggplot(lowCountRichness, aes(x = minpc, y = richness, colour = lowCount)) + 
-  geom_point() + 
-  geom_vline(xintercept = 2, linetype = "dashed") + 
-  labs(x = "Minimum Percentage", y = "Taxonomic richness", colour = "Low Count") 
-  
 print(g)
 ```
 
+Not only do many samples lack singletons, one lack any taxa occurring with fewer than `r as.character(english::as.english(max(apply(fos_counts, 1, min0))))` head capsules.
+```{r}
 minc <- apply(fos_counts, 1, min0)
-table(round(minc,1))
-ggplot(data.frame(chron, minc), aes(chron, minc)) + geom_point() 
-ggplot(data.frame(chron, ncount), aes(chron, ncount)) + geom_point() 
-
-
-pos <- function(x)if(is.null(dim(x))){x[x>0]} else{x[,colSums(x)>0, drop  = FALSE]}
-
-plot(minc, ncount)
-pos(fos_counts[minc == 4,][1,])
-apply(fos_counts[minc>2,], 1, pos)
-
-
-ggplot(data.frame(x = as.vector(dist(fos_counts>0, method = "manhattan"))), aes(x)) + geom_histogram(binwidth = 1)
-```{r}
-D <- as.matrix(dist(fos_counts>0,  method = "manhattan"))
-table(D)
-sdup<-which(D==3, arr.ind = TRUE)
-sdup <-unique(adply(sdup, 1, sort)[,-1])
-
-alply(sdup, 1, function(i)pos(fos_counts[unlist(i),]))
-D <- as.matrix(vegdist(fos))
-diag(D) <- Inf
-table(D)
-sdup<-which(D < 0.2, arr.ind = TRUE)
-sdup <-unique(adply(sdup, 1, sort)[,-1])
-
-alply(sdup, 1, function(i){z <- pos(fos_counts[unlist(i),]); plot(t(z));z})
-
-ggplot(data.frame(env = as.vector(dist(recon$temperature)), spp = as.vector(vegdist(fos))), aes(env, spp)) + geom_point(alpha = 0.4)
-plot(dist(env), vegdist(spp))
-
-table(round(unlist(fos_counts), 1))
-
-
-
-
-
-
-
-zab <- read_excel('/home/gbsrt/Dropbox/clean/Zabinskie chiro 1886AD.xlsx', sheet = 1)
-zabchron <- zab$Chron
-zab$Chron <- NULL
-
-pos(zab[apply(round(zab, 2) == 11.11 | zab == 0, 1, all),])
-zabchron[apply(round(zab, 2) == 11.11 | zab == 0, 1, all)]
-pos(fos_counts[chron%in%zabchron[apply(round(zab, 2) == 11.11 | zab == 0, 1, all)],])
-
-pos(zab[apply(round(zab) == 14 | zab == 0, 1, all),])
-zabchron[apply(round(zab) == 14 | zab == 0, 1, all)]
-pos(fos_counts[chron%in%zabchron[apply(round(zab) == 14 | zab == 0, 1, all)],])
-
-pos(zab[apply(zab, 1, function(r)round(min0(r)) == 14), ])
-pos(fos_counts[chron%in%zabchron[apply(zab, 1, function(r)round(min0(r)) == 14)],])
+g <- ggplot(data.frame(chron, minc), aes(chron, minc)) + 
+  geom_point() + labs(x = "Year CE", y = "Minimum count") 
+print(g)
 ```
 
->Taxa not included in the transfer function or not found in 3 percent in at least 3 samples were removed. In consequence, the number of taxa was reduced from 76 to 50.
-
-Caption to corrigendum figure 1
-> Four taxa (Brillia, Eukiefferiella, Krenopelopia and Stictochironomus) present in only 3 samples are not displayed. 
-
-setdiff(names(zab), names(fos))
-[1] "Paratendipes nubisquama" "Tanytarsus chinyensis"   "Tanytarsus glabrescens"  "Paracladius"             "Parochlus"               "Zavrelymia"             
-setdiff(names(fos), names(zab))
-[1] "Paratendipes nudisquama"
-colSums((zab>0)[,setdiff(names(zab), names(fos))])
-Paratendipes nubisquama   Tanytarsus chinyensis  Tanytarsus glabrescens             Paracladius               Parochlus              Zavrelymia 
-                      9                       2                       3                       1                       8                       1 
-                      pos(zab$Parochlus)
-mean(!apply(fos_counts==1, 1, any))       
-mean(!apply(fos_counts==0.5, 1, any)) 
+These are the counts for the two most extreme cases.
 ```{r}
-fos_counts1 <- round(fos_counts, 1)
-fos_counts1[fos_counts1%%1 == 0.5] <- fos_counts1[fos_counts1%%1 == 0.5] + 0.5
-alpha1 <- apply(fos_counts1, 1, function(r)coef(rad.preempt(r)))
-summary(alpha1)
+pos(fos_counts[minc == 5, ])
+pos(fos_counts[minc == 4.5, ])
+```
 
-simulateMinAbun <- function(alpha, maxRank = 50, n = 10000, J = 30){ 
+
+How unlikely is it to have so many samples without singletons?
+
+One way to test this is to fit a rank abundance model to the count data and then simulate assemblages from the model. There are a variety of rank abundance models that can be fitted with the `vegan` package. Here they are shown fitted to the first BCI sample.
+
+```{r}
+rf<-radfit(BCI[1, ])
+plot(rf)
+```
+
+Few singletons are expected with the pre-emption model, so I am going to apply this model to the chironomid counts and then simulate assemblages and test if they have singletons.
+
+```{r}
+fos_counts1 <- fos_counts
+# promote half heads to full
+fos_counts1[fos_counts1 %% 1 == 0.5] <- fos_counts1[fos_counts1 %% 1 == 0.5] + 0.5
+#fit model and exract coefficients
+alpha1 <- apply(fos_counts1, 1, function(r)  coef(rad.preempt(r)))
+
+simulateMinAbun <- function(alpha, maxRank = 50, n = 10000, J = 30){
+  #maxRank is number of taxa considered, J is number of individuals, n is number of trials
   rank <- 1:maxRank
   abun <- J * alpha * (1 - alpha)^(rank - 1)
   sims <- rmultinom(n = n, size = J, prob = abun)
   table(apply(sims, 2, min0))/n 
 }
-simulateMinAbun(max(alpha1), J = 20)
-simulateMinAbun(max(alpha1), J = 30)
-simulateMinAbun(max(alpha1), J = 70)
-
-simulateMinAbun(median(alpha1))
-simulateMinAbun(min(alpha1), n = 1000000)
-
-alpha <-median(alpha1)
-abun <- J*alpha*(1-alpha)^(rank-1)
-plot(rank, abun, log = "y")
-sims <- rmultinom(n = 10000, size = J, prob = abun)
-table(apply(sims, 2, min0)) 
-
-pbinom(q = sum(minc>1), size = nrow(fos_counts), 0.06, lower.tail = FALSE)
 ```
+
+```{r, results = "hide"}
+high20 <- simulateMinAbun(max(alpha1), J = 20)
+high30 <- simulateMinAbun(max(alpha1), J = 30)
+high70 <- simulateMinAbun(max(alpha1), J = 70)
+
+med30 <- simulateMinAbun(median(alpha1), J = 30)
+phigh <- pbinom(q = sum(minc>1), size = nrow(fos_counts), 1 - high30[1], lower.tail = FALSE)
+pmed <- pbinom(q = sum(minc>1), size = nrow(fos_counts), 1 - med30[1], lower.tail = FALSE)
+```
+For the sample with the largest coefficient for the pre-emption model (i.e. the steepest slope of the rank-abundance relationship), the probability of the count having at least one singleton is `r round(high30[1], 2)`. This result is not sensitive to the number of heads counted (at least over the range reported for the chironomid data).
+
+With the median pre-emption model coefficient, the probability of the count having at least one singleton is `r med30[1]`. 
+
+Even in the most generous case, the probability of having the observed number of samples without singletons is `r signif(phigh, 2)`. With the median case, the probability is `r signif(pmed, 2)`. 
+
+This calculation does not account for the taxon inclusion rules (which were [not adhered to](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/) in any case) which would have removed taxa occurring in fewer than three samples. This would adjust the probability by several orders of magnitude. However, the calculation does not consider that in some samples neither singletons nor doubletons occur, which would adjust the probability by orders of magnitude in the other direction.
+
+Whatever adjustments you want to make, the lack of rare taxa in the chironomid data is remarkable.
+
+In the first version of the dataset, samples apparently missing singletons (identified by the minimum percent being above 2%) tended to have all their percent as integer multiples of the minimum percent. This strongly suggested (as is now admitted) that the counts were not fifty as claimed, but much lower for some samples. Since then, the data have ["evolved"](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/) and this integer multiple only holds for a few samples.
+
+Perhaps the taxon inclusion rule ("3 percent in at least 3 samples") was misapplied, smiting singletons in some levels only until the observed pattern emerged. At the calculated probabilities, almost anything is more likely than the data being correct.
+
+It is [trivial](https://quantpalaeo.wordpress.com/2016/05/02/cromwells-rule-is-over/) to infer that the currently archived data are __definitely__ not the original data. We need the original data (all 76 taxa).
+
+Both regular readers will be relieved to learn that I indend to write only one more post - a summary - on the remarkable Lake Żabińskie chironomids stratigraphy. I will then proceed to tell the remarkable tale of how I mistook a yo-yo for a die.
