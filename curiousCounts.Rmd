@@ -10,10 +10,10 @@ output:
 > "rarity is the attribute of a vast number of species of all classes, in all countries." [Charles Darwin](http://literature.org/authors/darwin-charles/the-origin-of-species-6th-edition/chapter-11.html)
 
 
-In any census of any species rich community, the rarest taxa are likely to be represented by a single individual. This can be visualised with rank abundance curves, shown here for Barro Colorado Island tree counts.
+In any census of any species rich community, the rarest taxa are likely to be represented by a single individual. This can be visualised with rank abundance curves, shown here for Barro Colorado Island tree counts (jittered for clarity).
 
 
-```{r BCIchunk, results="hide", message=FALSE}
+```{r BCIchunk, results="hide", message=FALSE, echo = FALSE}
 library(vegan)
 library(ggplot2)
 library(plyr)
@@ -23,18 +23,17 @@ BCI2 <- adply(BCI, .margins = 1, function(samp) {
   y <- y + runif(1,-0.3, 0.3) # jitter for clarity
   x <- 1:length(y)
   data.frame(x = x, y = y, z = rownames(samp))
-})[, c("x", "y", "z")]
+}, .expand = FALSE)
   
-g <- ggplot(BCI2, aes(x = x, y = y, colour = z)) + 
+ggplot(BCI2, aes(x = x, y = y, colour = z)) + 
   geom_line(show.legend = FALSE) + 
   scale_y_log10() + 
   labs(x = "Rank", y = "Abundance")
-print(g)
 ```
 
 In the BCI data, every sample contains many taxa represented by a single individual. Across all samples, `r round(sum(BCI == 1)/sum(BCI > 0) * 100)`% of taxon occurrences are of a single individual.
 
-```{r importChunk, results = "hide", echo = TRUE}
+```{r importChunk, results = "hide", echo = FALSE}
 library(readxl)
 
 fos_counts <- read_excel("data/zabinskie2015cit.xls", sheet = "Chironomids Zabinskie counts")
@@ -42,6 +41,7 @@ chron <- fos_counts[, 1]
 ncount <- fos_counts$Total
 fos_counts <- fos_counts[, -c(1, ncol(fos_counts))] # remove chronology & count sum
 fos_counts <- round(fos_counts, 1)# remove rounding errors!
+rownames(fos_counts) <- chron
 
 pos <- function(x)
   if(is.null(dim(x))) {
@@ -56,21 +56,18 @@ min0 <- function(x) min(x[x > 0])
 This is not the case for the Lake Żabińskie chironomid counts where `r sum(apply(fos_counts, 1, min0) > 1)` of `r nrow(fos_counts)` lack any taxa represented by a single (or a half) head.
 
 ```{r Zradchunk}
-rownames(fos_counts) <- chron
 fos_counts2 <- adply(fos_counts, .margins = 1, function(samp){
   y <- sort(samp[samp>0], decreasing = TRUE)
-  min1 <- min(y) <= 1
+  min1 <- ifelse(min(y) <= 1, "Singletons", "No singletons")
   y <- y + runif(1, -0.05, 0.05)#jitter
   x <-1:length(y)
   data.frame(x, y = y, z = rownames(samp), min1 = min1)
-})[, c("x", "y", "z", "min1")]
+}, .expand = FALSE)
 
-g <- ggplot(fos_counts2, aes(x = x, y = y, colour = z)) + 
+ggplot(fos_counts2, aes(x = x, y = y, colour = z)) + 
   geom_line(show.legend = FALSE) + 
-  scale_y_log10() + facet_wrap(~min1) +
+  scale_y_log10() + facet_wrap(~min1,) +
   labs(x = "Rank", y = "Abundance")
-
-print(g)
 ```
 
 Not only do many samples lack singletons, one lack any taxa occurring with fewer than `r as.character(english::as.english(max(apply(fos_counts, 1, min0))))` head capsules.
@@ -130,7 +127,7 @@ With the median pre-emption model coefficient, the probability of the count havi
 
 Even in the most generous case, the probability of having the observed number of samples without singletons is `r signif(phigh, 2)`. With the median case, the probability is `r signif(pmed, 2)`. 
 
-This calculation does not account for the taxon inclusion rules (which were [not adhered to](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/) in any case) which would have removed taxa occurring in fewer than three samples. This would adjust the probability by several orders of magnitude. However, the calculation does not consider that in some samples neither singletons nor doubletons occur, which would adjust the probability by orders of magnitude in the other direction.
+This calculation does not account for the taxon inclusion rules (which were [not adhered to](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/)) which would have removed taxa occurring in fewer than three samples. This would adjust the probability by several orders of magnitude. However, the calculation does not consider that in some samples neither singletons nor doubletons occur, which would adjust the probability by orders of magnitude in the other direction.
 
 Whatever adjustments you want to make, the lack of rare taxa in the chironomid data is remarkable.
 
@@ -139,5 +136,3 @@ In the first version of the dataset, samples apparently missing singletons (iden
 Perhaps the taxon inclusion rule ("3 percent in at least 3 samples") was misapplied, smiting singletons in some levels only until the observed pattern emerged. At the calculated probabilities, almost anything is more likely than the data being correct.
 
 It is [trivial](https://quantpalaeo.wordpress.com/2016/05/02/cromwells-rule-is-over/) to infer that the currently archived data are __definitely__ not the original data. We need the original data (all 76 taxa).
-
-Both regular readers will be relieved to learn that I indend to write only one more post - a summary - on the remarkable Lake Żabińskie chironomids stratigraphy. I will then proceed to tell the remarkable tale of how I mistook a yo-yo for a die.
