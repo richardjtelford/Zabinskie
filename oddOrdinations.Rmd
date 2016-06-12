@@ -24,7 +24,7 @@ spp[, 1] <- NULL
 rownames(env) <- env[, 1]
 env <- env[, 2, drop = FALSE]
 
-lowCount <- c("SAL", "LEK", "TRZ", "WAS", "SZOS", "GOR", "KOS", "ZAB")
+lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
 spp <- spp[!rownames(spp) %in% lowCount, ]
 env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
 identical(rownames(spp), rownames(env))
