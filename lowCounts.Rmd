@@ -1,0 +1,142 @@
+---
+title: "Untitled"
+author: "Richard J. Telford"
+date: "June 11, 2016"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r importChunk, results = "hide", echo = FALSE}
+library("readxl")
+library("ggplot2")
+library("dplyr")
+
+fname <- "/home//gbsrt//Downloads/zabinskie2015cit.xls"
+excel_sheets(fname)
+spp <- as.data.frame(read_excel(fname, sheet = "Training species"))
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+
+Plakes <- read_excel(fname, "Poland-Canada Lakes", skip = 1)[, 1:3]
+Plakes <- Plakes[!is.na(Plakes$Lake), ]
+Plakes$Lake <- trimws(Plakes$Lake)
+Plakes$Lake <- gsub("_", "-", Plakes$Lake)
+Clakes <- read_excel(fname, "Poland-Canada Lakes", skip = 9)[, -(1:3)]
+
+as.eng <- function(x, capitalise = FALSE){
+  e <- as.character(english::as.english(x))
+  if(capitalise){
+   e <- gsub("(^)(.)", "\\1\\U\\2", e, perl = TRUE) 
+  }
+  e
+}
+
+pos <- function(x)
+  if(is.null(dim(x))) {
+     x[x > 0]
+  } else{
+    x[, colSums(x) > 0, drop  = FALSE]
+  }
+
+dontClip <- function(g) {
+  g2 <- ggplot_gtable(ggplot_build(g))
+  g2$layout$clip[g2$layout$name == "panel"] <- "off"
+  grid::grid.draw(g2)
+}
+```
+
+[Larocque-Tobler et al (2015)](http://www.sciencedirect.com/science/article/pii/S0277379115000086?np=y) promised that, for their chironomid calibration set
+
+>  At least 50 head capsules (Heiri et al., 2001 and Larocque et al., 2001) were mounted.
+
+A cursory examination of the [data](https://www.ncdc.noaa.gov/cdo/f?p=519:1:0::::P1_STUDY_ID:19501) shows that this is unlikely to be true: many of the calibration set samples have a minimum relative abundance above the 2% expected for a singleton in a count of 50 heads.
+
+The [corrigendum](http://www.sciencedirect.com/science/article/pii/S0277379116300221) admitted as much
+
+> Lakes with low numbers of head capsules were included in the transfer function used to create the published temperature reconstruction... The following lakes have now been deleted for the corrected temperature reconstruction: GOR, KOS, LEK, SAL, SZE, SZOS, TRZ, WAS and ZAB.
+
+If a few samples were a few (i.e. can count on fingers of one hand) chironomids short of the promised fifty, I would not object. In the Polish calibration set, nine of the forty-eight lakes (two of the reported fifty lakes have no chironomid data), are now reported to have fewer chironomids that promised, but how many fewer?
+
+Since most samples should have at least one singleton, we can estimate the probably count sum from the reciprocal of the relative abundance of the least abundant taxa. 
+
+This plot[^1] shows the minimum percentage and the probable count sum for the Polish calibration set, highlighting the lakes that the corrigendum declared to have low counts. 
+
+```{r}
+min0 <- function(x) min(x[x > 0])
+lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
+lowCountRichness <- data.frame(
+  country = ifelse(rownames(spp) %in% trimws(Plakes$Lake), "Poland", "Canada"),
+  minpc = apply(spp, 1, min0),
+  richness = rowSums(spp > 0),
+  lowCount = rownames(spp) %in% lowCount
+)
+
+g <- ggplot(lowCountRichness%>%filter(country == "Poland"), 
+            aes(x = minpc, y = richness, colour = lowCount)) +
+  geom_point() +
+  geom_vline(xintercept = 2, linetype = "dashed") +
+  labs(x = "Minimum Percentage", y = "Taxonomic richness", colour = "Low Count") +
+  theme(plot.margin = unit(x = c(2, 1, 1, 1), units = "lines"), legend.position = c(0.85, 0.85)) +
+  xlim(0, 20)
+
+cnt <- c(50, 40, 30, 25, 20, 15, 10,  5)
+g <- g + geom_text(aes(label = cnt, x = 1/cnt * 100, y = Inf), 
+                   size = 3, data.frame(), vjust = -0.4, inherit.aes = FALSE) +
+  annotate("text", x = 10, y = Inf , label = "Probable count sum", vjust = -2)
+
+dontClip(g)
+```
+
+Two aspects of this figure are striking. 
+
+First that some of the probable counts are very low. Lake GOR appears to have a count of just five heads, based on a minimum relative abundance of 20% (the missing 20% might be an unidentified chironomid).
+
+```{r}
+knitr::kable(pos(as.data.frame(spp)["GOR", ]))
+```
+
+Second, in addition to the reported nine Polish lakes with counts below fifty head capsules, a further `r as.eng(sum(lowCountRichness$minpc[lowCountRichness$country == "Poland"] > 2) - 9)` have a minimum relative abundance greater that 2% percent, indicative of a count lower than fifty heads.
+
+What about Canadian portion of the calibration set? There are `r sum(lowCountRichness$country == "Canada")` Canadian lakes (not 72 as reported in LT15 - the data source, [Larocque (2008)](http://espace.inrs.ca/1020/1/R001032.pdf), reports 73 lakes). `r as.eng(sum(lowCountRichness$minpc[lowCountRichness$country == "Canada"] > 2), TRUE)` of these lakes appear to have a minimum count below fifty. 
+
+```{r}
+gc <- g %+% (lowCountRichness%>%filter(country == "Canada"))
+dontClip(gc)
+```
+
+This possible undercount in a few samples in Larocque (2008) in interesting but will not materially affect the results of that paper.
+
+There are some additional curious aspects to the sums of the relative abundances for each lake in the calibration set. These can be below 100% if rare or unidentified taxa have been omitted. Values slightly above 100% are possible with rounding errors. But I struggle to understand how a sum of `r round(sum(as.data.frame(spp)["GIL",]), 1)`% is possible for Polish lake GIL. The sum of `r round(sum(as.data.frame(spp)["Lac H",]), 1)`% for Canadian Lac H is beyond comprehension.
+
+[^1]: All code used in this post is available on [github](https://github.com/richardjtelford/Zabinskie)
+
+```{r, eval = FALSE, echo = FALSE}
+cnts <- data.frame(
+  comb = colSums(spp > 0),
+  canada = colSums(spp[lowCountRichness$country == "Canada", ] > 0),
+  poland = colSums(spp[lowCountRichness$country == "Poland", ] > 0)
+)
+cnts# don't match table 2
+
+table(lowCountRichness$country)
+nrow(Clakes)
+nrow(Plakes)
+setdiff(Clakes$LAKE, rownames(spp))
+setdiff(trimws(Plakes$Lake), rownames(spp))
+
+library(vegan)
+summary(rda(spp))
+summary(rda(sqrt(spp)))
+
+mod <- rda(sqrt(spp))
+plot(mod, type = "n")
+points(mod, display = "sites")
+plot(mod, type = "n")
+text(mod, display = "species", cex = 0.7)
+
+```
