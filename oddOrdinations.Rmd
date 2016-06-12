@@ -11,7 +11,7 @@ output:
 ```{r importChunk, results = "hide", echo = FALSE}
 library(readxl)
 
-fname <- "/home//gbsrt//Downloads/zabinskie2015cit.xls"
+fname <- "data/zabinskie2015cit.xls"
 excel_sheets(fname)
 spp <- read_excel(fname, sheet = "Training species")
 env <- read_excel(fname, sheet = "Training temperature")
