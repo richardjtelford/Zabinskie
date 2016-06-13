@@ -1,0 +1,150 @@
+---
+title: "summary"
+author: "Richard J. Telford"
+date: "May 24, 2016"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r loadData, results = "hide"}
+library("readxl")
+library("ggplot2")
+library("rioja")
+library("tidyr")
+
+fname <- "data/zabinskie2015cit.xls"
+spp <- as.data.frame(read_excel(fname, sheet = "Training species"))
+env <- as.data.frame(read_excel(fname, sheet = "Training temperature"))
+fos <- as.data.frame(read_excel(fname, sheet = "Chironomids Zabinsk percentages"))
+recon <- as.data.frame(read_excel(fname, sheet = "Reconstruction "))
+names(recon) <- c("date", "temperature")
+
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+rownames(env) <- env[, 1]
+env <- env[, 2, drop = FALSE]
+
+lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
+spp <- spp[!rownames(spp) %in% lowCount, ]
+env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
+identical(rownames(spp), rownames(env))
+env <- env$Temp
+
+chron <- fos[, 1]
+fos <- fos[, -c(1, ncol(fos))]
+
+instrumental <- read.table("data/instrumental.txt")[, 1:2] # instrumental data read off graph with XYscan
+names(instrumental) <- c("date", "temperature")
+instrumental$date <- round(instrumental$date)
+instrumental <- instrumental[nrow(instrumental):1, ]
+```
+
+Having shown that the archived chironomid data from Lake Żabińskie are [strange](https://quantpalaeo.wordpress.com/2016/05/02/ordinating-lake-zabinskies-chironomids/) in [several](https://quantpalaeo.wordpress.com/2016/06/13/the-missing-rare-taxa-at-zabinskie/) [ways](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/) and have bad [reconstruction diagnostics](https://quantpalaeo.wordpress.com/2016/04/26/3508/), I want to see how well I can replicate the August air-temperature reconstuction. 
+
+First, I need to build the transfer function. I'm using WAPLS on square-root transformed species data. All taxa with more than one occurrence are included, and the lakes with declared low count sums are omitted.
+```{r TF, echo=TRUE}
+keep <- colSums(spp > 0) > 1
+mod1 <- crossval(WAPLS(sqrt(spp[, keep]), env), cv.method = "bootstrap", nboot = 5000, verbose = FALSE)
+knitr::kable(performance(mod1)$crossval[1:3, 1:4], digits = 2)
+```
+
+The bootstrap cross-validation performance is very similar to that reported by the corrigendum (WAPLS component 2: RMSEP = 2.3°C, r^2^ = 0.76).
+
+The reconstruction is similar to that archived but not identical.
+
+```{r reconstruction, echo = TRUE}
+wapls.sqrt <- predict(mod1, sqrt(fos))$fit[, "Comp02"]
+reconstruction <- data.frame(
+  chron = chron, 
+  Instrumental = instrumental$temperature, 
+  Archived = recon$temperature,
+  Replication = wapls.sqrt
+)
+reconstruction2 <- gather(reconstruction, key = "Series", value = "Temperature", -chron)
+ggplot(reconstruction2, aes(chron, Temperature, colour = Series)) +
+  geom_line(alpha = 0.5) +
+  scale_colour_manual(limits = c("Instrumental", "Archived", "Replication"), values = c("black", "red", "blue")) +
+  labs(x = "Year CE", y = "Temperature °C", colour = "Series")
+```
+
+The mean of the archived and replication reconstructions are very similar (`r round(mean(recon$temperature), 2)` vs. `r round(mean(wapls.sqrt), 2)`), but the variance of my replication is about 20% higher (`r round(var(recon$temperature), 2)` vs. `r round(var(wapls.sqrt), 2)`). 
+One of the most noticable differences is that the archived reconstruction has a value for 1925, whereas the chironomids have data for 1927. This 1925/1927 switch also occurred during the [evolution](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/) of the fossil data.
+
+The other differences between the archived reconstruction and my replication might be because of different sites included in the calibration set (LT15 omit nine lakes on the basis of a PCA, but its is not clear which lakes these are and whether they are also omitted for the corrigendum) or different species inclusion rules. The bootstrap that LT15 use will also cause variability. 
+
+Ideally anybody who has the raw data should be able to replicate the results of any paper exactly.
+Given the vague description of the methods in LT15 and the corrigendum, the replication is as good as can be expected.
+
+This is probably my last post detailing oddities the data archived by Larocque-Tobler et al 2015. I think I have done enough to demonstrate that the data have unexpected properties that need explaining. In my next couple of posts in this series, I'll describe my quest to get that explanation. 
+
+
+```{r otherReconstruction, eval = FALSE} 
+#not sqrt
+mod2 <- crossval(WAPLS(spp[, keep], env), cv.method = "bootstrap",  nboot = 5000)
+performance(mod2)$crossval
+wapls <- predict(mod2, fos)$fit[, "Comp02"]
+
+#monotonic
+mod3 <- crossval(WA(spp[, keep], env, mono = TRUE), cv.method = "bootstrap",  nboot = 5000)
+performance(mod3)$crossval
+mono <- predict(mod3, fos)$fit[, "WA.m"]
+
+#monotonic sqrt
+mod4 <- crossval(WA(sqrt(spp[, keep]), env, mono = TRUE), cv.method = "bootstrap",  nboot = 5000)
+performance(mod4)$crossval
+mono.sqrt <- predict(mod4, sqrt(fos))$fit[, "WA.m"]
+
+reconstruction <- cbind(reconstruction, wapls, mono.sqrt, mono)
+
+recon2 <- gather(reconstruction, key = "method", value = "Temperature", -chron)
+
+ggplot(recon2, aes(chron, Temperature, colour = method)) +
+  geom_line(alpha = 0.5) +
+  scale_colour_manual(limits = c("Instrumental", "Replication", "wapls", "mono", "mono.sqrt"), labels = c("Instrumental", "WAPLS sqrt", "WAPLS", "WA mono", "WA mono sqrt"),  values = c("black", RColorBrewer::brewer.pal(n = 4, "Set1"))) +
+  labs(x = "Year CE", y = "Temperature °C", colour = "Series")
+```
+
+```{r, eval = FALSE}
+meanabs <- function(x, y){mean(abs(x - y))}
+perform <- data.frame(
+  mean = colMeans(reconstruction[, -1]),
+  variance = sapply(reconstruction[, -1], var),
+  correlation = sapply(reconstruction[, -1], cor, instrumental$temperature),
+  error = sapply(reconstruction[, -1], meanabs, instrumental$temperature)
+)
+round(perform, 2)
+```
+
+```{r, eval = FALSE}
+On characteristic feature of transfer functions is that they over-predict at low values and under predict at high values of the environmental variable. The chironomid transfer function is no exception to this. Interesting though, the reconstructions from Lake Żabińskie stay close to a 1:1 line. 
+
+
+predmeas <- rbind(
+  data.frame(temp = env, pred = mod1$predicted[, "Comp02"], type  = "Cross-validation"),
+  data.frame(temp = instrumental$temperature, pred = recon$temperature, type  = "Reconstruction")
+)
+ggplot(predmeas, aes(x = temp, y = pred, colour = type)) +
+  geom_point() +
+  geom_smooth(show.legend = FALSE) +
+  geom_abline(intercept = 0, slope = 1, colour = "grey50", linetype = 2, size = 1) +
+  coord_equal() +
+  labs(x = "Measured Temperature °C", y = "Predicted Temperature °C", colour = "Type") +
+  theme(legend.position = c(0.85, 0.15))
+
+```
+
+```{r, eval = FALSE}
+library("vegan")
+RDA <- rda(sqrt(fos) ~ temperature, data = instrumental)
+RDA
+anova(RDA)
+
+CCA <- cca(sqrt(fos) ~ temperature, data = instrumental)
+CCA
+anova(CCA)
+```
