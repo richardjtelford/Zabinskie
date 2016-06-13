@@ -10,7 +10,7 @@ output:
 > "rarity is the attribute of a vast number of species of all classes, in all countries." [Charles Darwin](http://literature.org/authors/darwin-charles/the-origin-of-species-6th-edition/chapter-11.html)
 
 
-In any census of any species rich community, the rarest taxa are likely to be represented by a single individual. This can be visualised with rank abundance curves, shown here for Barro Colorado Island tree counts (jittered for clarity).
+In any census of any species-rich community, the rarest taxa are likely to be represented by a single individual. This can be visualised with rank abundance curves, shown here for Barro Colorado Island tree counts (jittered for clarity).
 
 
 ```{r BCIchunk, results="hide", message=FALSE, echo = FALSE}
@@ -53,11 +53,11 @@ pos <- function(x)
 min0 <- function(x) min(x[x > 0])
 ```
 
-This is not the case for the Lake Żabińskie chironomid counts where `r sum(apply(fos_counts, 1, min0) > 1)` of `r nrow(fos_counts)` lack any taxa represented by a single (or a half) head.
+This is not the case for the Lake Żabińskie chironomid counts where `r sum(apply(fos_counts, 1, min0) > 1)` of `r nrow(fos_counts)` samples lack any taxa represented by a single (or a half) head.
 
 ```{r Zradchunk}
 fos_counts2 <- adply(fos_counts, .margins = 1, function(samp){
-  y <- sort(samp[samp>0], decreasing = TRUE)
+  y <- sort(samp[samp > 0], decreasing = TRUE)
   min1 <- ifelse(min(y) <= 1, "Singletons", "No singletons")
   y <- y + runif(1, -0.05, 0.05)#jitter
   x <-1:length(y)
@@ -70,7 +70,7 @@ ggplot(fos_counts2, aes(x = x, y = y, colour = z)) +
   labs(x = "Rank", y = "Abundance")
 ```
 
-Not only do many samples lack singletons, one lack any taxa occurring with fewer than `r as.character(english::as.english(max(apply(fos_counts, 1, min0))))` head capsules.
+Not only do many samples lack singletons, one lacks any taxa occurring with fewer than `r as.character(english::as.english(max(apply(fos_counts, 1, min0))))` head capsules. There is a curious trend in the proportion of samples without singletons, with a higher prevelance of such samples in the second half of the record.
 ```{r}
 minc <- apply(fos_counts, 1, min0)
 g <- ggplot(data.frame(chron, minc), aes(chron, minc)) + 
@@ -87,7 +87,7 @@ pos(fos_counts[minc == 4.5, ])
 
 How unlikely is it to have so many samples without singletons?
 
-One way to test this is to fit a rank abundance model to the count data and then simulate assemblages from the model. There are a variety of rank abundance models that can be fitted with the `vegan` package. Here they are shown fitted to the first BCI sample.
+One way to test this is to fit a rank abundance model to the count data and then simulate assemblages from the model. There are a variety of rank abundance models that can be fitted with the `vegan` package. Here they are fitted to the first BCI sample.
 
 ```{r}
 rf<-radfit(BCI[1, ])
@@ -100,7 +100,7 @@ Few singletons are expected with the pre-emption model, so I am going to apply t
 fos_counts1 <- fos_counts
 # promote half heads to full
 fos_counts1[fos_counts1 %% 1 == 0.5] <- fos_counts1[fos_counts1 %% 1 == 0.5] + 0.5
-#fit model and exract coefficients
+#fit model and extract coefficients
 alpha1 <- apply(fos_counts1, 1, function(r)  coef(rad.preempt(r)))
 
 simulateMinAbun <- function(alpha, maxRank = 50, n = 10000, J = 30){
@@ -131,8 +131,8 @@ This calculation does not account for the taxon inclusion rules (which were [not
 
 Whatever adjustments you want to make, the lack of rare taxa in the chironomid data is remarkable.
 
-In the first version of the dataset, samples apparently missing singletons (identified by the minimum percent being above 2%) tended to have all their percent as integer multiples of the minimum percent. This strongly suggested (as is now admitted) that the counts were not fifty as claimed, but much lower for some samples. Since then, the data have ["evolved"](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/) and this integer multiple only holds for a few samples.
+In the first version of the dataset, samples apparently missing singletons (identified by the minimum percent being above 2%) tended to have all their values as integer multiples of the minimum percent. This strongly suggested (as is now admitted) that the counts were not fifty as claimed, but much lower for some samples. Since then, the data have ["evolved"](https://quantpalaeo.wordpress.com/2016/05/23/the-importance-of-version-control/) and this integer multiple only holds for a few samples.
 
-Perhaps the taxon inclusion rule ("3 percent in at least 3 samples") was misapplied, smiting singletons in some levels only until the observed pattern emerged. At the calculated probabilities, almost anything is more likely than the data being correct.
+It is not obvious why there are so many samples without singletons. Perhaps the taxon inclusion rule ("3 percent in at least 3 samples") was misapplied, smiting singletons in some levels only until the observed pattern emerged. At the calculated probabilities, almost anything is more likely than the data being correct.
 
-It is [trivial](https://quantpalaeo.wordpress.com/2016/05/02/cromwells-rule-is-over/) to infer that the currently archived data are __definitely__ not the original data. We need the original data (all 76 taxa).
+It is [trivial](https://quantpalaeo.wordpress.com/2016/05/02/cromwells-rule-is-over/) to infer that the currently archived data are __definitely__ not the original data. The original data (all 76 taxa) needs to be archived.
