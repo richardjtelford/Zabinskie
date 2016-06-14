@@ -31,22 +31,20 @@ but don't show this with a figure (no complaint here, I would do the same if the
 First we need to load the data, which can be downloaded from [NOAA](https://www.ncdc.noaa.gov/cdo/f?p=519:1:0::::P1_STUDY_ID:19501).
 
 ```{r importChunk, results = "hide"}
-library(readxl)
+library("readxl")
 
 fname <- "data/zabinskie2015cit.xls"
 excel_sheets(fname)
-spp <- read_excel(fname, sheet = "Training species")
-env <- read_excel(fname, sheet = "Training temperature")
-fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages")
-recon <- read_excel(fname, sheet = "Reconstruction ")
-names(recon) <- c("date", "temperature")
+spp <- as.data.frame(read_excel(fname, sheet = "Training species"))
+env <- as.data.frame(read_excel(fname, sheet = "Training temperature"))
+fos <- as.data.frame(read_excel(fname, sheet = "Chironomids Zabinsk percentages"))
 
 rownames(spp) <- spp[, 1]
 spp[, 1] <- NULL
 rownames(env) <- env[, 1]
 env <- env[, 2, drop = FALSE]
 
-lowCount <- c("SAL", "LEK", "TRZ", "WAS", "SZOS", "GOR", "KOS", "ZAB")
+lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
 spp <- spp[!rownames(spp) %in% lowCount, ]
 env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
 identical(rownames(spp), rownames(env))
