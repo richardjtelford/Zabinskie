@@ -1,0 +1,120 @@
+---
+title: "73 lakes become 78"
+author: "Richard J. Telford"
+date: "November 1, 2016"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+```{r importChunk, results = "hide", echo = FALSE}
+library("readxl")
+
+fname <- "data/zabinskie2015cit.xls"
+excel_sheets(fname)
+spp <- as.data.frame(read_excel(fname, sheet = "Training species"))
+env <- as.data.frame(read_excel(fname, sheet = "Training temperature"))
+fos <- as.data.frame(read_excel(fname, sheet = "Chironomids Zabinsk percentages"))
+
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+rownames(env) <- env[, 1]
+env <- env[, 2, drop = FALSE]
+
+#lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
+#spp <- spp[!rownames(spp) %in% lowCount, ]
+#env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
+env <- env$Temp
+
+chron <- fos[, 1]
+fos <- fos[, -c(1, ncol(fos))]
+```
+
+I have detailed [many curious aspects](https://quantpalaeo.wordpress.com/tag/larocque-tobler-et-al-2015/) of the remarkable Lake Żabińskie August air-temperature reconstruction by [Larocque-Tobler et al (2015)](http://www.sciencedirect.com/science/article/pii/S0277379115000086). This posts describes yet more - this time in Supplementary Data Figure 1 which shows a reduncancy analysis (a type of constrained ordination). 
+
+###The method
+
+> A Redundancy Analysis (RDA) created in CANOCO was also used to determine the fit of downcore samples to the transfer function samples. The RDA constrained to temperature was created with the transfer function samples and the downcore samples added passively to the RDA.
+
+###The result
+
+> An RDA with downcore samples passively added to the transfer function samples show that no downcore sample was located outside the field determined by the transfer function samples. The eight warmer lakes (17–27.5 °C) in the Canadian transfer function were also found in the same quadrant as the Polish lakes (16.3–18.8 °C) suggesting a similarity between the assemblages in warmer lakes in Canada and those which cover the same temperature gradient in Poland.
+
+The first result is somewhat inevitable given that only the first two axes of the RDA are considered. As a reconstruction diagnostic tool, passive plotting is only really useful if [residual distances](https://quantpalaeo.wordpress.com/2014/05/17/beyond-nearest-analogue-distance/) are small, otherwise the fossil samples might be highly aberant on axis three and no-one would ever know.
+
+The second result is critically important to the paper which combines calibration sets from Canada and Poland. If the warm Polish and Canadian lakes do not overlap in ordination space, they do not have similar species assemblages and it is likely that an environemtal variable other than temperature is driving the difference between them. This would severly damage the motivation for making a combined calibration set. 
+
+###The figure
+
+##SD FIG 1published
+
+A few points are immediately obvious. 
+
+ - Unlike perhaps every other RDA I have seen, there is no arrow showing the constraining environmental variable. It should point right from the origin. 
+ - The axis scales are not identical as the should be (giving undue prominance to the first axis).
+ - The second axis of the ordination is mis-labelled as RDA Axis 2. When there is only one constraining variable, there can only be a single constrained axis. The second axis should be PCA axis 1.
+
+None of these points are of any great importance, except that they strongly indicate that the figure was not made in CanoDraw, C2 or the vegan/analogue packages in R which would not make these mistakes.
+
+Much more seriously, while there are 73 Canadian lakes in the archived calibration set (not 72 as the paper reports), there are 78 red squares (perhaps 77 - some overlap) which indicate Canadian lakes in the figure.
+
+### The replication
+
+This figure should be easy to replicate from the archived data (full code at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie)). First, I want to plot just the calibration set lakes, omitting the passive fossil samples.
+
+```{r}
+library(vegan)
+library(ggvegan)
+
+mod <- rda(sqrt(spp) ~ env)
+
+scaling <- "sites"
+frda <- fortify(mod, display = "sites", scaling = scaling)
+
+#country information
+frda$country <- c(rep("Poland", 48), rep("Canada", 73))
+
+g <- ggplot(frda, aes(-Dim1, Dim2, colour = country, shape = country)) + #axis 1 flipped to match published figure
+  geom_point(size = 2) + 
+  coord_equal() +
+  labs(x = "RDA1", y = "PCA1", shape = "Country", colour = "Country") + 
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  scale_shape_manual(values = c(15, 18)) +
+  scale_colour_manual(values = c(2, 4))
+
+print(g)
+```
+
+Generally, the replication is similar to the published figure. However, contrary to what LT15 write and show in their figure, there are only two Canadian lakes in the lower-left quadrant with the Polish lakes. The extra Canadian lakes in the Polish quadrant are not due to mis-classification of the lakes, there are no lakes in these positions in the replication. Other changes are the deletion of two lakes at the left side of the upper left quadrant and the addition of one point at the upper-right corner of the upper right quadrant.
+
+I honestly cannot explain how these difference could have occurred.
+
+Adding the fossil sites passively is most easily done with the function `timetrack` in Gavin Simpson's `analogue` package. 
+
+```{r}
+tt <- analogue::timetrack(X = spp, passive = fos, env = env, method = "rda", transform = "sqrt", scaling = scaling)
+
+g + geom_point(aes(x = -RDA1, y = PC1), data = as.data.frame(tt$fitted.values), inherit.aes = FALSE, colour = "green", shape = 17) + 
+  scale_shape_manual(name = "", limits = c("Canada", "Poland", "Fossil"), values = c(15, 18, 17)) +
+  scale_colour_manual(name = "", limits = c("Canada", "Poland", "Fossil"), values = c(2, 4, 3))
+```
+
+The distribution of the fossil samples is very different from that shown in the paper.
+
+Again I cannot explain this. Perhaps someone can find an error in my code.
+
+```{r eval = FALSE, echo = FALSE}
+spp_fos <- rioja::Merge(spp, fos, split = TRUE)
+spp0 <- spp_fos$spp
+fos0 <- spp_fos$fos
+
+ggplot(data.frame(spp = sapply(spp0, max), fos = sapply(fos0, max)), aes(x = spp, y = fos)) + geom_point() + geom_abline(slope = 1, intercept = 0) + coord_equal()
+
+ggplot(data.frame(spp = sapply(spp0[1:48, ], max), fos = sapply(fos0, max)), aes(x = spp, y = fos)) + geom_point() + geom_abline(slope = 1, intercept = 0) + coord_equal()
+
+ggplot(data.frame(spp = sapply(spp0[-(1:48), ], max), fos = sapply(fos0, max)), aes(x = spp, y = fos)) + geom_point() + geom_abline(slope = 1, intercept = 0) + coord_equal()
+```
