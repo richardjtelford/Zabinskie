@@ -15,3 +15,7 @@ vignettes/*.pdf
 .Rproj.user
 *.md
 *.html
+#figures
+*.jpg
+*.png
+
