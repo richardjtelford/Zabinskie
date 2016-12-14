@@ -17,6 +17,7 @@ library("ggplot2")
 library("readr")
 library("dplyr")
 library("gridExtra")
+library("broom")
 chiron <- read_csv("chironomidCalibration.csv")
 chiron <- select(chiron, -`Altitudinal gradient (m)`)
 chiron <- chiron %>% mutate(year = as.numeric(gsub(".*(\\d{4}).*", "\\1", Study))) %>%
@@ -63,7 +64,6 @@ Only some of these can be answered with the data currently to hand.
 ## Gradient length
 
 ```{r}
-library("broom")
 mod <- lm(`RMSEP (°C)` ~ `Range of gradient (°C)`, data = chiron)
 gmod <- glance(mod)
 
