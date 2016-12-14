@@ -91,7 +91,7 @@ The r^2^ increases with temperature range because, even though RMSEP increases, 
 
 But why does the RMSEP incease with gradient length? There are two possible explanations: 
 
- 1. With a larger temperature range, it is possible for cross-validation predictions to be less constrained. If this is true, it would suggest that transfer functions with a small temperature range have artificially reduced uncertainties.
+ 1. With a larger temperature range, cross-validation predictions are less constrained - it is possible to be more wrong. If this is true, it would suggest that transfer functions with a small temperature range have artificially reduced uncertainties.
  2. Larger temperature ranges have a lower density of lakes per °C and therefore species optima are poorly constrained.
 
 ```{r lakeDensity, fig.cap="Figure 3. Density of lakes as a function of temperature range."}
@@ -115,7 +115,9 @@ gmod_den_r <- glance(mod_den_r)
 
 Lake density is a less good predictor (R^2^ = `r round(gmod_den$r.squared, 2)`) of RMSEP than temperature range. So while it might be an important contributor to the effect of temperature range on performance, it does not explain the whole effect. A model including both lake density and temperature range is not significantly better than a model with just temperature range (p `format_p(anova(mod_den_r, mod_no450)$Pr[2])`).
 
-Simulated species-environment data may help understand the relative importance of lake density and pure temperature range. 
+There is a hint in figure 2 that the relationship between RMSEP and temperature range is not linear, but that with increasingly long gradients the RMSEP starts to plateau. Adding a quadratic term does not significantly improve a linear model between RMSEP and temperature (p `r format_p(anova(mod, mod2)$Pr[2])`), but the AIC decreases (`r round(AIC(mod2), 1)` vs. `r round(AIC(mod), 1)`). If the RMSEP increases with increasing temperature range because of the decreasing constraint on the range of predictions, it should be expected that with sufficiently large range all constrains are removed and no further increase in RMSEP is observed.
+
+Simulated species-environment data may help understand the relative importance of lake density and reduced constraint when temperature range is increased. 
 
 ## Number of lakes
 
