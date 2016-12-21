@@ -10,28 +10,32 @@ csl: journal-of-paleolimnology.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, echo = FALSE, include  = TRUE, warning = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, echo = FALSE, include  = TRUE, warning = FALSE, message = FALSE)
 ```
 ```{r load}
+set.seed(42)
 library("ggplot2")
 library("readr")
 library("dplyr")
 library("gridExtra")
 library("broom")
 chiron <- read_csv("chironomidCalibration.csv")
-chiron <- select(chiron, -`Altitudinal gradient (m)`)
-chiron <- chiron %>% mutate(year = as.numeric(gsub(".*(\\d{4}).*", "\\1", Study))) %>%
+chiron <- chiron %>% 
+  select(-`Altitudinal gradient (m)`) %>% 
+  mutate(year = as.numeric(gsub(".*(\\d{4}).*", "\\1", Study))) %>%
   mutate(minT = as.numeric(gsub("^(.*)–.*$", "\\1", `Tgradient (°C)`))) %>%
   mutate(maxT = as.numeric(gsub("^.*–(.*)$", "\\1", `Tgradient (°C)`))) %>%
   mutate(midT = (minT + maxT)/2) %>%
-  mutate(Notes = ifelse(is.na(Notes), "", Notes))
+  mutate(Notes = ifelse(is.na(Notes), "", Notes)) %>%
+  mutate(AirWater = factor(AirWater, levels = c("air", "air/time", "water")))
 
 format_p <- function(p) {
   ifelse(p < 0.001, "< 0.001", paste("=", signif(p, 2)))
 }
 ```
+Chrironomid (non-biting midges) are sensitive to temperature [@Eggermont2011], and because their head-capsules preserve well in lake sediments, their fossil assemblages can be use to reconstruct past temperature with a transfer function trained on the chironomid-temperature relationship in a modern calibration set of chironomid assemblages and associated temperatures. They are a often used to provide a independent temperature reconstruction against which pollen or macrofossil-inferred vegetation changes can be compared [e.g., @Samartin2012].
 
-The performance of transfer functions for reconstructing past temperatures from chironomid assemblages in lake sediments varies enormously. The root-mean-squared-error of prediction (RMSEP) for transfer functions in a compilation by Eggermont and Heiri [-@Eggermont2011], augmented by a few recent studies (Table 1)[^1], ranges between `r min(chiron$'RMSEP (°C)')` and `r round(max(chiron$'RMSEP (°C)'), 2)` °C. What causes this `r round(max(chiron$'RMSEP (°C)')/min(chiron$'RMSEP (°C)'), 1)`-fold difference in RMSEP? Understanding this might lead to improved chironomid-temperature, and other, transfer functions.
+The performance of transfer functions for reconstructing past temperatures from chironomid assemblages in lake sediments varies enormously. The root-mean-squared-error of prediction (RMSEP) for transfer functions in a compilation by Eggermont and Heiri [-@Eggermont2011], augmented by a few recent studies (Table 1)[^1], ranges between `r min(chiron$'RMSEP (°C)')` and `r round(max(chiron$'RMSEP (°C)'), 2)` °C. The lowest RMSEP suggests that chironomids give very precise reconstructions; the highest suggests that chironomids have limited utility for anything other than reconstruction glacial-interglacial changes. What causes this `r round(max(chiron$'RMSEP (°C)')/min(chiron$'RMSEP (°C)'), 1)`-fold difference in RMSEP? Understanding this might suggest where efforts to improve chironomid-temperature, and other, transfer functions should be focused.
 
 [^1]: Data and code for this post are on [github](https://github.com/richardjtelford/zabinskie). For simplicity, all transfer functions are treated as if they are independent even though some are subsets of others.
 
@@ -44,10 +48,12 @@ ggplot(chiron, aes(x = AirWater, y = `RMSEP (°C)`, colour = AirWater)) +
   xlab("Calibration target")
 ```
 ```{r airOnly}
-chiron <- filter(chiron, AirWater == "air")
+chiron <- filter(chiron, AirWater != "water")
 ```
 
-The following analyses concern only the `r nrow(chiron)` transfer functions calibrated against air temperatures. The range of RMSEPs is unchanged.  The coefficient of determination (r^2^) varies between `r min(chiron$r2jack)` and `r round(max(chiron$r2jack), 2)`.
+The following analyses concern only the `r nrow(chiron)` transfer functions calibrated against air temperatures. Most of these transfer functions are trained on calibration sets of many lakes (calibration-in-space). Two tranfer function [@Larocque-Tobler2011; @Luoto2016] are trained on fluctuations in chironomid assemblages in one lake over many years (calibration-in-time). Varve chronologies were used to determine the age of each assemblage. Temperature data for each year are available from nearby weather stations. Both calibration-in-time transfer functions have low RMSEPs.    
+
+The range of RMSEPs for the air-temperature calibration-in-space models only slightly smaller than for the full set of models.  The coefficient of determination (r^2^) varies between `r min(chiron$r2jack)` and `r round(max(chiron$r2jack), 2)` and is uncorrelated with RMSEP (Pearson r = `r round(cor(chiron$'RMSEP (°C)', chiron$r2jack), 2)`, p `r format_p(cor.test(chiron$'RMSEP (°C)', chiron$r2jack)$p.value)`).
 
 I have several hypotheses that might explain the difference in performance between models:
 
@@ -57,20 +63,21 @@ I have several hypotheses that might explain the difference in performance betwe
  - Chironomid sensitivity to temperature varies with temperature
  - Some authors have followed the (perhaps unwise) advice to maximise the temperature gradient and minimise all other gradients better than others 
  - Some authors have been more zealous in removing outliers than others.
- - Authors have accidentally reported the apparent rather than cross-validated performance statistics
+ - Some authors count fewer chironomids per assemblage than others.
+ - Authors have accidentally mis-reported the performance statistics
 
 Only some of these can be answered with the data currently to hand.
 
 ## Gradient length
 
 ```{r}
-mod <- lm(`RMSEP (°C)` ~ `Range of gradient (°C)`, data = chiron)
+mod <- lm(`RMSEP (°C)` ~ `Range of gradient (°C)`, data = chiron, subset = AirWater == "air")
 gmod <- glance(mod)
 
-rmod <- lm(r2jack ~ `Range of gradient (°C)`, data = chiron)
+rmod <- lm(r2jack ~ `Range of gradient (°C)`, data = chiron, subset = AirWater == "air")
 grmod <- glance(rmod)
 
-mod2 <- lm(`RMSEP (°C)` ~ `Range of gradient (°C)` + I(`Range of gradient (°C)`^2), data = chiron)
+mod2 <- update(mod, . ~ . + I(`Range of gradient (°C)`^2))
 #anova(mod, mod2)
 
 ```
@@ -80,7 +87,7 @@ The temperatures in the calibration sets range from `r min(chiron$'Range of grad
 ```{r gradientfig, fig.cap="Figure 2. RMSEP and r^2^ against calibration set temperature range"}
 g1 <- ggplot(chiron, aes(x = `Range of gradient (°C)`, y = `RMSEP (°C)`, colour = AirWater)) + 
   geom_point(show.legend = FALSE) + 
-  geom_smooth(method = "lm", formula = y ~ x, show.legend = FALSE)
+  geom_smooth(data = filter(chiron, AirWater == "air"), method = "lm", formula = y ~ x, show.legend = FALSE)
 
 g2 <- g1 + aes(x = `Range of gradient (°C)`, y = r2jack)
 
@@ -91,7 +98,7 @@ The r^2^ increases with temperature range because, even though RMSEP increases, 
 
 But why does the RMSEP incease with gradient length? There are two possible explanations: 
 
- 1. With a larger temperature range, cross-validation predictions are less constrained - it is possible to be more wrong. If this is true, it would suggest that transfer functions with a small temperature range have artificially reduced uncertainties.
+ 1. With a larger temperature range, cross-validation predictions are less constrained - it is possible to be more wrong. If this is true, it might suggest that transfer functions with a small temperature range have artificially reduced uncertainties.
  2. Larger temperature ranges have a lower density of lakes per °C and therefore species optima are poorly constrained.
 
 ```{r lakeDensity, fig.cap="Figure 3. Density of lakes as a function of temperature range."}
@@ -113,7 +120,7 @@ mod_den_r <-  lm(`RMSEP (°C)` ~ I(No_lakes/`Range of gradient (°C)`) + `Range 
 gmod_den_r <- glance(mod_den_r)
 ```
 
-Lake density is a less good predictor (R^2^ = `r round(gmod_den$r.squared, 2)`) of RMSEP than temperature range. So while it might be an important contributor to the effect of temperature range on performance, it does not explain the whole effect. A model including both lake density and temperature range is not significantly better than a model with just temperature range (p `format_p(anova(mod_den_r, mod_no450)$Pr[2])`).
+Lake density is a less good predictor (R^2^ = `r round(gmod_den$r.squared, 2)`) of RMSEP than temperature range. So while it might be an important contributor to the effect of temperature range on performance, it does not explain the whole effect. A model including both lake density and temperature range is not significantly better than a model with just temperature range (p `r format_p(anova(mod_den_r, mod_no450)$Pr[2])`).
 
 There is a hint in figure 2 that the relationship between RMSEP and temperature range is not linear, but that with increasingly long gradients the RMSEP starts to plateau. Adding a quadratic term does not significantly improve a linear model between RMSEP and temperature (p `r format_p(anova(mod, mod2)$Pr[2])`), but the AIC decreases (`r round(AIC(mod2), 1)` vs. `r round(AIC(mod), 1)`). If the RMSEP increases with increasing temperature range because of the decreasing constraint on the range of predictions, it should be expected that with sufficiently large range all constrains are removed and no further increase in RMSEP is observed.
 
@@ -123,7 +130,7 @@ Simulated species-environment data may help understand the relative importance o
 
 The number of observations in a calibration set has a large impact on transfer-function performance [@Reavie2011]. Reavie and Juggins [-@Reavie2011] took large diatom-phosphorus calibration sets and estimated the performance of stratified-random subsets of observations. They found that there were substantial improvements in performance until calibration sets included 40-70 observations and smaller improvements thereafter. Transfer-function performance will increase because, with more observations, species optima are better estimated and so reconstructions are more accurate.
 
-Translating this calibration set size from diatoms to chironomids is difficult as it will depend on the amount of turnover in the assemblages along the gradient of interest (which could be estimated with detrended constrained correspondence analysis) and the amount of noise inherent in the different proxies. Assuming the numbers can be used as-is, `r round(mean(chiron$No_lakes < 40)) * 100` % of calibration sets have fewer than 40 lakes, and `r round(mean(chiron$No_lakes < 70) * 100)` % have fewer than 70. Many of the calibration sets are small.
+Translating this calibration set size from diatoms to chironomids is difficult as it will depend on the amount of turnover in the assemblages along the gradient of interest (which could be estimated with detrended constrained correspondence analysis) and the amount of noise inherent in the different proxies. Assuming the numbers can be used as-is, `r round(mean(chiron$No_lakes < 40, na.rm = TRUE) * 100)` % of calibration sets have fewer than 40 lakes, and `r round(mean(chiron$No_lakes < 70, na.rm = TRUE) * 100)` % have fewer than 70. Many of the calibration sets are small enough to expect some size-related performance penalty.
 
 ```{r NoLakeRMSEP, fig.cap = "Figure 4. RMSEP against the number of lakes in each calibration set, omitting the anomalously large calibration set."}
 g1  %+% filter(chiron, No_lakes < 400) + 
@@ -132,15 +139,16 @@ g1  %+% filter(chiron, No_lakes < 400) +
   xlab("Number of lakes")
 
 mod_nlakes <- lm(`RMSEP (°C)` ~ No_lakes, data = chiron, subset = No_lakes < 400)
-mod_nlakes2 <- lm(`RMSEP (°C)` ~ No_lakes + `Range of gradient (°C)`, data = chiron, subset = No_lakes < 400)
+mod_nlakes2 <- update(mod_nlakes, . ~ . + `Range of gradient (°C)`)
 ```
 
-However, the relationship between the number of lakes and RMSEP is not significant (p `r format_p(anova(mod_nlakes)$Pr[1])`). Probably none of the calibration sets are small enough to suffer the full effect observed by Reavie and Juggins [-@Reavie2011].
+However, the relationship between the number of lakes and RMSEP is not significant (p `r format_p(anova(mod_nlakes)$Pr[1])`). Probably none of the calibration sets are small enough to suffer the full penalty observed by Reavie and Juggins [-@Reavie2011].
 
 
 ## Taxonomic resolution
 
-Chironomid taxonomy has been refined [@Brooks2007] since the first chironomid transfer functions. 
+Chironomid taxonomy has been refined [e.g., @Brooks2007] since the first chironomid transfer functions were made. 
+
 Heiri and Lotter [-@Heiri2010] showed that the performance of transfer functions was sensitive to the level of taxonomic precision by analysing a calibration set at low, intermediate or high taxonomic resolution: the RMSEP declined from 1.59 to 1.41°C. At low taxonomic resolution, multiple ecologically disparate species may be merged into a single generic or supra-generic morphotaxon and the combined optima might be misleading. With higher taxonomic resolution, optima are more appropriate but may be poorly defined as individual taxa will inevitably be rarer than the merged taxon, and there is an increased risk of misidentification [@Heiri2010; @Velle2010].
 
 Some estimate of the level of taxonomic precision used in each calibration set could be derived from the taxonomic works cited, or by examining the species lists. Lacking the patience to do either, I am going to use the year of publication as a proxy for taxonomic precision, assuming that earlier works used less precise taxonomy. The main problem with this approach is that some calibration sets [e.g., @Fortin2015] include earlier calibration sets and use the lowest-common taxonomy.
@@ -150,7 +158,7 @@ The number of taxa could also be used as a proxy for taxonomic resolution, but w
 ```{r taxonResolution, fig.cap="Figure 5. RMSEP against year of publication"}
 g1 + aes(x = year, y = `RMSEP (°C)`)
 
-mod_tx <- lm(`RMSEP (°C)` ~ `Range of gradient (°C)` + year, data = chiron)
+mod_tx <- update(mod, . ~ . + year, data = chiron)
 #summary(mod_tx)
 ```
 
@@ -158,7 +166,7 @@ After accounting for the temperature range in the calibration set, year is not a
  
 ## Chironomid sensitivity to temperature varies with temperature
 
-It is possible that chironomid sensitivity to temperature is not constant along the temperature gradient, but that turnover is higher, and hence more precise reconstructions are possible, over some parts of the gradient. Following Rapoport's rule [@Stevens1989], we might expect niches to be smaller, and hence turnover higher, at higher temperatures.
+It is possible that chironomid sensitivity to temperature is not constant along the temperature gradient, but that turnover is higher, and hence more precise reconstructions are possible, over some parts of the gradient. Following Rapoport's rule [@Stevens1989], we might expect niches to be smaller, and hence turnover higher, at higher temperatures. Alternatively, turnover might be highest at an ecotone such as the treeline.
 
 The optimal test for this would probably include detrended constrained correspondence analyses over different parts of the temperature gradient in different calibration sets to see if the length of the first axis (a measure of turnover) changes in a consistent manner. Not having this information to hand, I test if the transfer function RMSEP is a function of the mid-point temperature of the calibration set.
 
@@ -170,7 +178,7 @@ g3 <- g1 + aes(x = midT, y = `RMSEP (°C)`) + xlab("Mid-point temperature (°C)"
 g4 <- g1 + aes(x = `Range of gradient (°C)`, y = midT) + ylab("Mid-point temperature (°C)")
 grid.arrange(g3, g4, ncol = 2)
 
-mod_mp <- lm(`RMSEP (°C)` ~ `Range of gradient (°C)` + midT, data = chiron)
+mod_mp <- update(mod, . ~ . + midT, data = chiron)
 #summary(mod_mp)
 ```
 
@@ -180,30 +188,42 @@ After accounting for the temperature range, mid-point temperature has a positive
 
 Many authors aim to generate calibration sets that maximise the length of the environmental gradient and minimise other environmental gradients. This design will maximise transfer-function performance, however this performance will probably be over-estimated and down-core reconstructions will be more uncertain than the transfer function reports  due to the risk of non-analogue environmental conditions. 
 
-If some authors have strived harder than others to generate calibration sets with a single strong gradient, or have selected a geographic extent with a large temperature gradient, this would affect the performance of transfer functions. It is not immediately obvious how to test this.
+If some authors have strived harder than others to generate calibration sets with a single strong gradient, or, equivalently, have selected a geographic extent with a large temperature gradient, this would affect the performance of transfer functions. It is not immediately obvious how to test this.
 
 ## Outlier removal
 
 Many papers do not discuss outlier removal. Of those that do, Brooks and Birks [@Brooks2001] removed two glacially fed lakes that were outliers in the transfer function, presumably because the water temperature was much colder than expected given the air temperature. Wu et al 2015 [@Wu2015] remove seven outliers because their absolute residuals were >2 SD away from the observed temperature. The deleted lakes mainly have anomalous pH, conductivity or depth. 
 
-Removing outliers will improve the transfer-function performance statistics. Wholesale removal, as sometimes practiced with testate-amoeba water-depth transfer functions [e.g., @Woodland1998 who remove 29 of 163 observations], is probably unwise as there is no guarantee that the improvement in cross-validation performance statistics will be reflected in better predictions down-core.
+Removing outliers will improve the transfer-function performance statistics. Wholesale removal, as sometimes practiced with testate-amoeba water-depth transfer functions [e.g., @Woodland1998 who remove 29 of 163 observations from one of their models], is probably unwise as there is no guarantee that the improvement in cross-validation performance statistics will be reflected in better predictions down-core.
+
+## Chironomid count sums
+
+Transfer functions based on larger chironomid counts should expect better performance statistics. This performance boost has two components. The first is due to reconstructions from assemblages with low counts being imprecise whether the assemblages are fossil data or the modern data under cross-validation. This was studied by Heiri and Lotter [-@Heiri2001], Quinlan and Smol [-@Quinlan2001], and Larocque [-@Larocque2001a]. Heiri and Lotter [-@Heiri2001] simulate counts of different sizes by resampling with replacement some large chironomid counts and showed that the standard deviation of reconstructions derived from a counts of fifty head-capsules was about 40 % of the RMSEP. With 100 head-capsules the standard deviation decreased to about 20 % of the RMSEP, with relatively small improvements for counts of 200. With counts of less than fifty the error rose dramatically. Note that the magnitude of this error component is only directly relevant to reconstructions from fossil assemblages if the fossil count sums are equal to those in the  calibration set. If the fossil count sum are larger, the cross-validation RMSEP will be pesimistic, and _vice versa_.
+
+The second component is due to the species optima derived from noisy low-count assemblage data being imprecise, and hence reconstruction being imprecise. This was studied by Bennett et al [-@Bennett2016] who subsampled diatom calibration sets to smaller counts sums (and number of lakes), and then tested performance with an independent test set with the unaltered count sum. They found, for a 350 lake North American diatom-pH calibration set, that reducing the count sum from 300 valves to 25 increased the RMSEP by 10%.  
+
+The combined impact of both error components has not been studied as far as I am aware, and the values from Heiri and Lotter [-@Heiri2001] and Bennett et al [-@Bennett2016] are not directly comparable, but it would appear that the loss of performance due to optima being poorly estimated with low count sums is less severe than that due to the counting uncertainties in the observations for which predictions are made under cross-validation. This is expected, at least if weighted averaging or similar methods are used, since the optima average information across multiple lakes, mitigating the counting noise, whereas the predictions are derived from a single observation.
+
+All the papers exploring the impact of count size on performance have noted that with increasing counts, the rate of improvement decreases, but none appear to explain the theoretical basis for this. Assemblage counts arise from a [multinomial distribution](https://en.wikipedia.org/wiki/Multinomial_distribution) (a generalisation of the binomial distribution to cope with many possible outcome (species)). With species _i_ ∈ {1, 2, ..., k} the expected count of each species is _np[i]_ where n is the count sum amd _p[i]_ is the probability of a head-capsule being from species _i_. The variance for each species is _np[i](1-p[i])_. The standard deviation on the count error for each species is then proportional to the square root of _n_. As a proportion of the total count, the standard deviation will be _$\frac{\sqrt{n}}{n}$_ or _$\frac{1}{\sqrt{n}}$_. This would suggest that the standard deviation in the reconstructions due to count size in the reconstructions should scale with _$\frac{1}{\sqrt{n}}$_, but the results from Heiri and Lotter [-@Heiri2001] above suggest that the standard deviation scales with _$\frac{1}{n}$_. I need to think about this some more and try some experiments.
+
+I haven't extracted the minimumum (or typical which might be more meaningful) count sum for the different transfer functions, but it is typically greater than fifty head-capsules. Rashly assuming that the error from the two components is additive and that the results of Heiri and Lotter [-@Heiri2001] and Bennett et al [-@Bennett2016] are representative, it would suggest that a count size of fifty head-capsules would have RMSEP 60% higher than a large (~300) count. This moderate proportion of the overall range in transfer function performance.
 
 
 ## Mis-reported statistics
 
-Larocque-Tobler et al [-@Larocque-Tobler2015] reported the RMSEP of their Canadian-Polish transfer function as 1.3°C (Larocque-Tobler et al [-@Larocque-Tobler2015] use bootstrap cross-validation: the leave-one-out RMSEP would be slightly lower). In the corrigendum [@Larocque-Tobler2016] corrected this to 2.3°C, blaming the inclusion of nine lakes with low chironomid counts and some other errors. It seems unlikely that such errors would reduce the RMSEP so much (or even at all). Perhaps the authors accidentally reported the apparent RMSE rather than the cross-validated RMSEP. The [supplementary material](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0277379115000086/1-s2.0-S0277379115000086-mmc1.xlsx/271861/html/S0277379115000086/2726ee3fb5f3d83e9bddc06a4cdfa5fa/mmc1.xlsx) to Larocque-Tobler et al [-@Larocque-Tobler2015] report the leave-one-out WAPLS-2 RMSEP to be 2.14°C, comparable with the bootstrapped value in the corrigendum. The bootstrapped WAPLS RMSEPs in the supplementary material are impossible as they are lower than the leave-one-out statistics (and the percent reduction in RMSEP is wrong). However, since the WAPLS-3 has a worse performance than WAPLS-2 these numbers cannot be the apparent performance which are guaranteed to improve with more components. The origin of the RMSEP reported by Larocque-Tobler et al [-@Larocque-Tobler2015], as with so much in that paper, remains a mystery (this supplementary table was added after the second review).
+Larocque-Tobler et al [-@Larocque-Tobler2015] reported the bootstrap RMSEP of their Canadian-Polish transfer function as 1.3°C. In the corrigendum [@Larocque-Tobler2016] corrected this to 2.3°C, blaming the inclusion of nine lakes with low chironomid counts and some other errors. It seems unlikely that such errors would reduce the RMSEP so much (or even at all). Perhaps the authors accidentally reported the apparent RMSE rather than the cross-validated RMSEP. The [supplementary material](http://www.sciencedirect.com/science/MiamiMultiMediaURL/1-s2.0-S0277379115000086/1-s2.0-S0277379115000086-mmc1.xlsx/271861/html/S0277379115000086/2726ee3fb5f3d83e9bddc06a4cdfa5fa/mmc1.xlsx) to Larocque-Tobler et al [-@Larocque-Tobler2015] report the leave-one-out WAPLS-2 RMSEP to be 2.14°C, comparable with the bootstrapped value in the corrigendum. The bootstrapped WAPLS RMSEPs in the supplementary material are impossible as they are lower than the leave-one-out statistics. However, since the WAPLS-3 has a worse performance than WAPLS-2 these numbers cannot be the apparent performance which are guaranteed to improve with more components. The origin of the RMSEP reported by Larocque-Tobler et al [-@Larocque-Tobler2015], as with so much in that paper, remains a mystery (the supplementary table was added after the second review).
 
 Larocque-Tobler et al [-@Larocque-Tobler2015] include data from two earlier calibration sets [@Larocque2006; @Larocque2008], which have an RMSEP of 1.17 and 1.67°C, respectively (Table 1). The decrease in performance between Larocque et al [@Larocque2006] and Larocque et al [@Larocque2008] can be explained by the large increase in temperature range in the latter calibration set. Why the performance should worsen again when the Polish lakes are included is unclear and should have been explored in Larocque-Tobler et al [-@Larocque-Tobler2015] as it undermines the rationale for merging the calibration sets.
 
 It is possible that other transfer functions also misreport statistics. I will check those I have in hand.
 
-Although the apparent performance statistics are over optimistic, and not a good guide to model performance, I would recommend their inclusion in papers as the difference between the apparent and cross-validated performance is a measure of possible over-fitting, and the presence of both sets of statistics give some assurance that the wrong numbers are not being reported.
-
 ## Conclusions
 
-Much of the variance in chironomid-air temperature transfer-function performance can be explained by the temperature range in the calibration set. It is not clear how much of this is driven by the increased possibility for less constrained predictions with longer gradients and how much by reductions in lake density along the gradient. Calibration-set size and taxonomic precision appear to be of secondary importance. Other possible factors include the choice of the target temperature variable and errors in the temperature which will vary geographically; methodological choices such as square-root transformation of species data and transfer function model type; and count sums.
+Much of the variance in chironomid-air temperature transfer-function performance can be explained by the temperature range in the calibration set. It is not clear how much of this is driven by the reduced constraint on predictions with longer gradients and how much by reductions in lake density. Calibration-set size, count sum and taxonomic precision appear to be of secondary importance. Other possible factors include the choice of the target temperature variable and errors in the temperature which will vary geographically; methodological choices such as square-root transformation of species data and transfer function model type.
 
-If I have missed any transfer functions, please let me know.
+Some recommendations will be added once I have some.
+
+If I have missed any published transfer functions, or explanations as to why transfer function performance can vary so much, please let me know.
 
 
 ```{r, eval = FALSE}
@@ -212,10 +232,10 @@ g1 + aes(x = `RMSEP as % of gradient`, y = r2jack)
 
 ## Table 1
 
-Chironomid-based transfer functions for air temperature (T). Methods include weighted-averaging with inverse deshrinking (WAinv), partial least-squares (PLS), weighted-averaging partial least-squares, weighted modern analogue technique, and Bayesian methods. Numbers in brackets after the model indicate the number of components/analogues used. Listed are the coefficient of determination (r^2^) between the predicted and observed values, the root-mean-squared-error of prediction (RMSEP), RMSEP as % of the gradient, and maximum bias. All statistics are based on leave-one-out cross validation, except where noted otherwise. Most values from Eggermont and Heiri [-@Eggermont2011]
+Chironomid-based transfer functions for air temperature (T). Methods include weighted-averaging with inverse deshrinking (WAinv), partial least-squares (PLS), weighted-averaging partial least-squares, weighted modern analogue technique, and Bayesian methods. Numbers in brackets after the model indicate the number of components/analogues used. Listed are the coefficient of determination (r^2^) between the predicted and observed values, the root-mean-squared-error of prediction (RMSEP), RMSEP as % of the gradient, and maximum bias. All statistics are based on leave-one-out cross validation, except where noted otherwise. Most values from Eggermont and Heiri [-@Eggermont2011].
 
 ```{r}
-knitr::kable(select(chiron, -AirWater, -(year:midT)))
+knitr::kable(select(chiron, -AirWater, -(year:midT)), digits = 2)
 ```
 
 ## References

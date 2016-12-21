@@ -41,3 +41,6 @@ Self et al.(2011),northern Russia,air,89,81,mean July air T,8.8–19.0,5–159
 @Fortin2015,Northern N. America,air,435,78,mean July air T,2–16.5,,14.3,WA-PLS(2),0.7,1.93,13.4965034965,2.22,
 @Chang2015,SE Australia,air,33,38,Mean February air T,10.7–24.7,,14,PLS(3),0.69,2.33,16.6428571429,2.15,
 @Wu2015,Costa Rica,air,44,45,mean annual airT,7.5–26.5,,19,PLS(2),0.94,1.73,9.1052631579,2.07,
+@Luoto2016,Finland,air/time,,53,July air T,14.5–20.8,,6.3,Wainv(tol),0.64,0.55,8.7301587302,1,
+@Luoto2016,Finland,air,183,129,mean July air T,7.9–17.6,–,9.7,WA-PLS(2),0.86,0.85,8.7628865979,0.75,
+Larocque-Tobler2011,Switzerland,air/time,,,July air T,6–12.5,,6.5,WA-PLS(2),0.71,0.58,0.09,0.73,
