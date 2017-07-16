@@ -1,0 +1,128 @@
+---
+title: "Reconstruction diagnostics for the Żabińskie chironomid reconstruction"
+author: "Richard J. Telford"
+date: '2016-04-25'
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE, autodep = TRUE, message = FALSE)
+library("tidyverse")
+library("readxl")
+```
+
+```{r loadData}
+#station data
+kanuas <- read.table("data/Kaunas_26629.dat", skip = 5, header = FALSE)
+names(kanuas) <- c("year", month.abb)
+
+warsaw <- read.table("data/warsaw_12375.dat", skip = 5, header = FALSE)
+names(warsaw) <- c("year", month.abb)
+
+vilnius <- read.table("data/vilnius26730.dat", skip = 5, header = FALSE)
+names(vilnius) <- c("year", month.abb)
+
+kalingrad<- read.table("data/kalingrad26702.dat", skip = 5, header = FALSE)
+names(kalingrad) <- c("year", month.abb)
+
+#zabinskie instrumental composite
+zab <- read.table("data/instrumental.txt")[, 1:2]
+names(zab) <- c("year", "Aug")
+zab <- zab %>% mutate(year = round(year))
+
+#reconstruction
+recon <- read_excel("data/zabinskie2015cit.xls", sheet = "Reconstruction ")
+names(recon) <- c("year", "Aug")
+
+##
+allStations <- kanuas %>% select(year, Aug) %>% mutate(station = "Kanuas") %>%
+  bind_rows(warsaw %>% select(year, Aug) %>% mutate(station = "Warsaw")) %>% 
+  bind_rows(vilnius %>% select(year, Aug) %>% mutate(station = "Vilnius")) %>%
+  bind_rows(kalingrad %>% select(year, Aug) %>% mutate(station = "Kalingrad")) %>% 
+  mutate(Aug = if_else(Aug == -999.9, NA_real_, Aug)) %>% 
+  filter(between(year, 1896, 2010))
+  
+
+composite <- allStations %>% 
+  group_by(station) %>% 
+  mutate(Aug = Aug - mean(Aug, na.rm = TRUE)) %>% 
+  group_by(year) %>% 
+  summarise(Aug = mean(Aug, na.rm = TRUE)) %>% 
+  mutate(station = "Mine")
+
+#mean for multiple years/ single years
+composite_as_zab <- zab %>% 
+  mutate(year2 = year) %>% 
+  full_join(data_frame(year = 1896:2010)) %>% 
+  arrange(year) %>% 
+  fill(year2, .direction = "down") %>% 
+  left_join(composite, by = "year", suffix = c(".Zab", ".composite")) %>% 
+  group_by(year2) %>% 
+  mutate(meanAug = mean(Aug.composite)) %>% 
+  filter(!is.na(Aug.Zab)) %>%  
+  ungroup() %>% 
+  select(-year2, -station) %>% 
+  left_join(recon %>% rename(recon = Aug))
+```
+
+Since I have examined almost every aspect of the remarkable  [Lake Żabińskie](https://quantpalaeo.wordpress.com/tag/larocque-tobler-et-al-2015/) chironomid-inferred August air temperature reconstruction, I thought that I would for completness, have a quick look at the instrumental temperature data.
+
+In the original paper, the authors use homogenised composite of data from 10 stations near Lake Żabińskie with "longer temporal series" . 
+
+![](http://ars.els-cdn.com/content/image/1-s2.0-S0277379115000086-gr1.jpg)
+
+I haven't used anywhere near as thorough job: I've simply downloaded some long GHCN series from the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere), and made a composite of their August temperatures after removing the mean. I selected records from Warsaw, Vilnius, Kanaus and Kalingrad. These are all further away (up to ~230km) than the stations used by the authors, but given the large spatial scale of temperature anomalies, I don't think this is a major problem.
+
+For the period after 1939, where the chironomid-inferred August air temperature reconstruction has an annual resolution, my composite corresponds well with the authors' (Pearson correlation r = `r with(composite_as_zab %>% filter(year >= 1939), cor(Aug.Zab, meanAug)) %>% round(2)`). I'm happy with that.
+
+
+```{r composite}
+#zabinskie with composite
+composite %>% 
+  bind_rows(zab %>% mutate(station = "Authors'")) %>% 
+  group_by(station) %>% 
+  mutate(Aug = Aug - mean(Aug, na.rm = TRUE)) %>% 
+  ggplot(aes(x = year, y = Aug, colour = station))+ 
+  geom_path() + 
+  geom_point(size = 1) +
+  scale_x_continuous(expand = c(0.01, 0)) + 
+  geom_vline(xintercept = 1939, linetype = "dashed", colour = "grey") +
+  labs(x = "Year CE", y = "August Temperature anomaly °C", colour = "Composite")
+```
+
+Prior to 1939, the relationship between my composite and the authors' looks much worse. In this period, chironomids were insufficiently abundant for an annual resolution reconstruction, so chironomids from two to five years are aggregated for the reconstruction. From looking at the temperature series, it would appear that the authors have not aggregated their temperature data to match the resolution of the chironomid data, but have instead thinned the data to use the temperature of the nominal year. So, for example, the chironomid sample from 1896-1898 is compared with the temperature from 1896 rather than the mean for 1896-1898.
+
+In this next figure (showing just the pre-1939 data), my composite has been processed to match the resolution of the authors', either thinning, or taking the mean over the relevant years.
+
+```{r single_mean}
+
+composite_as_zab %>% 
+  mutate(Aug.Zab = Aug.Zab - mean(Aug.Zab)) %>% 
+  select(-recon) %>%
+  filter(between(year, 1896, 1938)) %>% 
+  rename(`Authors'` = Aug.Zab, `Mine - Thinned` = Aug.composite, `Mine - Mean` = meanAug) %>% 
+  gather(key = data, value = Aug, -year) %>% 
+  ggplot(aes(x = year, y = Aug, colour = data)) +
+  geom_path() +
+  geom_point(size = 1) + 
+  scale_x_continuous(expand = c(0.01, 0)) + 
+  labs(x = "Year CE", y = "August Temperature anomaly °C", colour = "Composite")
+
+```
+
+The pre-1939 correlation between the authors' composite and mine is much higher (r = `r with(composite_as_zab %>% filter(year < 1939), cor(Aug.Zab, Aug.composite)) %>% format(digits = 2)`) if I thin the data than take the mean over the relevant interval (r = `r with(composite_as_zab %>% filter(year < 1939), cor(Aug.Zab, meanAug)) %>% format(digits = 2)`).
+
+The problem is that a relatively cold year such as 1899 can be followed by a couple of warm years. The method that the authors use to change the resolution of their termperature data is not influenced by these warm years, but the chironomid assemblages should be. Hence, one might expect the correlation between the reconstruction and the instrumental record to be weak before 1939.
+
+
+
+```{r}
+pre_thinned <- with(composite_as_zab %>% filter(year < 1939), cor.test(recon, Aug.composite))
+pre_mean <- with(composite_as_zab %>% filter(year < 1939), cor.test(recon, meanAug))
+post <- with(composite_as_zab %>% filter(year >= 1939), cor(recon, Aug.composite))
+```
+Not so. The pre-1939 correlation between the reconstruction and my thinned composite is high (r = `r pre_thinned$estimate %>% round(2)`, p = `r pre_thinned$p.value %>% format(digits = 1, scientific = FALSE)`), comparable with the later data (r = `r round(post, 2)`), whereas the correlation with the mean composite is much lower (r = `r pre_mean$estimate %>% round(2)`, p = `r pre_mean$p.value %>% format(digits = 2)`).
+
+Those chironomids are cunning wee beasties, able to give a reconstruction that matches even incorrectly calculated temperatures.
