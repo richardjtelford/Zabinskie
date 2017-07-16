@@ -1,0 +1,97 @@
+---
+title: "Effect of count sums"
+author: "Richard Telford"
+date: "December 26, 2016"
+output:
+  html_document:
+    keep_md: yes
+bibliography: chironomid.bib
+csl: journal-of-paleolimnology.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE, warning = FALSE, message = FALSE)
+knitr::read_chunk("countSums.R")
+```
+
+```{r countfunctions}
+```
+
+```{r data, include = FALSE}
+```
+
+
+Reviewing the literature for my [previous post](https://quantpalaeo.wordpress.com/2016/12/21/performance-of-chironomid-temperature-transfer-functions/) on chironomid transfer function performance, I belately realised that the different papers exploring the effects of the number of microfossils counts on transfer function performance looked at different aspects of the problem and that no-one had looked at the effect of count size on the root mean squared error of prediction (RMSEP). A gap to fill...
+
+But first a recap of the previous work on the impact of count sums on reconstructions.
+
+Bennett et al [-@Bennett2016] reduce the calibration set count size (and number of lakes) and determine the effect of this by estimating the RMSEP of an independent test set. This finds the uncertainty due to estimation of the species optima with reduced counts (hereafter optima count error). Bennett et al [-@Bennett2016] do not specify how they resample their counts.
+
+Heiri and Lotter [-@Heiri2001], Quinlan and Smol [-@Quinlan2001], and Larocque [-@Larocque2001a] all vary the count size of chironomid assemblages for which predictions are made (hereafter prediction count error).
+
+Heiri and Lotter [-@Heiri2001] find that the standard deviation of the predictions as a proportion of the sample-specific RMSEP increases from less than a fifth of the RMSEP for counts of 200 head capsules, to below 25% at 100 head capsules and below 40% at 50 head capsules. The increase in standard deviation is at a different rate for each assemblage tested. They resample with replacement with 100 trials for each count size.
+
+Quinlan and Smol [-@Quinlan2001] find that the standard deviation of predictions declines rapidly with count size, becoming negligible with a count of 20 head capsules. They resample without replacement from assemblages with at least 100 head capsules, with ten trials. 
+
+Larocque [-@Larocque2001a] appears not to resample the data but instead show the changes in reconstuctions as chrironomids were added to the actual count. This is equivalent to resampling without replacement. It is not clear how she avoids the non-random nature of head picking described by Quinlan and Smol [-@Quinlan2001]. Larocque [-@Larocque2001a] reports the mean absolute deviation between the partial count and the full count of at least 150 chironomids. The decline in error is linear over the count range (50-150 head capsules) tested by Larocque [-@Larocque2001a], but would increase rapidly for smaller counts. 
+
+The two resampling schemes used, resampling with or without replacement, follow different distributions, the multivariate and the multivariate hypergeometric respectively, and ask different questions. Resampling without replacement forces the simulated counts to converge on the observed count such that when the resampling count size is equal to the original count size, the error is zero. With this resampling scheme, the question being asking is how much error is expected if the observed count was terminated early. Resampling with replacement asks how much error is expected if a new microfossil preperation from the same lake or fossil level was counted. I think the latter is of more general interest and use this scheme below.
+
+For simplicity, I am using the SWAP diatom data-set [@Birks1990] as it is included in the rioja package. (Top tip, if you want people to cite your paper a lot, make the data easily available for reuse). The 167-lake data-set includes 277 taxa and diatom counts are typically over 500 valves (and at least 350).
+
+In the following experiments, I use a modified leave-one-out cross validation scheme with which I can manipulate the count sum of the calibration or test data independently. I use weighted averaging with inverse deshrinking throughout (calculated with the rioja package). `r nrep` trial are used.
+
+
+
+## Optima stability
+
+```{r optimaStability}
+```
+
+The stability of species' environmental optima at a given count size depends on several factors. The least stable optima will be of taxa that occur at low abundances (such that they may appear to be absent with small count sizes) in a few sites under different environmental conditions. 
+
+```{r optimaStabilityN2, fig.cap="Standard deviation of species optima against Hill's N2"}
+```
+
+
+Smaller count sums give more uncertain species optima. The uncertainty in the optima is proportional to ~$\frac{1}{\sqrt(n)}$.  
+
+```{r optimaSelectedTaxa, fig.cap = "Density of optima for selected taxa for different count sizes. Rug shows pH and abundance of occurrences."}
+```
+
+This uncertinty in the optima inevitably give some uncertainty in the predictions, which declines with increasing count size, proportional to ~$\frac{1}{\sqrt(n)}$. The lakes with the greatest uncertainty will be those with abundant taxa with uncertain optima.
+
+## Prediction count error
+
+Here I use a calibration set with a constant count size, and vary the count size of the observations for which predictions are being. Uncertainty increases with the reduction in count size. 
+
+```{r predictionStability}
+```
+
+
+```{r plotPredictionStability, fig.cap = "SD of predictions against count size"}
+```
+
+With the SWAP data, the prediction count error is substantially larger than the optima count error. However, with a smaller calibration set the count uncertainty would be averaged across fewer lakes, so this error would increase. Bennett et al [-@Bennett2016] see this effect.
+
+## Effect on RMSEP
+
+
+```{r RMSEPAnalysis}
+```
+
+```{r RMSEPplots}
+```
+
+The increase in RMSEP is small unless the count size is very small (< 50) and is proportional to ~$\frac{1}{n}$. This change in proportionality is because the counting errors can be considered as being added in quadrature to the RMSEP
+
+$RMSEP_{total} = \sqrt{RMSEP^2 + countError^2}$
+
+If the count error is small relative to the RMSEP, the change in the total RMSEP is proportional to the square of the count error, which in turn is proportional to $\frac{1}{\sqrt{n}}$.
+
+
+## Note
+
+The statistics presented above are only correct for microfossils that are found seperately. Diatoms are often found either with both valves together, or attached in long chains. This reduces the effective count size
+
+## References
