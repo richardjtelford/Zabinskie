@@ -1,0 +1,213 @@
+---
+title: "Air temperature, lake temperature"
+author: "Richard J. Telford"
+date: "July 29, 2017"
+output: 
+  html_document:
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE, autodep = TRUE, message = FALSE, warning = FALSE)
+
+#load packages
+library("tidyverse")
+library("readr")
+library("english")
+library("scales")
+```
+
+I'm interested in lake temperatures because I want to go swimming. I'm also interested because some palaeolimnological proxies, for example chironomids, are probably most sensitive to water temperature but are calibrated against and used to reconstruct air temperature. The stronger the relationship between air temperature and water temperature, the better the reconstructions are going to be.
+
+
+
+
+```{r loadData}
+meta <- read_csv(file = "lakeinformation.csv")
+meta <- meta %>% 
+  mutate(lake_or_reservoir = recode(lake_or_reservoir, "lake" = "Lake"),
+         latitude = if_else(is.na(latitude) & Lake_name == "Chub", 45.18, latitude)#fill missing latitude with approx value from adjacent lakes
+         )
+
+
+min_years = 10
+
+values <- read_csv("values.csv") 
+values <- values %>% 
+  select(-recordID) %>% 
+  filter(!is.na(siteID))
+
+values2 <- values %>% 
+  filter(
+   # grepl("Summer", variable), 
+    !variable %in% c("Lake_Temp_Summer_InSitu", "Lake_Temp_Summer_Satellite"),
+    !grepl("NCEP", variable)
+    ) %>%
+  inner_join(values %>% 
+               group_by(siteID) %>% 
+               filter(variable %in% c("Lake_Temp_Summer_InSitu", "Lake_Temp_Summer_Satellite")) %>% 
+               filter(!(n_distinct(variable) == 2 & variable ==  "Lake_Temp_Summer_Satellite")) %>% #not sat for siteID with in situ temp (sat temp has own siteID)
+               rename(Lake_Temp = value, Lake_Temp_Source = variable) %>% 
+               mutate(Lake_Temp_Source = recode(Lake_Temp_Source, "Lake_Temp_Summer_InSitu" = "In situ", "Lake_Temp_Summer_Satellite" = "Satellite" ))
+             ) %>% 
+  group_by(siteID, Lake_Temp_Source, variable) %>% 
+  filter(n() > min_years) #remove short records
+```
+
+I've found [Sharma et al (2015)](https://www.nature.com/articles/sdata20158), a global database of lake surface temperatures collected in situ and by satellite methods from 1985–2009. The database includes `r values2 %>% ungroup() %>% summarise(n = n_distinct(siteID))` summer lake surface time series with more `r min_years` years. 
+
+```{r meanTemp}
+normals <- values2 %>% filter(variable == "Air_Temp_Mean_Summer_CRU") %>% 
+  summarise(Air_temp = mean(value), Water_temp = mean(Lake_Temp)) %>% 
+  left_join(meta)
+
+mod <- lm(Water_temp ~ Air_temp, data = normals)
+normals$resid <- resid(mod)
+
+
+#with(normals, cor(Air_temp, Water_temp))
+#coef(mod)[2]
+```
+
+The relationship between mean air temperature and mean water temperature is, as one might expect, strong (r = `r with(normals, cor(Air_temp, Water_temp)) %>% round(2)`), with a slope of `r coef(mod)[2] %>% round(2)`°C/°C.
+
+```{r}
+normals %>% ggplot(aes(x = Air_temp, y = Water_temp, colour = surface_area_km2)) +
+  geom_abline(intercept = 0, slope = 1, colour = "grey") + 
+  geom_point() +
+  geom_smooth(method = "lm")+
+  scale_colour_continuous(trans = log10_trans()) + 
+  labs(x = "Air temperature °C", y = "Water temperature °C", colour = expression(Lake~area~km^2))
+
+```
+
+That's good, but I'm more interested in the year-by-year correlations between lake and air temperature. 
+
+```{r correlations}
+correlations <- values2 %>% 
+  summarise(correlation = cor(value, Lake_Temp), n = n(), sd = sd(Lake_Temp))
+
+median_cor <- correlations %>% 
+  ungroup() %>% 
+  filter(variable == "Air_Temp_Mean_Summer_CRU") %>%
+  summarise(median = median(correlation)) 
+```
+The median Pearson correlation is `r median_cor %>% round(2)` with a wide spread. This is lower than I had expected, but the database includes metre-deep and kilometre-deep lakes; `r min(meta$surface_area_km2)`km^2^ ponds and the `r max(meta$surface_area_km2) %>% signif(2)/1000` thousand km^2^ Caspian Sea; and tropical lakes and Arctic lakes. Perhaps surface area, depth and latitude are related to the correlation.
+
+```{r correlationPlot, eval = FALSE}
+correlations %>% filter(variable == "Air_Temp_Mean_Summer_CRU") %>% 
+  ggplot(aes(x = correlation)) + 
+  geom_histogram() +
+  labs(x = "Correlation with Summer Lake Temperature") 
+```
+
+```{r correlationPlot2, eval = FALSE}
+correlations %>% filter(!grepl("Annual", variable)) %>% 
+  mutate(season = gsub(".*(Summer|Winter).*", "\\1",variable)) %>% 
+  mutate(variable = gsub("_Summer|_Winter", "", variable), variable = gsub("_CRU", "", variable), variable = gsub("_", " ", variable)) %>%
+  ggplot(aes(x = variable, y = correlation)) + 
+  geom_boxplot() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = "", y = "Correlation with Summer Lake Temperature") + 
+  facet_grid(~season, scales = "free_x")
+```
+
+```{r correlationBy}
+correlation_meta <- correlations %>% 
+  filter(variable == "Air_Temp_Mean_Summer_CRU") %>% 
+  left_join(meta) %>% 
+  mutate(tropics = if_else(latitude > 35, "High", "Low"))
+
+c_lat <- correlation_meta %>% ggplot(aes(x = latitude, y = correlation)) + 
+  geom_point() + 
+  geom_smooth() +
+  labs(y = "Correlation", x = "Latitude °N")
+
+c_area <- c_lat + aes(x = surface_area_km2, colour = tropics) + 
+  scale_x_log10() + 
+  theme(legend.position = "bottom") +
+  labs(y = "Correlation", x = expression(Lake~area~km^2), colour = "Latitude")
+
+
+c_depth <- c_area + aes(x = mean_depth_m) +
+  labs(y = "Correlation", x = "Mean depth m", colour = "Latitude")
+
+
+c_reservoir <- correlation_meta %>% ggplot(aes(x = lake_or_reservoir, y = correlation, fill = tropics)) + 
+  geom_boxplot()
+
+gridExtra::grid.arrange(c_lat, c_area, c_depth, nrow = 1)
+
+```
+
+Latitude seems to be the most important predictor of the correlation between air and water temperature. This is probably because inter-annual air temperature variability is lower in the tropics. Lake area has a slight effect, at least at mid to high latitudes (absolute latitude > 35°), with the correlation weakening in large lakes. The relationship with lake depth is unimodal, with the maximum correlation in lakes about 10m deep. Reservoirs (not shown) have a slightly lower correlation than lakes.
+
+```{r filteredCorr}
+filtered_lakes <- correlation_meta %>%
+  ungroup() %>% 
+  filter(abs(latitude) > 35, surface_area_km2 < 10, between(mean_depth_m, 5, 50), lake_or_reservoir == "Lake")
+
+#ggplot(filtered_lakes, aes(x = correlation)) + geom_histogram()
+
+
+
+filtered_median <- filtered_lakes %>% 
+  summarise(median = median(correlation))
+```
+
+Taking these factors into account, the median correlation between air and water temperature for a mid to high latitude lake, less than 10km^2^ in area and between 5m and 50m mean depth is `r filtered_median %>% round(2)`. This is similar to the correlation reported by [Livingstone and Lotter (1998)](http://homepages.eawag.ch/~living/downloads/1998/Livingstone%20&%20Lotter%201998.pdf) for Lake Zurich. Livingstone and Lotter (1998) report that the correlation weakens with depth, becoming negative at 10-20m depth. Correlations reported by [Livingstone and Dokuli (2001)](https://www.researchgate.net/profile/Martin_Dokulil/publication/299272484_Eighty_years_of_spatially_coherent_Austrian_lake_surface_temperatures_and_their_relationship_to_regional_air_temperature_and_the_North_Atlantic_Oscillation/links/571f24c908aead26e71a9635/Eighty-years-of-spatially-coherent-Austrian-lake-surface-temperatures-and-their-relationship-to-regional-air-temperature-and-the-North-Atlantic-Oscillation.pdf) for Austrian lakes and [Rösneret al (2012)](http://onlinelibrary.wiley.com/doi/10.4319/lo.2012.57.5.1479/pdf) for a lake in northern Germany are also similar.
+
+These results suggest that ~0.8 is the maximum correlation that could be expected between air temperature and an annual resolution reconstruction using an ideal transfer functions. 
+
+Real reconstructions are likely to perform less well. For example, some chironomids will live below the thermocline where the temperature will be weakly coupled to air temperature; other factors, such as oxygen concentrations will also affect the chironomid communities; and taphonomic processes will distort assemblage composition.
+
+I suspect that on short timescales (i.e. monthly rather than whole summer), the correlations will decrease but only slightly as the thermal response time of the epilimnion in a small lake is fairly fast. On decadal to centennial scales, typical resolution for palaeolimnology, I suspect the correlations will increase slightly.
+
+```{r sdBy, eval = FALSE}
+correlation_meta %>% ggplot(aes(x = surface_area_km2, y = sd, colour = Lake_Temp_Source)) + 
+  geom_point() + 
+  geom_smooth(aes(group = 1)) + 
+  scale_x_log10()
+
+correlation_meta %>% ggplot(aes(x = mean_depth_m, y = sd, colour = Lake_Temp_Source)) + 
+  geom_point() + 
+  geom_smooth(aes(group = 1)) + 
+  scale_x_log10()
+
+correlation_meta %>% ggplot(aes(x = latitude, y = sd, colour = Lake_Temp_Source)) + 
+  geom_point() + 
+  geom_smooth(aes(group = 1)) 
+
+correlation_meta %>% ggplot(aes(x = lake_or_reservoir, y = sd, colour = Lake_Temp_Source)) + 
+  geom_boxplot()
+```
+
+```{r effects, eval = FALSE}
+effects <- values2 %>% 
+  filter(variable == "Air_Temp_Mean_Summer_CRU") %>% 
+  group_by(siteID) %>% 
+  do({
+    m <- lm(Lake_Temp ~ value, data = .)
+    data.frame(effect = coef(m)[2])
+    }) %>% 
+  left_join(meta)
+
+
+effects %>%
+  ggplot(aes(x = effect)) + 
+  geom_histogram()
+
+median(effects$effect)
+```
+
+```{r forcing, eval = FALSE}
+values2 %>% 
+  filter(variable == "Air_Temp_Mean_Summer_CRU") %>%
+  summarise(sd = sd(value)) %>% 
+  left_join(meta) %>% 
+  ggplot(aes(x = latitude, y = sd)) + 
+    geom_point() + 
+    geom_smooth()
+```
+
+
