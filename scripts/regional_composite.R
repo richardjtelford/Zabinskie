@@ -35,5 +35,28 @@ fat_composite <- composite %>%
   spread(key = month, value = temperature) %>%
   mutate(summer = rowMeans(data.frame(Jun, Jul, Aug)))
 
+fat_composite_as_zab_correct <- fat_composite %>% 
+  ungroup() %>% 
+  left_join(recon %>% 
+              select(-temperature) %>% 
+              mutate(recon_year = year)) %>% 
+  fill(recon_year, .direction = "down") %>% 
+  group_by(recon_year) %>% 
+  summarise_at(vars(one_of(c(month.abb, "summer"))), mean) %>% 
+  arrange(desc(recon_year))
+
+fat_composite_as_zab_published <- fat_composite %>% 
+  ungroup() %>% 
+  inner_join(recon %>% 
+              select(-temperature) %>% 
+              mutate(recon_year = year)) %>% 
+  arrange(desc(recon_year))
+
+
+## ---- check
 cor(fat_composite$Aug, fat_composite$Jun)
+cor(fat_composite$Aug, fat_composite$Jul)
+cor(fat_composite$Aug, fat_composite$Sep)
 cor(fat_composite$Aug, fat_composite$summer)
+
+
