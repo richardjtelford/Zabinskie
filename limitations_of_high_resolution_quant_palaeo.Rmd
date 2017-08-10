@@ -1,0 +1,189 @@
+---
+title: "The limits of high resolution palaeoecology"
+author: 
+- name: Richard J. Telford
+  affiliation: Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen
+  email: richard.telford@uib.no
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+#  word_document: default
+  html_document: default
+csl: quaternary-science-reviews.csl
+bibliography: chironomid.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = TRUE, warning = TRUE, cache = TRUE)
+
+options(digits = 2)
+
+library("tidyverse")
+library("readxl")
+library("sp")
+library("english")
+library("rioja")
+library("vegan")
+library("ggvegan")
+library("laketemps")
+library("assertthat")
+library("magrittr")
+
+#helper functions
+as.english <- function(x){ # problem with new version of rmarkdown
+  as.character(english::as.english(x))
+  }
+
+#requires analogue, gridextra, assertthat, palaeoSig
+
+knitr::read_chunk("scripts/pages2k.R")
+knitr::read_chunk("scripts/load_zabinskie_data.R")
+knitr::read_chunk("scripts/regional_composite.R")
+knitr::read_chunk("scripts/correlation_in_space.R")
+knitr::read_chunk("scripts/percent_variance_by_month.R")
+knitr::read_chunk("scripts/age_uncertainty.R")
+knitr::read_chunk("scripts/reconstruction_diagnostics.R")
+knitr::read_chunk("scripts/air_water_correlation.R")
+knitr::read_chunk("scripts/figure2_ordination.R")
+knitr::read_chunk("scripts/curiousCounts.R")
+
+
+```
+
+```{r load_Zabinskie_data}
+```
+## todo
+
+ASK - correct varve uncertainties - ?uncertainty for V2 varves 
+DO - southern Quebec sites estimated position  
+ASK - positions for L06 lakes  
+ASK - Zabinskie composite temperature all months 
+
+## Abstract
+
+Scale-dependencies of reconstructions
+
+**Keywords:** air temperature, chironomids, microfossils, quantitative palaeoenvironmental reconstructions, transfer functions
+
+## Introduction
+
+```{r pages2k}
+```
+
+Palaeoecologists and other others value high-resolution palaeolimnological data [@Perga2015, @Pages2013]. Of the `r nrow(lakesHi)` very high resolution palaeolimnological time series in the Pages2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of the varves, only `r sum(lakesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(lakesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(lakesHi$proxy == "BSi") == 1)` biogenic silica series. 
+
+The two chironomid records are part of a growing move towards very high resolution microfossil based-reconstructions As such records require large investments of time so it is important to understand the circumstances in which they are likely to yield good results. Evidence for the utility of these high, even annual resolution, reconstructions comes from a growing number of comparisons of instrumental records with reconstructions, typically from varved sediments, derived from chironomids [@LarocqueTobler2011b; @Larocque-Tobler2011; @Larocque-Tobler2015; @Luoto2016] and chrysophyte stomatocysts [@DeJong2011; @HernandezAlmeida2015, @HernandezAlmeida2015b]. Some of the correlations are surprisingly good given the ecological sensitivity of the proxy, the taphonomy and the inherent chronological issues even with the best dated palaeolimnological records.
+
+I illustrate these issues with reference to Larocque-Tobler et al. [-@Larocque-Tobler2015, hereafter LT15] who reconstructed August air temperature since 1896 at ~annual resolution from chironomid head capsules in the varved Lake Zabinskie, using a combined Polish-Canadian calibration set. This reconstruction is remarkably similar to the instrumental record; the Pearson correlation with the instrumental record is 0.73 and the absolute mean difference between the instrumental and reconstructed time series is 0.75°C, much smaller than the root mean squared error of prediction (RMSEP) (2.3°C, @Larocque-Tobler2016) of the two-component weighted average partial least squares model they use. 
+
+### Ecological sensitivity 
+
+It is possible to conceive of a biological proxy that is sensitive to, and only to, a single month's temperature. Such a proxy would need to have a short generation time, so it can rapidly respond to temperatures in that month, and to live mainly within that month and be dormant throughout the remainder of the year. It is not clear that any proxy meets these ideal standards, but bloom-forming algae such as chrysophytes might at least in some lakes. Chironomids would seem to fall far short of these ideals, with the larvae growing throughout much of the year.
+
+LT15 reconstruct August air temperature because this variable explains the most variance in Larocque et al [@Larocque2006]. While it is widely believed [@Eggermont2011] that summer air temperature is a key variable affecting chironomid assemblages, there is no particular reason to suspect August temperatures to be uniquely important. It is, for example, not the warmest month in Lake Zabinskie [@Bonk2015]. The phenology of chironomid emergence [@Tokeshi1995] suggests that many chironomids will have emerged before August, precluding August temperatures of their assigned year having an influence. This problem was recognised by [@LarocqueTobler2012]. At Polish latitudes, many of the chironomids in shallow water are likely to be bivoltine [@Tokeshi1995] with two generations a year. Their first generation of adults, along with some unvoltine species from deeper water, will emerge in spring [@Tokeshi1995] and so might be influenced by the previous year's August temperatures. Their second generation, emerging in late summer/autumn [@Tokeshi1995], will be affected by August temperatures but also temperatures throughout the summer and by the original species composition of the eggs. 
+
+
+```{r correlation_in_space, results = "hide", fig.keep='none'}
+```
+```{r regional_composite, results = "hide", fig.keep='none'}
+```
+
+
+With a few exceptions  [@Larocque-Tobler2011; @Luoto2016], transfer function models for quantitative palaeoclimate reconstructions are calibrated on a spatial calibration set of sites with paired microfossil and climatological normals [@Birks2010]. 
+
+Over this spatial calibration set, the correlation between air temperature in different can be expected to be high. For example, in the Polish-Canadian chironomid calibration set, the correlation between June and August mean air temperatures [@Fick2017] is `r cor(climate$Jun, climate$Aug, use = "pair")`, and the Pearson correlation between August and mean summer (JJA) air temperatures is `r cor(climate$summer, climate$Aug, use = "pair")`.
+
+Hence, it makes little difference if we calibrate the model against June, August or mean summer temperatures, the model performance statistics will be very similar (Fig 1a-b), and reconstructions all will have a similar shape (Fig. 2). Any of these months can be reconstructed, provided the assumption that the relationship between monthly temperature is invariant across time [@Juggins2013], but it makes sense to try to reconstruct temperatured for the most ecologically important time of year. 
+
+The choice of calibration target, however, has a large impact on the correlation between the reconstruction and instrumental temperatures (Fig. 1c). The correlation between June and August air temperature in a regional composite (similar to that used in LT15) in the period 1896-2010, is only `r cor(fat_composite$Aug, fat_composite$Jun)`. The correlation between mean summer air temperature and August air temperature in the same composite is `r cor(fat_composite$Aug, fat_composite$summer)`. This is as good a correlation as can be expected for predicting August temperature from mean summer data collected with a thermometer.
+
+```{r percent_variance, message  = FALSE, results = "hide", fig.keep='none'}
+```
+```{r plot_explained_variance, fig.cap = "Fig. 1. By month, a) the percent of intertia explained in a CCA constrained by temperature, b) transfer function cross-validation r^2^ calibrated against temperature, c) correlation between the predicted temperature and the instrumental temperature"}
+variance_plot 
+```
+
+```{r reconstruction_by_month}
+```
+
+```{r plot_recon_by_month, fig.cap = "Fig. 2. Reconstruction of temperature for different months at Lake Zabinskie."}
+recon_by_month_plot
+```
+
+```{r calculate_lake_air_correlations}
+```
+Chironomids are probably more sensitivity water temperature than directly to air temperature [@Eggermont2011], and transfer function models reconstructing air temperature depend on the strong relationship between air and water temperature. Air temperature is the most important determinant of water temperature [@OReilly2015] but other factors such as wind speed and cloudiness also have an influence so the inter-year correlation between air and water temperature is less than one. In Lake Zurich, this correlation is 0.67 in July [@Livingstone1998], varied between 0.59 and 0.76 for mean summer temperatures in eight Austrian lakes [@Livingstone2001], and is about 0.75 throughout the summer in the small Plusssee in northern Germany [@Rosner2012]. Analysis of the summer lake and air temperatures compiled by Sharma et al. [-@Sharma2015] shows that for small (area < `r max_area`km^2^), deep (mean depth > `r min_depth`m) mid to high latitude lakes, the median correlation is `r median(correlations$correlation)` (n = `r nrow(correlations)`). This correlation is as good as should be expected when comparing a thermometer in the lake with the instrumental air temperature.
+
+
+While temperature undoubtedly has a strong effect of chironomid physiology, growth and community structure, at least some of the apparent effect of temperature on chironomid assemblages in the calibration set is due to indirect effects of temperature [@Eggermont2011], acting through, for example, the relationship between temperature and productivity [@Velle2010] or dissolved organic carbon [@Larocque2001]. These indirect effect will tend to strengthen the relationship between chironomid assemblages and temperature in the calibration set, but cannot cannot be expected to full operate on a monthly basis. As such the cross-validation performance of the transfer function will tend to overestimate the models predictive power on short time-scales.
+
+Conversely, ecologically important variables such as nutrient status [@Witak2017] and anoxia [@Bonk2015] have changed over time independently of August temperatures. Chironomids should have responded to these variables [@Eggermont2011], biasing the temperature reconstruction.
+
+
+### Taphonomic processes
+
+A strong correlation between an annual resolution reconstruction and instrumental data can only be achieved if most of the microfossils in the sediment attributed to a given year lived in that year. This could be achieved if the organisms lived at the core site (which might prevent the preservation of varves), or if direct deposition of planktic organisms dominated the record. The diatom record from the varved Baldeggersee [@Lotter1998] might be an example of this second case, with abrupt changes in the diatom assemblages.
+
+By analogy with Lake De Waay [@vanHardenbroek2011], the seasonally anoxic hypolimnion [@Bonk2015] of Lake Zabinskie will be inhabited by few chironomids (perhaps  _Chironomus plumosus_ which Nagell [-@Nagell1978] showed can withstand long periods of anoxia, but without feeding), and the chironomid assemblage in the centre of the lake has been transported and redeposited from the oxygenated shallows [@Eggermont2011] by wave-induced turbulence or currents during seasonal mixing. Lake Zabinskie experiences mixing in spring and late autumn [@Bonk2015]: complete mixing results in a large sediment flux to the centre of the lake [@Bonk2015], but this does not happen every year. 
+
+The importance of intense sediment focusing in Lake Zabinskie is evident in the high Cs^137^ and Pb^210^ inventories [@Tylmann2016]. The diffused Cs^137^ peaks [@Tylmann2016] indicates that not all the sediment in one varve was generated in that year. The five year peak in the Chernobyl Cs^137^ peak might give an indication in the degree of smoothing that can be expected in redeposited proxies. This is only a problem for very high resolution analyses. 
+
+### Chronological precision
+
+Reliable chronologies are essential for any proxy-proxy or proxy-instrumental data comparison [@Trachsel2016]. The impact of chronological error will depend on the magnitude of the error relative to the persistence in the autocorrelation structure of the data. If at least one of the time series varies smoothly then a small chronological error will have little effect. If, however, both time series have little or no autocorrelation, then even an error of a single year would seriously degrade the correlation.
+
+Varved sediments are essential for annual resolution palaeolimnological work, but varved chronologies are not error free [@Lotter1999]. The error in varved chronologies tends to accumulate, becoming higher further back in time.
+
+
+```{r age_uncertainty_setup}
+```
+```{r chron_no_extra_error}
+```
+
+The varve-based chronology for Lake Zabinskie is supported by C^14^ dates, a Cs^137^ profile and a microtephra [@Bonk2015a]. The counting uncertainty on the chronology is low: at 1933 CE it is only −0/+2 years, increasing to −5/+2 years in 1896 CE. The impact of this uncertainty can be explored with a Monte Carlo procedure. Assuming that the the probability of making a wrong decision at each uncertain varve is 1/3 and zero otherwise, the probability that the chronology is entirely correct is `r mean(simulation$mismatch == 0)`. If the reconstruction was perfect, chronological error is expected to reduce the correlation from 1 to `r mean(simulation$ag_correlation)`. This reduction is relatively small because most of the uncertainty occurs in the lower half of the record, so any error affects fewer years, furthermore, because chironomid concentrations were low, samples before 1939 span two to `r max(-diff(recon$year)) %>% as.english()` years which reduces both the number of samples and their sensitivity to a single year's error. The expected correlation in the pre-1939 section of the record for a perfect reconstruction is `r mean(simulation$pre39_correlation)`. This is lower than the correlation between the reconstruction and the instrumental record (`r left_join(instrumental, recon) %>% filter(year < 1939) %$% cor(Aug, temperature)`) for this period.
+
+
+### Other issues with Larocque-Tobler et al. [-@Larocque-Tobler2015]
+
+It is unclear how, despite all these severe challenges, the chironomid August-air temperature reconstruction is as good as reported.
+
+```{r reconstruction_diagnostics}
+```
+```{r randomTF}
+```
+One might expect that such an excellent reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, LT15 report that all the fossil samples had good or fair analogues it the modern calibration set. However, using the methods described in LT15, `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor or very poor fit, and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation between principal component axis 1 of the fossil data and August air temperature shown in LT15. Perhaps we need to question the utility of these diagnostics.
+
+
+The surprisingly poor reconstructions diagnostics are not the only problematic aspect of LT15. A comparison with a regional composite shows that the pre-1939 CE instrumental temperatures, which correspond to the merged chironomid samples, have been miscalculated. Rather than showing the mean temperature over the duration of the chironomid sample, they show the temperature of the first year. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `p "#CALC_ME"`) with the incorrectly calculated temperature data than the the correct data (r = `p "#CALC_ME"`).
+
+```{r replicating_figure_2}
+```
+```{r supplementary_data_fig_1}
+```
+
+Two ordinations in LT15 cannot be reproduced from the archived data (seven quite different versions of the data were archived before the current version). LT15 figure 2 is an principal component analysis of the calibration set. There are `r nrow(spp_all)` lakes in the calibration set (the paper reports 122) but figure 2 shows only 103 lake: 18 lakes have been omitted, including all `r sum(env_all > 23) %>% as.english()` (Figure 3a). The omission of these lakes makes the relationship between the chironomid assemblages and temperature appear to be stronger than it is.   
+
+```{r LTfigure2, fig.cap = "Fig. 3. a) Attempt to replicate LT15 figure 2. Lakes enclosed by a red circle have been omitted from the published figure. b) Attempt to replicate LT15 supplementary data figure 1. The original figure has six more Canadian lakes in the lower right quadrant. ", warning=FALSE}
+th <- theme(legend.position = "bottom")
+cowplot::plot_grid(
+  fig2 + th + 
+    guides(colour = guide_legend(nrow=2,byrow=TRUE)) +
+    guides(shape = guide_legend(nrow=2,byrow=TRUE)),
+  sdf1 + th, 
+  nrow = 1, labels = c("a)", "b)"), align = "h")
+```
+
+Conversely, LT15's supplementary data figure 1, a redundancy analysis of the calibration set constrained to temperature with the fossil data added passively, has more lakes than expected (Fig. 3b). There are `r sum(sites$source != "Poland")` Canadian lakes in the calibration set (the paper reports 72) but the figure shows 78. The extra Canadian lakes are mostly in the same quadrant and the Polish lakes and falsely suggest "a similarity between the assemblages in warmer lakes in Canada and those which cover the same temperature gradient in Poland".
+
+```{r curiousCounts}
+```
+Even the chironomid counts are unusual. Typically the rarest species in any assemblage in represented by a single individual. In the Lake Zabinskie counts, `r round(mean(min_count$min_count > 1) * 100)`% of samples have a minimum abundance greater than one. In one sample, all taxa occur at least `r max(min_count$min_count) %>% as.english()` times, in another, all counts are multiples of four. 
+
+## Conclusions
+
+Reliable annual resolution reconstructions depend on the conjunction of a strong direct ecological link to the variable being reconstructed and simple taphonomy. Accurate and precise chronologies are also needed for a direct comparison with instrumental records. 
+
+## Acknowledgements
+
+I thank all my colleagues in Bergen and elsewhere who have given the help, advice and encouragement needed to write this manuscript. I would especially like to thank the Integrity Officer at the University of Bern who stimulated many of these analyses. Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie).
+
+## References
