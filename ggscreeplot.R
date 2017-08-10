@@ -19,7 +19,7 @@ function (x, bstick = FALSE, npcs = min(10, if (is.null(x$CCA) || x$CCA$rank == 
     ymax <-max(ymax, df$bstick[1])
   }
   g <- ggplot(df, aes(x = names)) + 
-                geom_bar(aes(y = Inertia), stat = "identity", fill = "grey50") + 
+                geom_col(aes(y = Inertia), fill = "grey50") + 
                 labs(x = xlab, y = ylab, title = title) +
                 scale_y_continuous(limits = c(0, ymax * 1.04), expand = c(0, 0))
   
