@@ -66,8 +66,9 @@ data <- data %>%
   mutate(temperature = rnorm(len)) %>% 
   mutate(#need to get correct dates for uncertain varves
     pmissing = if_else(year %in% c(1930, 1925, 1915, 1907, 1900), 1/3, pmissing),   
-    pextra = if_else(year %in% c(1950, 1950), 1/3, pextra)) 
+    pextra = if_else(year %in% c(1960, 1950), 1/3, pextra)) 
 
+set.seed(9524)#random.org
 simulation <- run_simulation(data, nrep = 1000)
 
 ## ---- output
@@ -93,8 +94,9 @@ dataz <- dataz %>%
   mutate(temperature = rnorm(len)) %>% 
   mutate(
     pmissing = if_else(year %in% c(1930, 1925, 1915, 1907, 1900), 1/3, pmissing),   
-    pextra = if_else(year %in% c(1950, 1950), 1/3, pextra)) 
+    pextra = if_else(year %in% c(1960, 1950), 1/3, pextra)) 
 
+set.seed(7777)#random.org
 simulationz <- run_simulation(dataz, nrep = 1000)
 
 ## ---- output2
