@@ -1,5 +1,5 @@
 ---
-title: "Reconstruction diagnostics for the Żabińskie chironomid reconstruction"
+title: "Chironomids are cunning wee beasties"
 author: "Richard J. Telford"
 date: '2016-04-25'
 output:
@@ -67,13 +67,13 @@ composite_as_zab <- zab %>%
   left_join(recon %>% rename(recon = Aug))
 ```
 
-Since I have examined almost every aspect of the remarkable  [Lake Żabińskie](https://quantpalaeo.wordpress.com/tag/larocque-tobler-et-al-2015/) chironomid-inferred August air temperature reconstruction, I thought that I would for completness, have a quick look at the instrumental temperature data.
+Since I have examined almost every aspect of the remarkable  [Lake Żabińskie](https://quantpalaeo.wordpress.com/tag/larocque-tobler-et-al-2015/) chironomid-inferred August air temperature reconstruction, I thought that I would, for completness, have a quick look at the instrumental temperature data.
 
 In the original paper, the authors use homogenised composite of data from 10 stations near Lake Żabińskie with "longer temporal series" . 
 
 ![](http://ars.els-cdn.com/content/image/1-s2.0-S0277379115000086-gr1.jpg)
 
-I haven't used anywhere near as thorough job: I've simply downloaded some long GHCN series from the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere), and made a composite of their August temperatures after removing the mean. I selected records from Warsaw, Vilnius, Kanaus and Kalingrad. These are all further away (up to ~230km) than the stations used by the authors, but given the large spatial scale of temperature anomalies, I don't think this is a major problem.
+I haven't done anywhere near as thorough job: I've simply downloaded some long GHCN series from the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere), and made a composite of their August temperatures after removing the mean. I selected records from Warsaw, Vilnius, Kanaus and Kalingrad. These are all further away (up to ~230km) than the stations used by the authors, but given the large spatial scale of temperature anomalies, I don't think this is a major problem.
 
 For the period after 1939, where the chironomid-inferred August air temperature reconstruction has an annual resolution, my composite corresponds well with the authors' (Pearson correlation r = `r with(composite_as_zab %>% filter(year >= 1939), cor(Aug.Zab, meanAug)) %>% round(2)`). I'm happy with that.
 
@@ -92,7 +92,7 @@ composite %>%
   labs(x = "Year CE", y = "August Temperature anomaly °C", colour = "Composite")
 ```
 
-Prior to 1939, the relationship between my composite and the authors' looks much worse. In this period, chironomids were insufficiently abundant for an annual resolution reconstruction, so chironomids from two to five years are aggregated for the reconstruction. From looking at the temperature series, it would appear that the authors have not aggregated their temperature data to match the resolution of the chironomid data, but have instead thinned the data to use the temperature of the nominal year. So, for example, the chironomid sample from 1896-1898 is compared with the temperature from 1896 rather than the mean for 1896-1898.
+Prior to 1939, the relationship between my composite and the authors' looks much worse. In this period, chironomids were insufficiently abundant for an annual resolution reconstruction, so chironomids from two to five years are aggregated for the reconstruction. From looking at the temperature series, it would appear that the authors have not aggregated their temperature data to match the resolution of the chironomid data, but have instead thinned the data by using the temperature of a selected nominal year. So, for example, the chironomid sample from 1896-1898 is compared with the temperature from 1896 rather than the mean for 1896-1898.
 
 In this next figure (showing just the pre-1939 data), my composite has been processed to match the resolution of the authors', either thinning, or taking the mean over the relevant years.
 
@@ -112,7 +112,7 @@ composite_as_zab %>%
 
 ```
 
-The pre-1939 correlation between the authors' composite and mine is much higher (r = `r with(composite_as_zab %>% filter(year < 1939), cor(Aug.Zab, Aug.composite)) %>% format(digits = 2)`) if I thin the data than take the mean over the relevant interval (r = `r with(composite_as_zab %>% filter(year < 1939), cor(Aug.Zab, meanAug)) %>% format(digits = 2)`).
+The pre-1939 correlation between the authors' composite and mine is much higher (r = `r with(composite_as_zab %>% filter(year < 1939), cor(Aug.Zab, Aug.composite)) %>% format(digits = 2)`) if I thin the data than if I take the mean over the relevant interval (r = `r with(composite_as_zab %>% filter(year < 1939), cor(Aug.Zab, meanAug)) %>% format(digits = 2)`).
 
 The problem is that a relatively cold year such as 1899 can be followed by a couple of warm years. The method that the authors use to change the resolution of their termperature data is not influenced by these warm years, but the chironomid assemblages should be. Hence, one might expect the correlation between the reconstruction and the instrumental record to be weak before 1939.
 
