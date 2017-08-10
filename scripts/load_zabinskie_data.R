@@ -7,35 +7,46 @@ library("dplyr")
 fname <- "data/zabinskie2015cit.xls"
 
 #modern spp
-spp <- read_excel(fname, sheet = "Training species")
+spp_all <- read_excel(fname, sheet = "Training species")
 
 #modern environment
-env <- read_excel(fname, sheet = "Training temperature")
+env_all <- read_excel(fname, sheet = "Training temperature")
+
+#check siteIDs match
+assertthat::assert_that(assertthat::are_equal(spp_all$X__1, env_all$Name))
+
 
 #remove low count sites from modern data
 lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
-env <- env %>% filter(!Name %in% lowCount) %>% select(-Name)
-spp <- spp %>% filter(!X__1 %in% lowCount) %>% select(-X__1)
+env <- env_all %>% filter(!Name %in% lowCount) 
+spp <- spp_all %>% filter(!X__1 %in% lowCount) %>% select(-X__1)
+
+spp_all <- spp_all %>% select(-X__1)
 
 # remove rare species from calibration set
-spp <- spp[, colSums(spp > 0) > 0]# remove absent taxa - cannot find evidence of stricter inclusion criteria
+spp <- spp[, colSums(spp > 0) > 0]# remove taxa only in low count sites - cannot find evidence of stricter inclusion criteria
+
+sites <- env %>% select(Lake = Name) %>% 
+  mutate(source = c(rep("Poland", 39), rep("L2008", 13), rep("L06", 52), rep("L2008", 8)))
 
 #make env a vector to simplify later code
 env <- env$Temp
+env_all <- env_all$Temp
 
 
 
 
 #fossil spp
 fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages") %>%
-  rename(year = X__1)
+  rename(year = X__1) 
 
 chron <- fos %>% select(year)
 fos <- fos %>% select(-year, -`Nb head capsules`)
 
 #fossil_counts
 fos_counts <- read_excel(fname, sheet = "Chironomids Zabinskie counts") %>% 
-  select(-X__1, -Total)
+  select(-X__1, -Total) %>% 
+  mutate_all(round, digits = 1)#remove spurious digits
 
 #reconstruction
 recon <- read_excel(fname, sheet = "Reconstruction ") %>% 
