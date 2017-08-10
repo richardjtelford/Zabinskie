@@ -32,7 +32,7 @@ countCheck <- read.table(header = TRUE, fill = TRUE, sep = ",", stringsAsFactors
 14, 1998, perfect? maybe two Criotopus
 15, 1997, close. G. pallens replaces G. severini?
 no sheet 16!
-17, 1996, BAD match. All taxa except P varus present - wrong abundances
+17, 1996, BAD match. All taxa except P varus present - wrong abundances NB - may have been merged with 16 - see corrigendum
 18, 1995, perfect
 
 #file 21_40
