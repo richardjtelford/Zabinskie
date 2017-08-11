@@ -18,12 +18,24 @@ vignettes/*.pdf
 *.docx
 *.md
 *.html
+*.pdf
+
 #figures
 *.jpg
 *.png
 
 #temp files
 *~
+*#
 
 #rmarkdown cache
 *cache/
+
+#reference styles
+*.csl
+
+#data
+*.bil
+*.hdr
+*.zip
+
