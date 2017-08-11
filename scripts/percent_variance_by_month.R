@@ -57,6 +57,9 @@ recon_by_month15 <- clim15 %>% select(-(1:4), -summer, -country) %>%
   })
 
 recon_by_month_plot <- recon_by_month15 %>% 
-  ggplot(aes(x = year, y = pred, colour = month)) + 
+  ggplot(aes(x = year, y = pred, colour = month, label = month)) + 
   geom_line() + 
-  labs(x = "Year CE", y = "Predicted temperature °C", colour = "")
+  labs(x = "Year CE", y = "Predicted temperature °C", colour = "") +
+  geom_dl(method = list(dl.trans(x = x - 0.05), "first.bumpup", cex = 0.8)) +
+  theme(legend.position = "none") +
+  scale_color_brewer(type = "qual", palette = "Paired")
