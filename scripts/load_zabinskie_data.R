@@ -27,7 +27,11 @@ spp_all <- spp_all %>% select(-X__1)
 spp <- spp[, colSums(spp > 0) > 0]# remove taxa only in low count sites - cannot find evidence of stricter inclusion criteria
 
 sites <- env %>% select(Lake = Name) %>% 
-  mutate(source = c(rep("Poland", 39), rep("L2008", 13), rep("L06", 52), rep("L2008", 8)))
+  mutate(source = c(rep("Poland", 39), rep("L2008", 13), rep("L06", 52), rep("L2008", 8))) %>% 
+  mutate(Lake  = case_when(
+    Lake == "Lake 29" ~  "Lake29", 
+    Lake == "lake25" ~ "lake25",
+    TRUE ~ Lake))
 
 #make env a vector to simplify later code
 env <- env$Temp
