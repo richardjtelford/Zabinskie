@@ -1,4 +1,8 @@
 ## ---- pages2k
+if(!file.exists("data/sdata201788-s3.xlsx")){
+  stop("Download data from https://www.nature.com/articles/sdata201788, or simply delete this chunk")
+}
+
 pages <- read_excel("data/sdata201788-s3.xlsx", sheet = "Table S1")
 lakes <- pages %>% 
   filter(
