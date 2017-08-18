@@ -38,3 +38,30 @@ silv2009 <- silv2009 %>% select(-matches("^YearAD"))
 
 #tidy up
 rm(f, f2)
+
+## ---- read_silvaplana_2008_JoPL
+recon_silv2008 <- read_table("data/silvaplana2008.txt", skip = 78) %>% 
+  filter(!is.na(Year))
+
+## ---- compare_2008_2009_recon
+
+recon_silv2008 %>% 
+  full_join(
+    recon_silv2009 %>% filter(Year > min(recon_silv2008$Year)),
+    by = "Year", suffix = c(".2008", ".2009")
+    ) %>% 
+  arrange(Year)
+
+recon_silv2008 %>% mutate(source = "JOPL") %>% 
+  bind_rows(
+    recon_silv2009 %>% 
+      filter(Year > min(recon_silv2008$Year)) %>% 
+      mutate(source = "Holocene"),
+    silva_met %>% filter(Month == 7, Year <= 2001) %>% 
+      select(Year, JulyT = Temperature) %>% 
+      mutate(source = "Instrumental")
+    ) %>% 
+  ggplot(aes(x = Year, y = JulyT, colour = source)) +
+    geom_point() +
+    geom_line()
+  
