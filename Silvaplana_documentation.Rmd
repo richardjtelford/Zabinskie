@@ -1,0 +1,83 @@
+---
+title: "Evaluation of Larocque et al (2009)"
+author: "Richard J. Telford"
+date: "August 19, 2017"
+output: html_document
+csl: quaternary-science-reviews.csl
+bibliography: chironomid.bib
+---
+```{r setup, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE, cache = TRUE, cache.lazy=TRUE)
+
+options(digits = 2)
+
+library("tidyverse")
+#library("english")
+library("rioja")
+library("png")
+library("grid")
+library("magick")
+
+knitr::read_chunk("scripts/load_silvaplana.R")
+knitr::read_chunk("scripts/plot_Silvaplana_reconstructions.R")
+knitr::read_chunk("scripts/compare_silvaplana_stratigraphies.R")
+```
+
+## Introduction
+
+Larocque et al [-@Larocque2009] reports a 140 yr chironomid stratigraphy from Lake Silvaplana, Switzerland and derive a July air-temperature reconstruction using a transfer function. The near-annual resolution reconstruction has an excellent correlation (r = 0.65) with the instrumental data from a weather station close to the lake. Larocque et al [-@Larocque2009] is of several papers reporting different aspects of the chironomid stratigraphy from Lake Silvaplana, the most relevant of these are Larocque-Tobler et al [-@LarocqueTobler2009Holocene] who extend the record to 540 yrs and Larocque-Tobler et al [@LarocquTobler2010] who further extend the record to 1000 yrs. Reconstructions from all three papers have been archived at NCDC. Fossil data for Larocque-Tobler et al [-@LarocqueTobler2009Holocene] are also archived.
+
+## Comparing the reconstructions
+
+```{r read_silvaplana_2008_JoPL}
+```
+```{r read_silvaplana_Holocene_reconstruction}
+```
+
+
+
+Ideally the three reconstructions should be identical for the periods they have in common. Differences, hopefully small, are possible if the taxonomy has been revised, the chronology corrected, or the numerical methods have been changed. If the reconstructions are very different, the authors have demonstrated that their work is not reproducible. Figure 1 shows that the 140 and 540 yr reconstructions are very different. The most recent value is identical, but the next few values appear to have an chronological offset, thereafter any relationship is difficult to see. The 1000 yr reconstruction is also different but as is smoothed it is more difficult to compare and is not considered here.
+
+```{r compare_2_reconstruction, fig.cap = "Figure 1. Reconstructions from the different papers for the last 140 years."}
+```
+
+The apparent chronological offset at the end of the reconstruction suggests there might be issues with the chronology. If the chronologies are ignored and the reconstructions are instead plotted in stratigraphic order, the agreement between the reconstructions improves substantially (Figure 2).
+
+```{r side_by_side, fig.cap = "Figure 2. Reconstruction plotted in stratigraphical order. The youngest sample is sample 1. "}
+```
+Of the `r total` values in the 140 yr reconstruction, `r identical` are identical to the value in the same chronological rank as the 540 yr reconstruction. Of the `r total - identical` remaining values, `r nrow(integer_offsets)` have an integer difference ranging from `r min(integer_offsets$delta)`°C to `r max(integer_offsets$delta)`°C.
+
+The chronological adjustment required to align the two reconstructions is large, up to `r with(side_by_side, max(Year - Year.Holocene))` years (Figure 3), far larger than can reasonably be ascribed to chronological uncertainty in the varved sediment. 
+
+```{r implied_chronology, fig.cap = "Figure 3. Chronological offset required to align 140 yr JoPL and 540 yr Holocene reconstructions", fig.height = 3}
+```
+
+The jump at about 1890 is unclear. It might be because of an overlap between the two cores from Lake Silvaplana used in the Holocene paper, but that is supposed to be older.
+
+The archived 140 yr reconstruction is not identical to the published reconstruction (Figure 4).
+
+```{r overlay_jopl_6a, fig.cap= "Figure 4. Archived reconstruction plot on top of the published figure 6a"}
+```
+Some parts of the curves are identical, for example near 1960 CE and near 1980 CE, other parts have a chronological offset, for example 1860--1880 CE where the archived reconstruction lags the published figure by a few years. Other parts of the curves are difficult to reconcile, for example near 1900 CE. 
+
+### Comparing the stratigraphies
+
+Although assemblage data are only archived for the 540 yr Holocene stratigraphy, stratigraphic diagrams are presented in all three papers and can be compared for the shared period.
+
+```{r magick_markdown_setup, echo = FALSE}
+```
+
+```{r load_published_stratigraphies}
+```
+
+```{r Microtendipes, fig.cap = "Microtendipes"}
+```
+
+```{r Cricotopus, fig.cap = "Cricotopus"}
+```
+
+### Conclusions
+
+The 140 yr JoPL reconstruction is identical to the latter part of the 540 yr Holocene reconstruction, except that the chronology has been non-linearly adjusted by up to several decades and a small proportion of values have been changed by several degrees Celsius. The effect of the chronological adjustment is to increase the apparent chronological resolution of the core.
+
+##References
