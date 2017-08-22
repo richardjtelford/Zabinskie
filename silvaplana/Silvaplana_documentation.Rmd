@@ -3,8 +3,8 @@ title: "Evaluation of the Lake Silvaplana chironomid papers"
 author: "Richard J. Telford"
 date: "August 19, 2017"
 output: html_document
-csl: quaternary-science-reviews.csl
-bibliography: chironomid.bib
+csl: ../journal-of-paleolimnology.csl
+bibliography: ../chironomid.bib
 ---
 ```{r setup, message = FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TRUE, cache.lazy=TRUE)
@@ -135,12 +135,14 @@ This method identified that many of the count sums in Larocque-Tobler et al [@La
 
 It is not possible to be sure which, _if any_, of the Silvaplana papers are valid from the archived data.
 
-The reported correlation between the _JoPL_ reconstruction and instrumental air temperature is not robust to changes in the chronology. It is not plausible that the reconstruction simultaneously has an excellent correlation and needs adjustment of more than 40 years.
+- The reported correlation between the _JoPL_ reconstruction and instrumental air temperature is not robust to changes in the chronology. It is not plausible that the reconstruction simultaneously has an excellent correlation and needs adjustment of more than 40 years.
 
-If the exceedingly small count sums estimated for many samples in  the _Holocene_ and by extension the _QSR_ stratigraphies, the reconstructions in these papers are far more uncertain than acknowledged. 
+- If the exceedingly small count sums estimated for many samples in  the _Holocene_ and by extension the _QSR_ stratigraphies, the reconstructions in these papers are far more uncertain than acknowledged. 
 
-Raw count data need to be archived for all the papers along with the calibration set. Explanations of any chronological adjustments made need to be given.
+Raw and merged count data need to be archived for all the papers along with the calibration set. Explanations of any chronological adjustments made need to be given. 
 
-This document is reproducible with code archived on [github](https://github.com/richardjtelford/Zabinskie).
+Because of the similarities between Silvaplana, Zabinskie and Seebergsee [@LarocqueTobler2011b; @LarocqueTobler2012], the equivalent data should be archived for this lake. Other papers dependent on the Silvaplana chironomid stratigraphy, for example Larocque et al [-@Larocque-Tobler2011], also need to be evaluated.
+
+This document is reproducible with code archived on [github](https://github.com/richardjtelford/Zabinskie/tree/master/silvaplana).
 
 ##References

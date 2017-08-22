@@ -32,8 +32,6 @@ vignettes/*.pdf
 #rmarkdown cache
 *cache/
 
-#reference styles
-*.csl
 
 #data
 *.bil
