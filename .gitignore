@@ -23,6 +23,7 @@ vignettes/*.pdf
 #figures
 *.jpg
 *.png
+!silvaplana/images/*.png
 
 #temp files
 *~
