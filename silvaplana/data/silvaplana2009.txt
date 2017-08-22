@@ -1,0 +1,846 @@
+Lake Silvaplana, Switzerland 420 Year Chironomid Inferred Temperature
+-----------------------------------------------------------------------
+               World Data Center for Paleoclimatology, Boulder
+                                  and
+                     NOAA Paleoclimatology Program
+-----------------------------------------------------------------------
+NOTE: PLEASE CITE ORIGINAL REFERENCE WHEN USING THIS DATA!!!!!
+
+
+NAME OF DATA SET: 
+Lake Silvaplana, Switzerland 420 Year Chironomid Inferred Temperature
+
+LAST UPDATE: 12/2009 (Original Receipt by WDC Paleo)
+CONTRIBUTOR: Isabelle Larocque, University of Bern 
+IGBP PAGES/WDCA CONTRIBUTION SERIES NUMBER: 2009-143
+
+WDC PALEO CONTRIBUTION SERIES CITATION: 
+Larocque, I., et al. 2009.
+Lake Silvaplana, Switzerland 420 Year Chironomid Inferred Temperature. 
+IGBP PAGES/World Data Center for Paleoclimatology 
+Data Contribution Series # 2009-143. 
+NOAA/NCDC Paleoclimatology Program, Boulder CO, USA.
+
+
+ORIGINAL REFERENCE: 
+Larocque-Tobler, I., M. Grosjean, O. Heiri, and M. Trachsel. 2009. 
+High-resolution chironomid-inferred temperature history since AD 1580
+from varved Lake Silvaplana, Switzerland: comparison with local and 
+regional reconstructions.
+The Holocene, Vol. 19, No. 8, pp. 1201-1212. 
+DOI: 10.1177/0959683609348253 
+
+ABSTRACT: 
+Chironomids were used to reconstruct mean July air temperatures between 
+c. AD 1580 and 2001 at Lake Silvaplana, a varved lake located in the 
+Engadine, eastern Swiss Alps. The goal of this study was to reconstruct
+temperature changes at near-annual resolution, and validate the 
+reconstruction by comparison with records based on early instrumental 
+data, documentary proxy evidence, dendrochronology, geochemical 
+(biogenic silica (BSi)) and mineralogical data (quartz/mica ratios) at 
+local and regional scales. Warmer than-the-climate-normal (AD 1961-1990) 
+mean July air temperatures were inferred between c. AD 1610 and 1662, 
+AD 1710 and 1740, AD 1790 and 1866, AD 1940 and 1960 and AD 1990 and 2001. 
+Colder-than-the-climate-normal July air temperatures were reconstructed 
+between c. AD 1662 and 1710, AD 1740 and 1790, AD 1866 and 1919, and 
+AD 1970 and 1990. The 420-year chironomid-inferred mean July air 
+temperature record was significantly (p < 0.01) related to June-September 
+(JJAS) temperatures reconstructed from early instrumental and documentary 
+data at regional scale, JJA temperature inferred from documentary proxy 
+evidence at local scale and summer temperatures based on early 
+instrumental data in central Europe. When the Z-scores of warm/cold 
+periods were compared between records, only one period (c. AD 1740–1790) 
+did not show significant correlations between the chironomid record and 
+any of the eight other records considered here, probably because of 
+increased precipitation and changes in the sediment composition which 
+influenced the chironomid assemblages. 75% of the periods considered 
+had significant correlations between the chironomid records, and both 
+the reconstruction based on quartz/mica ratios and the inferred JJAS 
+early instrumental and documentary proxy evidence, while 60% of the 
+periods showed significant correlations between the chironomid-based 
+record and the reconstruction based on early instrumental data of 
+Central Europe. These results suggest that chironomids in the sediment 
+of Lake Silvaplana yield valid temperature reconstructions at regional 
+scales for the last 420 years.
+
+
+GEOGRAPHIC REGION: Swiss Alps, central Europe
+PERIOD OF RECORD: 1580 - 2001 AD 
+
+
+FUNDING SOURCES: 
+European Union F6 project Millennium, Natural Sciences and Engineering 
+Research Council of Canada (NSERC), and Marie-Heim-Vögtlin Swiss National 
+Funds.
+
+
+DESCRIPTION:  
+Chironomid-inferred mean July temperature and chironomid assemblages 
+from Lake Silvaplana, Switzerland for the 420 years. 
+
+Lake Silvaplana: 46°27'N, 9°48'E, 1800 m a.s.l.
+
+
+
+
+DATA:
+1. Chironomid-inferred mean July temperature
+
+Column 1: Year AD
+Column 2: Chironomid-inferred mean July Temperature, °C
+
+Year       JulyT 
+2001       13.48
+1999     14.2169
+1998     11.3887
+1996     10.7133
+1993     9.73346
+1990      10.372
+1987     12.1573
+1986     9.28264
+1985     10.5122
+1984     11.2174
+1982     11.1825
+1979     11.0521
+1976     9.21281
+1970     10.1151
+1967     11.1073
+1965     11.3505
+1962     10.4528
+1959       10.41
+1957     11.4155
+1956     10.4153
+1951     10.2111
+1950     10.0363
+1948     10.3527
+1947     12.4768
+1946     11.9237
+1945.5   9.96961
+1945     11.6696
+1944.5   10.8137
+1944     12.0453
+1943     12.2844
+1941     13.6622
+1940     10.3002
+1939     12.6981
+1938    12.71936
+1936        13.1
+1934        12.6
+1932        12.5
+1930          13
+1928     13.1349
+1925       12.79
+1923       12.78
+1920     10.3562
+1919     10.8197
+1914      10.407
+1909     10.1393
+1905     9.81869
+1901       12.29
+1898        12.1
+1896        9.39
+1894     11.2906
+1892     8.78208
+1890     11.4536
+1888     11.3754
+1885     11.0534
+1883      11.764
+1880     11.6424
+1878     10.8313
+1876     10.8412
+1874     11.1606
+1872     11.3039
+1870      9.9854
+1868     9.23559
+1866     12.8236
+1864     8.55034
+1862     11.1532
+1859     10.2862
+1856     8.55495
+1853     10.4559
+1850      11.937
+1861     8.49101
+1858     9.33457
+1854     10.0957
+1853     12.3166
+1849     11.1236
+1845      9.6612
+1844     11.1594
+1842     11.1437
+1840     11.9743
+1839      10.376
+1837     10.2581
+1836     10.5348
+1835     9.14373
+1834     12.3043
+1833      11.599
+1832     11.7549
+1831     10.7733
+1829     11.6642
+1828     11.4137
+1818     10.6711
+1812      12.011
+1809     13.1429
+...      11.5811
+1805     10.0259
+1804     10.4315
+1800     10.9551
+...      10.5459
+...        12.13
+1799     10.1343
+1798     10.7398
+1796     11.5923
+1794     12.2452
+1793     12.2833
+1792     11.9835
+1791     11.7646
+1789     10.8354
+1787     11.1462
+1786     10.5218
+1784     12.1316
+1783     12.5749
+1782     12.9716
+1781     11.9103
+1779     11.5405
+1778     12.6771
+1775     11.9459
+1772     11.5087
+1769      9.8624
+1750     12.8712
+1745      9.8902
+1740      10.428
+1732     11.2546
+1727     10.7755
+1718     11.6299
+1705     11.1824
+1691     8.96017
+1682      9.5102
+1672     11.6495
+1660     10.0908
+1650     11.6054
+1640     11.8407
+1630      9.5945
+1620     12.2661
+1610     12.0141
+1604       10.33
+1580     13.5015
+
+
+
+2a. Chironomid percentages 
+Part 1 of 4 
+
+Column 1: Year AD                     Column 11: Parachironomus 
+Column 2: Chiro# Anthra               Column 12: Paracladopelma  
+Column 3: Chiro#Plu                   Column 13: Paratendipes 
+Column 4: Cladopelma                  Column 14: Polypedilum  
+Column 5: Dicrotendipes               Column 15: Sergentia  
+Column 6: Einfeldia                   Column 16: Stempellina 
+Column 7: Glyptotendipes              Column 17: Stictochironomus 
+Column 8: Lauterborniella             Column 18: Cladotanytarsus 
+Column 9: Microtendipes               Column 19: Corynocera ambigua 
+Column 10: Pagastiella                Column 20: Corynocera oliveri
+
+YearAD  Chir#Anth  Chiro#Plu  Cladop  Dicrot   Einfeld  Glypto   Lauter   Microt   Pagast   Parach   Paracl  Paraten  Polyped  Sergent  Stempel   Sticto   Cladot   Coryno   Cory.o
+2001            0        0        0        0        0        0        0        0        0        0        0        0        0       10        0        0       10        0        0
+1999      4.16667        0        0        0        0  2.08333        0  8.33333        0        0        0  2.08333        0     6.25        0  4.16667        0        0        0
+1998       2.5974   2.5974        0        0        0        0        0   12.987        0        0        0        0        0        0        0        0        0        0   2.5974
+1996            0        0        0        0        0        0        0        0        0        0  3.33333        0        0  3.33333        0        0        0        0        0
+1993            0        0        0  5.55556        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1990            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1987      8.33333  2.77778        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1986      5.67376        0        0        0        0        0        0  0.70922        0        0  6.38298  1.41844        0        0        0  6.38298        0        0        0
+1985      8.92857        0        0  1.78571        0        0        0  4.46429        0        0        0        0        0        0        0        0        0        0        0
+1984            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1982      2.77778        0        0        0        0        0        0  5.55556        0        0        0        0        0        0        0  5.55556        0        0        0
+1979            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1976            0        0        0  4.16667        0        0        0        0        0        0        0        0        0  4.16667        0        0  4.16667        0        0
+1970            0        0        0      2.5        0        0        0        0        0        0        0        0        0        0      2.5        0        0        0        0
+1967            0        0        0   4.7619        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1965            0        0        0        0        0        0        0  8.82353        0        0        0        0        0        0        0        0        0        0        0
+1962            0        0        0        0        0        0        0        0        0        0        0        0        0  2.77778        0        0        0        0        0
+1959            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1957      2.17391        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1956            0        0        0        0        0        0        0  7.14286        0        0        0        0        0  3.57143        0        0        0        0        0
+1951            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1950            0        0        0  2.38095        0        0        0        0        0        0        0        0        0        0        0        0   4.7619        0        0
+1948      2.91262  1.94175        0        0 0.970874        0        0  19.4175        0        0  1.94175        0        0        0        0        0        0        0 0.970874
+1947      3.20856  4.27807        0  4.27807        0        0        0  19.2513        0        0        0  1.06952        0        0        0        0        0        0        0
+1946      5.88235        0        0        0        0        0        0  35.2941        0        0        0        0        0        0        0        0        0        0  2.94118
+1945.5    5.33333  2.66667  2.66667        0        0        0        0  22.6667        0        0        0        0  2.66667        0        0        0        0        0  2.66667
+1945      4.87805        0        0        0        0        0        0  21.9512        0        0        0        0        0        0        0        0        0        0        0
+1944.5          0        0        0        0        0        0        0  14.8148        0        0        0        0        0        0        0        0        0        0        0
+1944      3.47826        0        0        0        0        0        0  19.1304        0        0  1.73913        0  3.47826        0        0        0        0        0        0
+1943       2.8169        0        0   5.6338        0        0        0   2.8169        0        0        0        0        0        0        0        0        0        0        0
+1941      8.88889        0        0  8.88889        0        0        0  4.44444        0        0        0  4.44444        0        0        0        0        0        0        0
+1940            0        0        0        0        0        0        0  4.16667        0        0        0        0        0        0        0        0        0        0        0
+1939      6.34921        0        0   1.5873        0   1.5873        0  9.52381        0        0        0        0        0        0        0        0        0        0   3.1746
+1938            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1936      4.16667        0        0        0        0        0        0  4.16667        0        0        0        0        0  4.16667        0        0        0        0        0
+1934            0        0        0        0        0        0        0  2.43902        0        0        0        0        0        0        0        0        0        0        0
+1932            0        0        0        0        0        0        0  8.82353        0        0        0        0        0        0        0        0        0        0  2.94118
+1930            0        0        0  4.16667        0        0        0  4.16667        0        0  4.16667        0        0        0        0        0        0  4.16667        0
+1928            0   4.7619        0        0        0        0        0        0        0        0   4.7619        0        0        0        0        0        0        0        0
+1925            0        0        0        0        0        0        0        0        0        0  3.57143        0        0        0        0        0        0        0        0
+1923            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1920            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1919         6.25        0        0    3.125        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1914            0        0        0   2.7027        0        0        0   2.7027        0        0        0        0        0        0        0        0        0        0   2.7027
+1909            0        0        0        0        0        0        0        0  2.94118        0        0        0        0        0        0        0        0        0        0
+1905            0        0        0        0        0        0        0  4.54545        0        0        0        0        0        0        0        0        0        0        0
+1901            0        0        0        0        0        0        0        0        0        0        4        0        0        0        0        0        0        0        0
+1898            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1896            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1894            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1892            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1890            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1888            0        0        0        0        0        0        0  4.44444        0        0        0        0        0        0        0        0        0        0        0
+1885            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1883            0        0        0        0        0        0        0        0        0        0  4.47761        0        0        0        0  4.47761        0        0        0
+1880            0        0        0        0        0        0        0  2.27273        0        0  6.81818        0        0        0        0  2.27273        0        0        0
+1878            0        0        0        0        0        0        0        0        0        0  5.66038        0        0        0        0        0        0        0        0
+1876            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1874            0        0        0        0        0        0        0  5.68182        0        0  4.54545        0        0        0        0        0        0        0        0
+1872            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1870            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1868            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1866            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1864            0        0        0        0        0        0        0        0        0        0        0        0        0  17.3913        0        0        0        0        0
+1862            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1859            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1856            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1853            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1850            0  2.47934        0        0        0        0        0  9.91736        0        0  4.13223        0        0  3.30579        0        0        0        0        0
+1861            0        0        0        0        0        0        0        0        0        0        0        0        0        0  3.33333        0        0        0        0
+1858      2.77778        0        0        0        0  2.77778        0  2.77778        0        0  11.1111        0        0        0        0        0        0        0        0
+1854            0        0        0        0        0        0        0   4.7619        0        0   4.7619        0        0        0        0        0        0        0        0
+1853            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1849            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1845            0   3.0303        0        0        0        0        0  6.06061        0        0        0        0        0   3.0303        0        0        0        0   3.0303
+1844            0  6.97674        0        0        0        0        0  4.65116        0        0        0  2.32558        0        0  4.65116        0        0        0        0
+1842            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1840            0        0        0        0        0        0        0        0        0        0  2.85714        0        0        0        0        0        0        0        0
+1839            0        0        0    3.125        0    3.125        0        0        0        0        0        0        0        0        0        0        0        0        0
+1837            0        0        0        0        0        0        0        0        0        0  5.12821        0        0        0        0        0        0        0        0
+1836            0        0        0  4.34783        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1835            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1834            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1833            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1832            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1831            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1829            0        0        0        0        0        0        0        0        0        0    3.125        0        0        0        0        0        0        0        0
+1828            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1818            0        0        0    3.125        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1812            0        0        0  6.66667        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1809            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+...             0  7.69231        0        0        0        0        0        0        0        0  7.69231        0        0        0        0        0        0        0        0
+1805      3.79747  2.53165        0        0  1.26582        0  1.26582  2.53165        0        0  5.06329        0        0        0        0        0        0        0        0
+1804      1.16959  5.26316 0.584795  1.16959        0  1.16959        0  6.43275 0.584795        0  1.75439        0  1.75439        0        0        0        0  1.16959        0
+1800      6.66667        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+...             0        0        0        0        0        0        0        0        0        0        0        0  8.69565        0        0        0        0        0        0
+...             0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1799            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1798            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1796            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1794            0        0        0        0  6.06061        0        0        0        0        0        0        0        0        0        0        0        0   3.0303        0
+1793            0  4.54545        0        0        0  4.54545        0        0        0        0        0        0        0        0        0        0        0        0        0
+1792        3.125        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1791      3.84615  3.84615        0        0        0        0  3.84615        0        0        0        0        0        0        0        0        0        0        0  11.5385
+1789            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1787            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1786            0   3.7037        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1784     0.892857  3.57143        0        0        0        0        0        0        0        0  4.46429        0        0        0        0        0        0        0        0
+1783            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1782      4.08163  3.06122        0        0        0        0        0  11.2245        0  1.02041  3.06122        0  1.02041        0        0        0        0        0        0
+1781            0        0        0        0        0        0        0        0        0        0  6.66667        0        0        0        0  6.66667        0        0        0
+1779            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1778            0        0        0        0        0        0        0        0        0        0  8.33333        0        0        0        0        0        0        0        0
+1775            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1772            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1769            0        0        0        0        0        0        0        0        0        0  4.54545        0        0        0        0        0        0        0        0
+1750            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1745            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1740            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1732            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1727            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1718            0        0        0        0        0        0        0        0        0        0        0     12.5        0        0        0        0        0        0        0
+1705            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1691            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1682            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1672           10        0        0        0        0        0        0        0        0        0        5        0        0        0        0        0        0        0        0
+1660            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1650            0        0        0        0        0        0        0        0        0        0       20        0        0        0        0        0        0        0        0
+1640            0  11.1111        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1630            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1620            0        0        0        0        0        0        0        0        0        0  6.66667        0        0        0        0        0        0        0        0
+1610            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1604            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1580            0        0        0        0        0        0        0  16.6667        0        0        0        0        0        0        0        0        0        0        0
+
+
+
+
+
+2b. Chironomid percentages 
+Part 2 of 4 
+
+Column 1: Year AD                     Column 11: Tany C 
+Column 2: Micro# Insigni              Column 12: Tany type 1 (Heiri) 
+Column 3: Micro bident                Column 13: Diamesa 
+Column 4: Micro radialis              Column 14: Monodiamesa  
+Column 5: Paratanytarsus              Column 15: Prodiamesa 
+Column 6: Tany sp                     Column 16: Protanypus 
+Column 7: Tany pal                    Column 17: Allopsectro# 
+Column 8: Tany# Lugens                Column 18: Brillia  
+Column 9: Tany chinyensis             Column 19: Chaetocladius  
+Column 10: Tany B                     Column 20: Corynoneura 
+
+YearAD    Micro#I  Micro.b  Micro.r    Parat  Tany.sp   Tany.p   Tany#L   Tany.c    TanyB    TanyC    Tany1  Diamesa   Monodi    Prodi  Protany   Allops   Brilli    Chaet   Coryno
+2001            0       10        0       10       10        0        0        0        0        0        0        0        0        0        0        0       10        0        0
+1999      4.16667        0        0        0  4.16667        0        0     6.25        0        0        0        0        0        0  2.08333        0        0        0        0
+1998      7.79221        0   2.5974        0   12.987        0   2.5974   2.5974        0        0        0   2.5974        0        0        0        0        0        0        0
+1996           30        0        0        0  3.33333        0  3.33333        0        0        0        0        0        0        0        0        0        0        0  3.33333
+1993            0        0        0        0  5.55556        0        0        0        0        0        0  5.55556        0        0        0        0        0        0        0
+1990            5        0        5        0        5       10        5        0        5        5        0        0        0        0        0        0        0        0       10
+1987            0        0  9.72222        0  5.55556        0        0  5.55556        0        0        0        0        0        0        0        0        0        0  5.55556
+1986            0        0  5.67376  1.41844  8.51064  1.41844        0  8.51064        0        0        0        0        0        0        0        0        0        0  2.83688
+1985            0        0  5.35714  1.78571     6.25        0  1.78571  5.35714        0        0        0        0        0        0        0        0        0        0        0
+1984            0        0        0        0        0        0        0        0        0        0        0  14.0351        0        0        0        0        0        0        0
+1982      5.55556        0        0        0  11.1111        0        0        0        0        0        0  5.55556        0        0        0        0        0        0  11.1111
+1979      5.71429        0        0  5.71429  11.4286        0        0        0        0        0        0  5.71429        0        0        0        0        0        0  17.1429
+1976      4.16667        0        0  8.33333        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1970         12.5        0        0      2.5        5        0        0        0        0        0        0      2.5        0        0        0        0        0        0        5
+1967       4.7619        0        0        0  9.52381        0        0        0        0        0        0        0        0        0        0        0        0        0  28.5714
+1965            0  2.94118  2.94118  2.94118  2.94118        0        0        0        0        0        0        0        0        0        0        0        0        0  2.94118
+1962      5.55556        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  2.77778
+1959      3.84615        0        0  3.84615  3.84615  3.84615  3.84615        0        0        0        0        0        0        0        0        0        0        0  3.84615
+1957      10.8696  2.17391        0  2.17391  8.69565        0        0  2.17391        0        0        0        0        0        0        0        0  2.17391        0        0
+1956      17.8571  3.57143        0        0  7.14286        0        0        0  3.57143        0        0        0        0        0        0        0        0        0  7.14286
+1951            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1950            0        0        0   4.7619  11.9048        0  7.14286        0        0        0        0   4.7619        0        0        0        0        0        0  9.52381
+1948      5.82524        0        0        0  8.73786        0 0.970874  2.91262        0        0        0        0        0        0  1.94175        0        0        0 0.970874
+1947      1.06952  6.41711        0  7.48663  7.48663        0  1.06952  3.20856  1.06952        0        0        0        0  1.06952  1.06952        0        0        0  1.06952
+1946      2.94118        0        0        0  8.82353  2.94118        0        0        0        0        0        0        0        0        0        0        0        0        0
+1945.5    2.66667        0        0        0  10.6667        0  2.66667  2.66667  5.33333        0        0        0        0        0        0        0        0        0  2.66667
+1945      7.31707  2.43902  2.43902        0        0        0        0  4.87805        0        0        0        0        0        0        0        0        0        0  2.43902
+1944.5          0        0  14.8148        0        0        0        0  7.40741        0        0        0        0        0        0        0        0        0        0        0
+1944      3.47826        0        0  3.47826  5.21739        0  1.73913  8.69565        0  1.73913        0        0        0        0        0        0        0        0        0
+1943       2.8169        0   2.8169        0  11.2676   2.8169        0   5.6338   2.8169        0        0   2.8169        0        0        0        0        0        0   2.8169
+1941            0        0  4.44444        0  4.44444        0        0  4.44444        0        0        0        0        0        0        0        0        0        0  4.44444
+1940      8.33333  4.16667        0        0        0  4.16667        0        0        0        0        0  4.16667        0        0        0        0        0        0  8.33333
+1939       3.1746        0   1.5873        0  12.6984   1.5873        0   1.5873   3.1746        0        0   4.7619        0        0        0        0        0        0   3.1746
+1938      9.67742  3.22581  6.45161  3.22581  9.67742        0        0        0  3.22581  3.22581        0  3.22581        0        0  3.22581        0        0        0        0
+1936      8.33333        0        0        0  8.33333        0        0        0        0        0        0        0        0        0        0        0        0        0  4.16667
+1934      12.1951        0  4.87805        0  7.31707        0        0        0        0  2.43902        0   9.7561        0        0        0        0        0        0  12.1951
+1932      14.7059  5.88235  2.94118        0  5.88235        0        0  2.94118        0        0        0        0        0        0        0        0        0        0  5.88235
+1930         12.5        0  4.16667        0  4.16667        0  4.16667  4.16667        0        0        0        0  4.16667        0        0        0        0        0        0
+1928       4.7619        0        0        0   4.7619        0        0        0        0        0        0        0        0        0        0        0        0        0  9.52381
+1925      28.5714        0  3.57143        0  3.57143        0        0  3.57143  3.57143        0        0        0        0        0        0        0        0        0  7.14286
+1923      6.89655        0  17.2414        0  13.7931        0        0        0  3.44828        0        0        0        0        0        0        0        0        0  3.44828
+1920      17.8571        0  3.57143        0  7.14286        0        0        0        0        0        0  7.14286        0        0        0        0        0        0  14.2857
+1919         6.25        0        0        0     6.25        0    3.125        0        0        0        0        0        0        0     6.25        0        0        0        0
+1914      24.3243        0   2.7027   2.7027   2.7027        0        0        0  5.40541        0        0        0   2.7027        0        0   2.7027        0        0   2.7027
+1909      32.3529  5.88235  2.94118        0  2.94118        0        0        0        0        0        0        0  2.94118        0        0        0        0        0  2.94118
+1905      13.6364        0        0        0  4.54545        0        0        0        0        0        0  4.54545        0        0        0        0        0        0  9.09091
+1901           12        0        0        0       16        0        0        0        0        0        0        0        0        4        0        0        0        0        0
+1898            0        0  6.66667  13.3333  6.66667  6.66667        0        0        0        0        0        0        0        0        0        0        0        0        0
+1896      15.3846        0        0        0        0        0        0        0  15.3846        0        0        0        0        0        0        0        0        0        0
+1894            0        0        0        0        0        0        0        0        0        0        0        0        0        5        0        0        0        0        0
+1892      14.2857   4.7619   4.7619  9.52381        0        0   4.7619        0        0        0        0        0        0        0        0        0        0        0   4.7619
+1890            0        0  9.52381   3.1746  6.34921        0        0  9.52381        0        0        0        0        0        0        0  6.34921        0        0  6.34921
+1888      4.44444        0  4.44444        0        0        0  4.44444  11.1111        0        0        0        0  4.44444        0        0        0        0        0  8.88889
+1885      13.7931        0        0        0  6.89655        0        0        0        0        0        0        0        0        0  3.44828        0        0        0        0
+1883      23.8806        0        0  4.47761  7.46269        0        0        0        0        0        0        0        0        0        0        0        0        0  7.46269
+1880      13.6364        0        0        0  6.81818        0        0        0        0        0        0  4.54545        0        0  4.54545        0        0        0        0
+1878            0        0        0        0  11.3208        0        0        0        0        0        0        0        0        0  7.54717        0        0        0  15.0943
+1876      22.2222        0        0        0  14.8148        0        0  14.8148        0        0        0        0        0        0        0        0        0        0  14.8148
+1874      6.81818        0  4.54545        0  5.68182        0  4.54545  4.54545        0        0        0  5.68182        0        0  4.54545        0        0        0  7.95455
+1872      21.4286        0        0        0  9.52381        0        0        0        0        0        0        0        0        0        0  7.14286        0        0        0
+1870      9.09091        0        0        0  9.09091        0        0        0        0        0        0  11.3636        0        0        0  11.3636        0        0  11.3636
+1868      11.3636        0        0        0  11.3636        0        0        0        0        0        0        0        0        0        0        0        0        0  13.6364
+1866            0        0        0        0       16        0        0        0        0        0        0       16        0        0        0        0        0        0       16
+1864      21.7391        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  17.3913
+1862      6.89655        0        0        0  6.89655        0        0        0        0        0        0  6.89655        0        0        0  6.89655        0        0  15.5172
+1859      6.17284        0        0        0  7.40741        0        0        0        0        0        0  8.64198        0        0        0        0        0        0  9.87654
+1856      20.5882        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  11.7647
+1853            0        0        0        0  16.6667        0        0  16.6667        0        0        0        0        0        0        0        0        0        0  20.8333
+1850      8.26446        0        0        0  6.61157  3.30579  6.61157        0        0        0        0        0        0  9.91736        0        0        0        0        0
+1861      3.33333        0  3.33333        0        0        0        0        0        0        0        0        0        0        0  3.33333        0        0        0       10
+1858      5.55556        0        0        0  11.1111        0        0        0  2.77778        0        0  8.33333        0        0        0  2.77778        0        0        0
+1854      9.52381        0        0        0  14.2857        0        0   4.7619        0        0        0   4.7619        0        0        0        0        0        0        0
+1853      5.26316        0        0        0  10.5263  2.63158        0  2.63158        0        0        0        0        0        0        0        0        0        0  7.89474
+1849      6.66667        0  3.33333        0        0        0        0        0  3.33333  3.33333        0        0        0        0        0        0        0  3.33333  3.33333
+1845      6.06061        0        0   3.0303   3.0303        0        0        0        0        0        0   3.0303        0        0        0        0        0   3.0303   3.0303
+1844      6.97674        0        0        0  4.65116        0  2.32558  4.65116  2.32558        0        0  2.32558        0        0        0        0        0        0        0
+1842            0        0     6.25        0    18.75        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1840      22.8571        0  2.85714        0  2.85714        0        0        0  2.85714        0        0  11.4286        0        0        0        0        0        0  2.85714
+1839        3.125        0    3.125        0    3.125        0        0        0        0        0        0    18.75        0        0        0    3.125        0        0        0
+1837      5.12821        0        0   2.5641  7.69231        0        0        0        0        0        0  12.8205        0   2.5641        0        0        0        0   2.5641
+1836      4.34783        0        0        0  4.34783        0        0        0        0        0        0        0        0        0  4.34783        0        0        0  13.0435
+1835            0        0        0        0     12.5        0        0  4.16667        0        0        0  16.6667        0        0        0        0        0        0        0
+1834      2.77778        0  2.77778        0  2.77778        0        0        0        0        0        0  8.33333        0        0        0        0        0        0  2.77778
+1833            0        0        0  3.57143        0        0        0        0        0        0        0  14.2857        0        0        0        0        0        0  21.4286
+1832            0        0        0  4.54545  4.54545        0        0        0        0        0        0        0        0        0        0        0        0  4.54545  13.6364
+1831            0        0        0  7.14286  7.14286        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857
+1829            0        0        0        0    18.75        0        0        0        0        0        0        0        0        0    3.125        0        0        0     6.25
+1828            0        0        0        0  6.66667        0        0  6.66667        0        0        0        0        0        0        0        0        0        0       20
+1818            0        0        0    3.125    9.375        0        0     6.25        0        0        0    3.125        0        0        0        0        0        0    3.125
+1812      13.3333        0        0        0        0        0  3.33333        0        0        0        0  3.33333        0        0        0  3.33333        0        0  13.3333
+1809            0        0  11.1111        0  11.1111        0        0        0  11.1111        0        0        0        0        0        0        0        0        0  11.1111
+...       7.69231        0  7.69231        0  7.69231        0        0        0  7.69231        0        0  7.69231        0        0        0        0        0        0        0
+1805      5.06329        0        0        0  8.86076        0        0  8.86076        0  1.26582        0  1.26582        0        0        0        0        0        0        0
+1804      4.09357 0.584795        0        0  6.43275        0  1.16959  16.9591        0        0        0        0        0        0 0.584795        0        0        0 0.584795
+1800      13.3333        0        0        0  13.3333        0        0        0        0        0        0        0        0        0        0        0        0        0  13.3333
+...       8.69565        0        0        0  4.34783        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+...             0        0  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1799       3.7037        0        0        0   3.7037        0        0   3.7037        0        0        0   3.7037        0        0        0        0        0        0        0
+1798      6.06061        0        0        0   3.0303        0        0        0   3.0303        0        0        0        0        0        0        0        0   3.0303  9.09091
+1796      6.66667        0        0        0       20        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1794      12.1212   3.0303   3.0303        0  12.1212        0   3.0303        0        0   3.0303        0  9.09091        0        0        0        0        0   3.0303        0
+1793            0        0  18.1818        0  9.09091        0        0  4.54545  4.54545        0        0  4.54545        0        0        0        0        0        0        0
+1792         6.25        0     6.25        0    3.125        0        0    3.125        0        0        0     6.25        0        0        0        0        0        0     6.25
+1791            0        0        0  3.84615        0        0        0        0        0        0        0        0        0        0        0        0        0        0  7.69231
+1789      4.34783        0        0        0        0        0        0        0        0        0        0  4.34783        0        0        0        0        0        0  13.0435
+1787            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  18.1818
+1786      7.40741        0        0   3.7037   3.7037        0        0  7.40741        0        0        0  7.40741        0        0        0        0        0        0   3.7037
+1784         6.25        0 0.892857  1.78571  8.92857        0        0  3.57143 0.892857        0        0        0        0        0  1.78571        0        0        0  2.67857
+1783      14.2857  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1782      6.12245        0  2.04082        0  7.14286        0        0  12.2449  1.02041        0        0  1.02041        0        0  1.02041        0        0        0        0
+1781      6.66667        0  13.3333        0        0        0        0        0        0        0        0  6.66667        0        0        0        0        0        0        0
+1779            0        0        0  14.2857        0        0        0        0        0        0        0        0        0        0  28.5714        0        0        0        0
+1778            0  8.33333        0        0        0        0  8.33333        0        0        0        0        0        0        0        0        0        0        0        0
+1775         12.5        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0     12.5
+1772      9.09091        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1769            0  4.54545        0        0  18.1818        0        0  4.54545        0        0        0        0        0        0        0        0        0        0        0
+1750            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857  14.2857
+1745            0        0  11.1111        0        0        0        0        0        0        0        0  11.1111        0        0        0        0  11.1111  11.1111        0
+1740            0        0        0        0        0        0        0        0        0        0        0  14.2857        0        0        0        0        0        0        0
+1732            0        0  8.33333        0  8.33333        0        0  8.33333        0        0        0        0        0        0        0        0        0        0       25
+1727            0        0        0        0     12.5        0        0        0        0        0        0     12.5        0        0        0        0        0        0        0
+1718            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1705            0        0        0        0        0        0        0        0        0        0        0  28.5714        0        0        0        0        0        0  14.2857
+1691            0        0  11.1111        0        0        0        0        0        0        0        0  11.1111        0        0        0        0        0        0        0
+1682            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0       10       10
+1672            0        0        0       10       10        5        0        0        0        0        0        0        0        0        0        0        0        0        0
+1660            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  11.1111
+1650            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0       10
+1640            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1630            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  22.2222        0
+1620            0        0        0  6.66667  6.66667        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1610            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857
+1604            0        0        0        0        0        0        0  11.1111        0        0  11.1111        0        0        0        0        0        0        0  11.1111
+1580            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+
+
+
+
+
+2c. Chironomid percentages 
+Part 3 of 4 
+
+Column 1: Year AD                       Column 11: Limnophyes
+Column 2: Cricotopus                    Column 12: Mesocricotopus
+Column 3: Eukiefferiella                Column 13: Metriocnemus 
+Column 4: Georthocladius                Column 14: Nanocladius 
+Column 5: Heterotanytarsus              Column 15: Oliverdia
+Column 6: Heterotrissocladius           Column 16: Orthocladius 
+Column 7: H# Marcidus                   Column 17: Parachaetocladius 
+Column 8: H# brundini                   Column 18: Paracladius  
+Column 9: H# grimshawi                  Column 19: Paracricotopus 
+Column 10: H# subpilosus                Column 20: Parakieff#
+
+YearAD    Cricoto   Eukief   Georth  Heterota  Heterot  H#Marc  H#brund H#grim      H#sub  Limnoph   Mesocr   Metrio   Nanocl   Oliver    Ortho   Parach   Paracl    Paracr   Parakieff#
+2001            0        0        0        0        0        0        0        0        0        0        0        0        0        0       10        0        0        0        0
+1999      10.4167  4.16667        0        0        0        0        0  2.08333        0        0        0        0  2.08333        0     6.25        0        0        0        0
+1998      5.19481        0        0        0        0  7.79221        0   2.5974        0        0        0        0        0        0  5.19481        0        0        0        0
+1996      6.66667        0        0        0        0  6.66667        0        0        0        0        0        0        0        0  6.66667        0        0        0        0
+1993      22.2222  5.55556        0        0        0        0  5.55556        0        0  5.55556        0        0        0        0        0        0        0        0        0
+1990            5        0        0        0        0        0        0        0        0        5        0        0        0        0       25        0        0        0        0
+1987      2.77778        0        0        0        0  13.8889  1.38889  6.94444        0  1.38889        0        0        0        0  8.33333        0        0        0        0
+1986      1.41844        0        0        0        0  9.21986        0  9.21986        0        0        0        0        0        0        0        0   3.5461        0        0
+1985      5.35714        0        0        0        0  8.03571        0  16.0714        0        0        0        0        0        0  1.78571        0  1.78571        0        0
+1984      7.01754        0        0        0        0        0        0  7.01754        0        0        0        0        0        0  21.0526        0        0        0  7.01754
+1982            0        0        0        0        0        0        0  8.33333        0        0        0        0        0        0  11.1111        0  11.1111        0        0
+1979      2.85714  2.85714        0        0        0        0        0        0        0        0        0        0        0        0  25.7143        0        0        0        0
+1976         12.5        0        0        0        0     12.5        0        0        0  4.16667        0        0        0        0       25        0        0        0        0
+1970          7.5      2.5        0        0        0      2.5        0      2.5        0        5        0        0        0        0       20        0      2.5        0        5
+1967       4.7619   4.7619        0        0        0   4.7619        0        0        0        0        0        0        0        0  14.2857        0        0        0        0
+1965      17.6471  2.94118        0        0        0        0        0  2.94118        0        0        0        0        0        0  20.5882        0        0        0        0
+1962      5.55556        0        0        0        0        0        0  5.55556        0        0        0        0        0        0  13.8889        0        0        0        0
+1959      19.2308        0        0        0        0        0        0  7.69231        0        0        0        0        0        0  19.2308        0        0        0        0
+1957      13.0435        0        0        0        0  2.17391        0        0        0  2.17391        0        0        0        0  8.69565        0        0  2.17391        0
+1956           25        0        0        0        0  3.57143        0        0        0        0        0        0  7.14286        0        0        0        0        0        0
+1951      58.3333        0        0        0        0        0        0        0        0        0        0        0        0        0       25        0        0        0        0
+1950      14.2857        0        0        0        0        0        0        0        0   4.7619        0        0        0        0  14.2857        0        0        0   4.7619
+1948      4.85437        0        0        0        0  5.82524        0  11.6505        0        0        0        0 0.970874        0  1.94175        0        0        0        0
+1947      6.95187        0        0        0        0  5.34759  1.06952  4.27807        0        0        0        0  1.06952        0  1.06952        0  2.13904        0        0
+1946      2.94118        0        0        0  2.94118  2.94118        0        0        0        0        0        0        0        0        0        0        0        0        0
+1945.5    5.33333        0        0        0        0  2.66667        0        0        0        0        0        0        0        0        0        0        0        0        0
+1945      7.31707        0        0        0        0        0        0  2.43902        0        0        0        0        0        0  12.1951        0        0        0  2.43902
+1944.5    14.8148  7.40741        0        0        0  7.40741        0        0        0   3.7037        0        0        0        0        0        0        0        0        0
+1944      3.47826 0.869565        0        0        0  6.95652        0  3.47826        0        0        0  3.47826        0        0  6.95652        0        0        0        0
+1943       15.493        0        0        0        0        0        0   2.8169        0        0        0        0        0        0  14.0845        0        0        0        0
+1941      22.2222  4.44444        0        0        0        0        0        0        0        0        0        0        0        0  4.44444        0        0        0  11.1111
+1940      29.1667        0        0        0        0        0        0        0        0        0        0        0        0        0  8.33333        0        0        0  4.16667
+1939      7.93651   1.5873        0        0        0  6.34921        0        0        0        0        0        0        0        0  11.1111        0   1.5873        0   3.1746
+1938      19.3548        0        0        0        0  3.22581        0        0        0        0        0        0  3.22581        0  12.9032        0        0        0        0
+1936      16.6667        0        0        0        0  4.16667        0       25        0        0        0        0        0        0  16.6667        0        0        0        0
+1934      19.5122  2.43902        0        0        0        0        0        0        0        0        0        0  2.43902        0   9.7561        0  2.43902        0        0
+1932      11.7647        0        0  2.94118        0  2.94118        0  5.88235        0        0        0        0        0        0        0        0        0        0        0
+1930         12.5        0        0        0        0        0        0        0        0  4.16667        0        0        0        0     12.5        0        0        0  4.16667
+1928      28.5714  9.52381        0        0        0        0        0        0        0        0        0        0        0        0   4.7619        0        0        0   4.7619
+1925      17.8571        0        0        0        0  3.57143        0  3.57143        0        0        0        0  3.57143        0  3.57143        0        0        0        0
+1923      13.7931  3.44828        0        0        0        0        0  6.89655  3.44828        0        0        0        0  3.44828  13.7931        0        0        0        0
+1920      3.57143        0        0        0        0  3.57143        0  3.57143        0        0        0        0        0        0       25        0        0        0        0
+1919       28.125        0        0        0        0        0        0    3.125        0        0        0        0    3.125        0     6.25        0        0        0        0
+1914      21.6216   2.7027        0        0        0        0        0  8.10811        0   2.7027        0        0        0        0   2.7027        0        0        0        0
+1909      14.7059        0        0        0        0        0        0        0        0        0        0        0        0        0  20.5882        0        0        0        0
+1905      22.7273        0        0        0        0        0        0  13.6364        0        0        0        0        0        0  4.54545        0        0        0  9.09091
+1901           24        0        0        0        0        0        0        4        0        4        0        0        0        4       20        0        4        0        0
+1898      26.6667        0        0        0        0        0        0  6.66667        0        0        0        0        0        0  26.6667        0        0        0        0
+1896            0        0        0        0        0        0        0        0        0        0        0        0        0        0  30.7692        0        0        0        0
+1894           25        0        0        0        0        0        0        5        0        0        0        0        0        0       30        0        0        0        0
+1892      14.2857        0        0        0        0   4.7619        0  9.52381        0        0        0        0        0        0  9.52381        0        0        0        0
+1890      12.6984        0        0        0        0        0        0  9.52381        0        0        0        0   3.1746        0  6.34921        0   3.1746        0   3.1746
+1888      26.6667        0        0        0        0  4.44444        0  8.88889        0        0        0        0        0        0  4.44444  4.44444        0        0        0
+1885      6.89655  3.44828        0        0        0        0        0  6.89655        0        0        0        0        0        0  3.44828        0        0        0        0
+1883      11.9403        0        0        0        0  4.47761        0  4.47761        0        0        0        0        0  1.49254  4.47761        0        0        0        0
+1880      20.4545        0        0        0        0        0        0        0        0        0        0        0        0        0  6.81818        0        0        0        0
+1878      9.43396        0        0        0        0  7.54717        0  7.54717        0        0        0        0        0        0  9.43396        0        0        0        0
+1876            0        0        0        0        0        0        0        0        0        0        0        0   3.7037        0  14.8148        0        0        0        0
+1874      5.68182        0        0        0        0        0        0  6.81818        0        0        0        0        0  4.54545  5.68182        0        0        0        0
+1872      9.52381  11.9048        0        0        0  9.52381        0        0        0        0        0        0        0        0        0        0        0        0        0
+1870      13.6364        0        0        0        0        0        0        0        0        0        0        0        0  2.27273  18.1818        0        0        0        0
+1868           25        0        0        0        0        0        0        0        0        0        0        0        0  2.27273  9.09091        0        0        0        0
+1866           16        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1864            0        0        0        0        0        0        0        0        0        0        0        0        0        0  21.7391        0        0        0        0
+1862      13.7931        0        0        0        0        0        0        0        0        0        0        0        0        0   12.069        0        0        0        0
+1859       17.284        0        0        0        0        0        0        0        0        0        0        0        0        0  12.3457        0        0        0  1.23457
+1856      14.7059        0        0        0        0        0        0        0        0        0        0        0        0        0  11.7647        0        0        0        0
+1853            0        0        0  16.6667        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1850      6.61157  4.13223        0        0        0  4.13223        0  6.61157        0  4.13223        0        0 0.826446        0  5.78512        0        0        0        0
+1861           40  3.33333        0        0        0        0        0  6.66667        0        0        0        0        0        0  3.33333        0        0        0        0
+1858      11.1111  2.77778        0        0        0        0        0  2.77778        0  2.77778        0        0        0        0  2.77778        0        0        0        0
+1854      9.52381        0        0        0        0        0        0   4.7619        0  9.52381        0        0        0  9.52381   4.7619        0        0        0        0
+1853      10.5263  13.1579        0  2.63158        0  2.63158        0  2.63158        0  7.89474        0        0        0        0  7.89474        0        0        0        0
+1849      6.66667       10        0        0        0        0        0        0        0  6.66667        0        0        0  3.33333       20        0        0        0        0
+1845      6.06061        0        0  6.06061        0        0        0  12.1212        0        0        0        0        0        0   3.0303        0        0        0        0
+1844      13.9535  2.32558        0        0        0        0        0  13.9535  2.32558  2.32558        0        0  4.65116        0        0        0        0        0        0
+1842           25        0        0        0     6.25        0        0     6.25        0        0        0        0        0        0     6.25        0        0        0        0
+1840      8.57143  2.85714        0        0        0        0        0  11.4286        0  5.71429        0        0        0        0  8.57143        0        0        0        0
+1839         6.25     6.25        0        0        0        0        0    9.375        0    3.125        0        0        0        0    9.375        0        0        0        0
+1837      15.3846   2.5641        0        0        0        0        0  5.12821        0   2.5641        0        0        0   2.5641  10.2564        0        0        0        0
+1836      13.0435  4.34783  4.34783        0        0        0        0  4.34783        0  4.34783        0        0        0        0  8.69565        0        0        0        0
+1835      4.16667        0  4.16667        0        0        0        0        0        0  4.16667        0        0  4.16667        0     37.5        0        0        0        0
+1834      19.4444        0        0        0        0  2.77778        0        0        0  8.33333        0        0        0        0  27.7778        0        0  2.77778  2.77778
+1833      14.2857        0        0        0        0        0        0        0        0        0        0  3.57143        0        0  14.2857        0        0        0  7.14286
+1832      22.7273        0  4.54545        0        0        0        0        0        0        0        0        0        0        0  31.8182        0        0        0        0
+1831      7.14286        0        0        0        0        0        0        0        0  7.14286        0        0        0        0  21.4286        0        0        0        0
+1829           25        0        0        0        0        0        0    3.125        0        0        0        0    3.125    3.125   15.625        0        0        0     6.25
+1828      33.3333        0  6.66667        0        0  6.66667        0  6.66667        0        0        0        0        0        0        0        0        0        0        0
+1818        31.25        0    3.125        0        0    3.125        0    3.125        0        0        0        0        0        0    9.375        0        0        0        0
+1812      6.66667        0        0        0        0        0        0  3.33333        0        0        0        0  3.33333  3.33333  13.3333        0        0        0        0
+1809      11.1111        0        0        0        0        0        0  33.3333        0        0        0        0        0        0        0        0        0        0        0
+...       7.69231        0        0        0        0        0        0  7.69231        0        0        0        0        0        0  7.69231        0        0        0        0
+1805      7.59494        0        0        0        0        0        0  31.6456        0        0        0        0        0        0  3.79747        0        0        0        0
+1804      5.26316        0        0        0        0  2.92398        0  11.6959        0        0        0        0  1.16959        0  4.09357        0        0        0 0.584795
+1800      13.3333        0        0        0        0        0        0        0        0        0        0        0  6.66667        0  6.66667        0        0        0        0
+...       17.3913        0        0        0        0  4.34783        0  4.34783        0        0        0        0        0        0  30.4348        0        0        0        0
+...             0        0        0        0        0        0        0        0        0        0        0        0        0        0  57.1429        0        0        0        0
+1799      11.1111   3.7037        0        0        0   3.7037        0   3.7037        0   3.7037        0        0   3.7037        0  29.6296        0        0        0        0
+1798      9.09091  9.09091        0        0        0  6.06061        0        0        0   3.0303        0        0        0        0  24.2424        0        0        0        0
+1796           20        0        0        0        0        0        0        0        0        0        0        0        0        0  13.3333        0        0        0        0
+1794      6.06061        0        0        0        0        0        0   3.0303        0        0   3.0303        0        0        0  12.1212        0        0        0        0
+1793      9.09091  4.54545        0        0        0  9.09091        0  4.54545        0        0        0        0        0        0  18.1818        0        0        0        0
+1792        18.75        0        0        0        0    3.125        0    3.125        0    3.125        0        0        0        0    18.75        0        0        0        0
+1791      34.6154        0        0        0        0        0        0  11.5385        0        0        0        0  3.84615        0        0        0        0        0        0
+1789      17.3913  4.34783        0        0        0  4.34783        0  8.69565        0        0        0        0        0        0  8.69565        0        0        0        0
+1787      18.1818        0        0        0        0        0        0  18.1818        0        0        0        0        0        0  9.09091        0        0        0        0
+1786      11.1111        0        0        0        0        0        0  14.8148        0        0        0        0        0        0   3.7037        0        0        0        0
+1784      5.35714 0.892857        0        0        0  8.92857        0  17.8571        0        0        0        0        0        0  8.03571        0        0        0 0.892857
+1783      28.5714        0        0        0        0        0        0  28.5714        0        0        0        0        0        0        0        0        0        0        0
+1782      3.06122        0        0        0        0        0        0  12.2449        0        0        0        0  1.02041        0  2.04082  2.04082        0        0  2.04082
+1781      6.66667        0        0        0        0        0        0        0        0        0        0        0        0        0  26.6667        0        0        0  13.3333
+1779      14.2857        0        0        0        0        0        0  14.2857        0        0        0        0        0        0        0        0        0        0        0
+1778      16.6667        0        0        0        0  16.6667        0  16.6667        0        0        0        0        0        0  8.33333        0        0        0        0
+1775            0        0        0        0        0        0        0     37.5        0        0        0        0        0        0     12.5        0        0        0        0
+1772            0        0        0        0        0  18.1818        0  18.1818        0        0        0        0        0        0  9.09091        0        0        0  9.09091
+1769      13.6364        0        0        0        0  4.54545        0  4.54545        0  4.54545        0        0        0        0  22.7273        0        0        0        0
+1750      28.5714  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857
+1745      11.1111  22.2222        0        0        0        0        0        0        0        0        0        0        0        0        0  22.2222        0        0        0
+1740      28.5714  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1732      16.6667  33.3333        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1727           25     12.5        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1718         37.5     12.5        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1705      42.8571        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1691      44.4444        0        0        0        0        0        0        0        0        0        0        0        0        0        0  11.1111        0        0        0
+1682           10       20        0        0        0        0        0        0        0       20        0        0        0        0       10        0       10        0       10
+1672           10       10        0        0        0        5        0        0        0       10        0        0        0        0        5        0        0        0        0
+1660            0  22.2222        0        0        0        0        0        0        0  11.1111        0        0        0        0        0        0        0        0        0
+1650           50        0        0        0        0        0        0        0        0       10        0        0        0        0        0        0        0        0        0
+1640      22.2222        0        0        0        0        0        0        0        0  22.2222        0        0        0        0        0        0        0        0  22.2222
+1630      22.2222  11.1111        0        0        0  11.1111        0        0        0  22.2222        0        0        0        0        0        0        0        0        0
+1620      26.6667  13.3333        0        0        0        0        0        0        0  13.3333        0        0        0        0        0        0        0        0  6.66667
+1610      42.8571        0        0        0        0        0        0        0        0  28.5714        0        0        0        0        0        0        0        0        0
+1604      33.3333        0        0        0        0        0        0        0        0  22.2222        0        0        0        0        0        0        0        0        0
+1580      83.3333        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+
+
+
+
+
+
+2d. Chironomid percentages 
+Part 4 of 4 
+
+Column 1: Year AD                             Column 11: Symposiocladius       Column 21: Undiff 
+Column 2: Paramectriocnemus                   Column 12: Synorthocladius       Column 22: Unknown 
+Column 3: Paraphaenocladius                   Column 13: Thienne
+Column 4: Psec b                              Column 14: Trissocladius 
+Column 5: Psec c                              Column 15: Zalu zal
+Column 6: Pseodokiefferiella                  Column 16: Zalu lin
+Column 7: Pseuorthocladius                    Column 17: Pentaneurini 
+Column 8: Pseudosmittia                       Column 18: Tanypus  
+Column 9: Rheocricotopus                      Column 19: Procladius 
+Column 10: Smittia                            Column 20: Potthastia      
+
+YearAD   Paramect   Paraph   Psec b   Psec c  Pseodok    Pseuo  Pseudos    Rheocr  Smitti   Sympos    Synor  Thienne   Trisso  Zalu zal Zalu lin  Pentan  Tanypus  Proclad   Pottha   Undiff   Unknown
+2001            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0       10        0       20        0
+1999            0  2.08333        0  4.16667        0        0        0        0        0        0        0        0        0        0        0  2.08333        0     12.5        0     6.25  2.08333
+1998            0        0        0   2.5974        0        0        0        0        0        0        0        0        0        0        0        0        0   12.987   2.5974  5.19481        0
+1996            0        0        0  3.33333        0        0        0        0        0        0        0        0        0        0        0        0        0       10        0  13.3333        0
+1993            0        0        0  5.55556        0        0  5.55556        0        0        0        0  5.55556        0        0        0        0        0  5.55556        0  22.2222        0
+1990            0       10        0        0        0        0        0        0        0        0        0        0        5        0        0        0        0        0        0        0        0
+1987            0        0        0  1.38889        0        0        0        0  1.38889        0        0        0        0        0        0  2.77778        0  2.77778        0  5.55556        0
+1986            0        0        0  0.70922        0        0        0        0  0.70922        0        0        0        0        0        0  2.83688        0  15.6028        0        0        0
+1985            0        0        0  1.78571        0        0        0        0 0.892857        0        0        0        0        0        0        0        0  14.2857        0  3.57143        0
+1984            0        0        0        0        0        0        0        0  7.01754        0        0        0        0        0        0        0        0  7.01754        0  7.01754        0
+1982            0        0        0  5.55556        0        0  5.55556        0        0        0        0        0        0        0        0        0        0        0        0  11.1111        0
+1979            0        0        0  8.57143        0        0        0        0  2.85714        0        0        0        0        0        0        0        0  5.71429        0  2.85714  2.85714
+1976            0        0        0  4.16667        0        0        0        0        0        0        0        0        0        0        0        0        0  4.16667        0     12.5        0
+1970            0        0        0       10        0        0        0        0        0        0        0        0        0        0        0      2.5        0        5        0      2.5        0
+1967            0   4.7619        0  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0   4.7619        0
+1965            0        0        0  8.82353        0        0        0        0        0        0        0        0        0        0        0  2.94118        0  2.94118        0  14.7059  2.94118
+1962            0        0        0  13.8889        0        0        0        0        0        0        0        0        0        0        0        0        0  5.55556        0  5.55556        0
+1959            0        0  3.84615  3.84615        0        0        0        0        0        0        0        0        0        0        0  3.84615        0  11.5385        0  7.69231        0
+1957            0        0        0  2.17391        0        0        0        0        0        0        0        0        0        0        0        0        0  2.17391        0  2.17391        0
+1956            0        0        0  7.14286        0        0        0        0        0        0        0        0        0        0        0        0        0  3.57143        0  3.57143        0
+1951            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  8.33333        0        0        0  8.33333        0
+1950            0        0        0  2.38095        0        0  2.38095        0        0        0  2.38095        0        0        0        0  2.38095        0        0        0  7.14286        0
+1948            0        0        0 0.970874        0        0        0        0        0        0        0        0        0        0        0  1.94175        0  14.5631        0  7.76699        0
+1947            0  1.06952        0        0        0        0  1.06952        0        0        0        0  1.06952        0  1.06952        0        0        0  7.48663        0  3.20856        0
+1946            0        0        0        0        0        0  2.94118  2.94118        0        0        0        0        0        0        0  2.94118        0  20.5882        0  2.94118        0
+1945.5          0        0        0        0        0        0  2.66667        0        0        0        0        0  2.66667        0        0        0        0  18.6667        0  2.66667        0
+1945            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  17.0732  2.43902   9.7561        0
+1944.5          0  7.40741        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  22.2222        0        0        0
+1944            0        0        0  1.73913        0        0  1.73913        0        0        0        0  1.73913        0        0        0  3.47826        0  10.4348        0  3.47826        0
+1943            0        0        0        0        0        0        0        0        0        0        0   2.8169        0        0        0   2.8169        0   8.4507        0   8.4507        0
+1941            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  4.44444        0  8.88889        0
+1940            0        0        0     12.5        0        0  4.16667        0        0        0        0        0        0        0        0  4.16667        0        0        0  4.16667        0
+1939            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0   3.1746        0  11.1111        0
+1938            0        0        0        0        0        0  3.22581        0        0        0        0        0        0        0        0        0        0        0        0  9.67742  3.22581
+1936            0        0        0  4.16667        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1934            0        0        0        0        0        0        0  2.43902        0        0        0        0        0  2.43902        0        0        0  2.43902        0  4.87805        0
+1932            0        0        0        0        0        0        0  2.94118        0        0        0        0        0        0        0  5.88235        0  5.88235        0  11.7647        0
+1930            0        0        0  4.16667        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0     12.5        0
+1928            0   4.7619        0   4.7619        0        0        0        0        0        0        0        0        0        0        0        0        0  9.52381        0        0   4.7619
+1925            0        0        0  7.14286        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  7.14286        0
+1923            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  3.44828        0  6.89655        0
+1920            0        0        0        0        0        0  3.57143        0        0        0  3.57143        0        0        0        0        0        0  3.57143        0  3.57143        0
+1919            0    3.125        0     6.25        0        0        0    3.125        0        0        0    3.125        0        0        0        0        0        0        0     12.5        0
+1914            0        0        0  5.40541        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0   2.7027        0
+1909            0        0        0        0        0        0        0        0        0        0        0        0        0  2.94118        0        0        0  2.94118        0  5.88235        0
+1905            0        0        0        0        0        0        0        0        0        0  4.54545  4.54545        0        0        0        0        0  4.54545        0        0        0
+1901            0        0        0        4        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1898            0        0        0  6.66667        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1896            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  23.0769        0  15.3846        0
+1894            0        0        0        0        0        0        0        0        0        0        0        5        0        0        0        0        0        0        0       30        0
+1892            0        0        0   4.7619        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0
+1890            0        0        0  6.34921        0   1.5873        0        0        0        0   3.1746        0        0        0        0        0        0   3.1746        0  6.34921        0
+1888            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  8.88889        0
+1885            0        0        0  13.7931        0        0        0        0        0        0        0        0        0        0        0        0  3.44828  24.1379        0  13.7931        0
+1883            0        0        0  4.47761        0        0        0        0        0        0        0        0        0        0        0  7.46269        0        0        0  8.95522        0
+1880            0        0        0  13.6364        0        0        0        0        0        0        0        0        0        0        0  9.09091        0        0        0  9.09091        0
+1878            0        0        0  18.8679        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  5.66038  1.88679
+1876            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  11.1111        0   3.7037        0
+1874            0        0        0  6.81818        0        0        0        0        0        0        0        0        0        0        0  5.68182        0  5.68182        0  4.54545        0
+1872            0        0        0  9.52381        0        0        0        0        0        0        0        0        0  9.52381        0        0        0        0        0  11.9048        0
+1870            0        0        0  9.09091        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  4.54545        0
+1868            0        0        0  11.3636        0        0        0        0        0        0        0        0        0        0        0        0        0  11.3636        0  4.54545        0
+1866            0        0        0       16        0        0        0        0        0        0        0        0        0        0        0        0        0       16        0        4        0
+1864            0        0        0  21.7391        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1862            0        0        0  6.89655  1.72414        0        0  1.72414        0        0        0        0        0        0        0  6.89655        0        0        0  10.3448  3.44828
+1859            0        0        0  12.3457        0        0        0        0        0        0        0        0        0        0        0  8.64198        0  8.64198        0  7.40741        0
+1856            0        0        0  14.7059        0        0        0        0        0        0        0        0        0  11.7647        0        0        0  11.7647        0  2.94118        0
+1853            0        0        0  20.8333        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  8.33333        0
+1850            0        0        0        0        0        0  1.65289        0        0        0        0  2.47934        0        0        0        0        0  9.09091        0        0        0
+1861            0        0        0        0        0        0  3.33333        0        0        0  3.33333        0        0        0        0        0        0  3.33333        0  6.66667  6.66667
+1858            0        0        0  13.8889        0        0  2.77778        0        0        0        0        0        0        0        0        0        0        0        0  11.1111        0
+1854            0        0   4.7619        0        0        0        0        0        0        0        0        0        0        0        0        0        0  9.52381        0   4.7619        0
+1853            0        0        0  2.63158        0        0        0        0        0        0        0        0        0        0  5.26316        0        0  5.26316        0  10.5263        0
+1849            0        0        0        0        0        0        0        0        0        0        0        0        0        0  6.66667  3.33333        0  3.33333        0  16.6667        0
+1845            0        0   3.0303   3.0303        0        0   3.0303        0        0        0        0        0        0        0        0  6.06061        0  12.1212        0  9.09091        0
+1844            0        0        0  6.97674        0        0        0        0        0        0        0        0        0        0        0  2.32558        0  2.32558        0  4.65116  2.32558
+1842            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0    18.75        0        0        0     12.5        0
+1840            0        0        0  2.85714        0        0        0        0        0        0        0        0        0        0        0  2.85714        0        0        0  8.57143        0
+1839            0        0        0    3.125        0        0        0        0        0        0        0        0        0        0        0     6.25        0        0        0   15.625    3.125
+1837            0        0        0  5.12821        0        0        0        0        0        0        0        0        0        0  5.12821  5.12821        0   2.5641        0   2.5641   2.5641
+1836            0        0        0  8.69565        0        0        0        0  4.34783        0        0        0        0        0        0        0        0        0        0  17.3913        0
+1835            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0     12.5        0
+1834            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  2.77778        0        0        0  8.33333  5.55556
+1833            0        0        0        0        0        0  7.14286        0        0        0        0        0        0        0  3.57143        0        0        0        0  10.7143        0
+1832            0        0        0  9.09091        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  4.54545        0
+1831            0        0  7.14286  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0
+1829            0        0        0     6.25        0        0        0    3.125        0        0        0        0        0        0        0        0        0        0        0    3.125        0
+1828            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  13.3333        0
+1818            0        0        0     6.25        0        0     6.25        0        0        0        0        0        0        0        0        0        0        0        0    9.375        0
+1812            0        0        0  13.3333        0        0        0        0        0        0        0        0        0        0  3.33333        0        0        0        0       10        0
+1809            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  11.1111        0
+...             0        0        0  7.69231        0        0        0        0        0        0        0        0        0        0        0  7.69231        0        0        0        0  7.69231
+1805            0        0        0  3.79747        0        0  1.26582        0        0        0        0        0        0        0        0        0        0  7.59494        0  2.53165        0
+1804            0        0        0  1.16959        0        0        0        0        0        0        0        0        0        0        0        0        0  12.2807        0  8.77193 0.584795
+1800            0        0  13.3333        0        0        0        0        0        0        0        0        0        0        0        0        0        0  13.3333        0        0        0
+...             0        0        0        0        0        0        0        0        0        0        0        0        0        0  4.34783        0        0  4.34783        0  13.0435        0
+...             0        0  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0
+1799            0        0        0  7.40741        0        0  7.40741        0        0        0        0        0        0        0   3.7037        0        0  7.40741        0        0        0
+1798            0        0        0        0        0        0   3.0303        0        0        0        0        0        0        0  6.06061        0        0   3.0303        0  9.09091   3.0303
+1796            0        0        0  13.3333        0        0        0        0        0        0        0        0        0        0        0        0        0  6.66667        0       20        0
+1794            0        0        0  9.09091        0        0   3.0303        0        0        0        0        0        0        0        0   3.0303        0        0        0   3.0303        0
+1793            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  4.54545        0        0        0        0        0
+1792            0        0        0        0        0        0        0        0    3.125        0        0        0        0        0        0        0        0        0        0   15.625        0
+1791            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  7.69231        0  7.69231        0
+1789            0        0        0  4.34783        0        0  4.34783        0        0        0        0        0        0        0        0  4.34783        0  4.34783        0  8.69565  8.69565
+1787            0        0        0        0        0        0  9.09091        0        0        0        0        0        0        0        0        0        0  9.09091        0  18.1818        0
+1786            0        0        0  11.1111        0        0   3.7037        0        0        0        0        0        0        0   3.7037        0        0   3.7037        0  7.40741   3.7037
+1784            0        0        0 0.892857        0        0 0.892857        0        0        0        0        0        0        0 0.892857  3.57143        0  10.7143        0  5.35714        0
+1783            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0        0        0
+1782            0        0        0  1.02041        0        0        0        0        0  2.04082        0        0        0        0  1.02041        0        0  15.3061        0  4.08163        0
+1781            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  6.66667  6.66667
+1779            0        0        0  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0
+1778            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  8.33333        0  8.33333        0
+1775            0        0        0       25        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1772            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  18.1818        0  18.1818        0
+1769            0        0        0  4.54545        0        0        0        0        0        0  4.54545        0        0        0        0        0        0        0        0  9.09091        0
+1750            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0        0        0        0        0
+1745            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1740            0        0        0        0        0        0  28.5714  14.2857        0        0        0        0        0        0        0        0        0        0        0        0        0
+1732            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1727            0        0        0        0        0        0     12.5        0        0        0        0        0        0        0        0     12.5        0     12.5        0        0        0
+1718            0        0        0        0        0        0       25        0        0        0        0        0        0        0        0        0        0     12.5        0        0        0
+1705            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0        0        0
+1691            0        0        0        0        0        0  22.2222        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1682            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1672            0        0        0        0        0        0       10        0        0        0        0        0        0        0        5        0        0        5        0        0        0
+1660            0        0        0        0        0        0  22.2222        0  11.1111        0        0  11.1111        0        0        0        0        0  11.1111        0        0        0
+1650            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0       10        0        0        0
+1640      22.2222        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1630            0        0        0        0        0        0  11.1111        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1620      6.66667        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  13.3333        0        0        0
+1610            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0  14.2857        0        0        0
+1604            0        0        0        0        0        0  11.1111        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+1580            0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0        0
+
+
+  
+
+

@@ -1,5 +1,5 @@
 ## ---- magick_markdown_setup
-library(knitr)
+#library(knitr)
 "print.magick-image" <- function(x, ...){
   ext <- ifelse(length(x), tolower(image_info(x[1])$format), "gif")
   tmp <- tempfile(fileext = paste0(".", ext))
@@ -21,8 +21,6 @@ cleanup_images <- function(){
   invisible(gc())
 }
 
-
-
 ## ---- load_published_stratigraphies
 
 strat_qsr <- image_read("images/silvaplana_qsr.png")
@@ -43,8 +41,8 @@ strat_holocene <- strat_holocene %>%
 # strat_holocene %>% image_crop("3000x354+190+778")
 
 qsr_cropper <- c("%dx190+%d+650",  "%dx83+%d+757")
-jopl_cropper <- c("%dx1180+%d+470", "%dx810+%d+810")
-holocene_cropper <- c("%dx632+%d+470", "%dx354+%d+778")
+jopl_cropper <- c("%dx1180+%d+470", "%dx812+%d+808")
+holocene_cropper <- c("%dx633+%d+469", "%dx354+%d+778")
 
 cropper <- function(image, cropper, width, xoffset, dropNames = FALSE){
   if(!dropNames){
@@ -52,39 +50,46 @@ cropper <- function(image, cropper, width, xoffset, dropNames = FALSE){
     sf <- "x1180"
   } else{
     cropper = cropper[2]
-    sf <- "x810"
+    sf <- "x812"
     }
   image_crop(image = image, geometry = sprintf(cropper, width , xoffset)) %>% 
     image_scale(sf)
 }
 
+make_fig <- function(gg){
+  fig <- image_graph(width = 250, height = 812, res = 96)
+  print(gg)
+  dev.off()
+  fig
+}
 
 ## axes
-qsr_chron <- strat_qsr %>% cropper(qsr_cropper, 30, 15, TRUE)
+qsr_chron <- strat_qsr %>% cropper(qsr_cropper, 26, 19, TRUE)
 jopl_chron <- strat_jopl %>% cropper(jopl_cropper, 100, 340, TRUE)
 holo_chron <- strat_holocene %>% cropper(holocene_cropper, 60, 180, TRUE)
 
 
 ## ---- Microtendipes
+microt <- ggplot(fos_holocene, aes(x = recon_holocene$Year, y = Microt)) + 
+  geom_col() +
+  scale_x_continuous(limits = c(1850, 2001), expand = c(0.01, 0), breaks = seq(1840, 2000, 20)) +
+  scale_y_continuous(position = "right", breaks = seq(0, 100, 20)) +
+  coord_flip() +
+  labs(x = "Year CE", y = "") +
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank(), plot.margin = margin(1, 1, 1, 1))
+
 
 microtendipes <- image_append(c(
   jopl_chron,
   strat_jopl %>% cropper(jopl_cropper, 80, 1000, TRUE),
+  make_fig(microt),
   holo_chron,
   strat_holocene %>% cropper(holocene_cropper, 90, 380, TRUE),
   qsr_chron,
 strat_qsr %>% cropper(qsr_cropper, 30, 270, TRUE)
 ))
 
-image_draw(microtendipes)
-x11()
-microt <- ggplot(fos_holocene, aes(x = recon_holocene$Year, y = Microt)) + 
-  geom_col() +
-  coord_flip() +
-  xlim(1849, 2001) +
-  labs(x = "Year CE")
-
-microt
+microtendipes
 
 
 ## ---- Cricotopus
@@ -92,11 +97,27 @@ names <- TRUE
 Cricotopus <- image_append(c(
   jopl_chron,
   strat_jopl %>% cropper(jopl_cropper, 90, 1700, names),
+  make_fig(microt + aes(y = Cricoto)),
   holo_chron,
   strat_holocene %>% cropper(holocene_cropper, 140, 2110, names),
   qsr_chron,
   strat_qsr %>% cropper(qsr_cropper, 60, 735, names)
 ))
-print(Cricotopus)
-x11()
-microt + aes(y = Cricoto) 
+Cricotopus
+
+
+
+## ---- Procladius
+names <- TRUE
+Procladius <- image_append(c(
+  jopl_chron,
+  strat_jopl %>% cropper(jopl_cropper, 70, 1140, names),
+  make_fig(microt + aes(y = Proclad)),
+  holo_chron,
+  strat_holocene %>% cropper(holocene_cropper, 65, 1355, names),
+  qsr_chron,
+  strat_qsr %>% cropper(qsr_cropper, 33, 430, names)
+))
+Procladius
+
+

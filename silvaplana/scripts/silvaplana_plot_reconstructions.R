@@ -3,12 +3,11 @@
 recon_jopl %>% mutate(source = "140 yr JoPL") %>% 
   bind_rows(
     recon_holocene %>% 
-      filter(Year > min(recon_jopl$Year)) %>% 
       mutate(source = "540 yr Holocene"), 
     recon_qsr %>% 
-      filter(Year > min(recon_jopl$Year)) %>% 
+      filter(Year > min(recon_holocene$Year, na.rm = TRUE)) %>% 
       mutate(source = "1000 yr QSR") %>% 
-      mutate(JulyT  = scale(JulyT, scale = FALSE) + mean(recon_jopl$JulyT))# add mean to anomalies
+      mutate(JulyT  = scale(JulyT, scale = FALSE) + mean(recon_holocene$JulyT))# add mean to anomalies
   ) %>% 
   mutate(source = factor(source, levels = c("140 yr JoPL", "540 yr Holocene", "1000 yr QSR"))) %>% 
   ggplot(aes(x = Year, y = JulyT, colour = source)) +
@@ -112,3 +111,10 @@ jopl <- ggplot(recon_jopl, aes(x = Year, y = JulyT)) +
   theme(plot.margin = margin(t = 10, r = 10, b = 50, l = 40))
 
 makefig(jopl)
+
+## ---- Holocene_chronology
+recon_holocene %>% 
+  rowid_to_column(var = "rank") %>% 
+  ggplot(aes(x = rank, y = Year)) + 
+    geom_point()
+

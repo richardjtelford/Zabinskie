@@ -1,0 +1,163 @@
+Lake Silvaplana, Switzerland 140 Year Chironomid Inferred Temperature
+-----------------------------------------------------------------------
+               World Data Center for Paleoclimatology, Boulder
+                                  and
+                     NOAA Paleoclimatology Program
+-----------------------------------------------------------------------
+NOTE: PLEASE CITE ORIGINAL REFERENCE WHEN USING THIS DATA!!!!!
+
+
+NAME OF DATA SET: 
+Lake Silvaplana, Switzerland 140 Year Chironomid Inferred Temperature
+
+LAST UPDATE: 3/2009 (Data series replaced. Incorrect data originally archived)
+CONTRIBUTOR: Isabelle Larocque, University of Bern 
+IGBP PAGES/WDCA CONTRIBUTION SERIES NUMBER: 2008-125
+
+WDC PALEO CONTRIBUTION SERIES CITATION: 
+Larocque, I., et al. 2008.
+Lake Silvaplana, Switzerland 140 Year Chironomid Inferred Temperature. 
+IGBP PAGES/World Data Center for Paleoclimatology 
+Data Contribution Series # 2008-125. 
+NOAA/NCDC Paleoclimatology Program, Boulder CO, USA.
+
+
+ORIGINAL REFERENCE: 
+Larocque, I., M. Grosjean, O. Heiri, C. Bigler, and A. Blass. 2008. 
+Comparison between chironomid-inferred July temperatures and 
+meteorological data AD 1850–2001 from varved Lake Silvaplana, Switzerland. 
+Journal of Paleolimnology, 10.1007/s10933-008-9228-0
+ 
+ABSTRACT:
+Inferred temperatures from chironomids preserved in the varved sediment 
+of Lake Silvaplana in the Eastern Swiss Alps were compared with 
+instrumental data obtained from a meteorological station in Sils-Maria, 
+on the shore of Lake Silvaplana, for the time interval 1850–2001. 
+At near-annual resolution, the general patterns of chironomid-inferred 
+temperature changes followed the meteorological record over the last 
+~150 years (rPearson = 0.65, P = 0.01) and 87% of the inferences had 
+deviations from the instrumental data below the root-mean-square error 
+of prediction (RMSEP). When the inferences were compared with a 2-year 
+running mean in the meteorological data, 94% of the inferences had 
+differences with the instrumental data below the RMSEP, indicating that 
+more than half of the inaccurate inferences may have been due to errors 
+in varve counting. Larger deviations from the instrumental data were also 
+obtained from samples with low percentages of fossil taxa represented in 
+the training set used for temperature reconstruction and/or assemblages 
+with poor fit to temperature. Changes in total phosphorus (TP, as inferred 
+by diatoms) and/or greater precipitation were possible factors affecting 
+the accuracy of the temperature reconstruction. Although these factors 
+might affect the quantitative estimates, obtaining >80% accurate 
+temperature inferences suggests that chironomid analysis is a reliable 
+tool for reconstructing mean July air temperature quantitatively over 
+the last ~150 years in Lake Silvaplana. 
+
+
+GEOGRAPHIC REGION: Swiss Alps, central Europe
+PERIOD OF RECORD: 1864 - 2001 AD 
+
+FUNDING SOURCES: 
+NCCR-Climate, EU project MILLENNIUM (European Climate of the Last Millennium),
+Contract No. 017008-2.
+
+
+
+DESCRIPTION:  
+Chironomid-inferred mean July temperature from Lake Silvaplana, Switzerland 
+for the last 140 years.  
+
+Lake Silvaplana (46°27'N, 9°48'E, 1800 m a.s.l.).
+
+
+
+
+DATA:
+
+Column 1: Year AD
+Column 2: Chironomid-inferred mean July Temperature, °C
+
+Year         JulyT
+2001         13.48
+1998       14.2169
+1997       11.3887
+1995       10.7133
+1993       9.73346
+1992        10.372
+1990       12.1573
+1989       9.28264
+1987       10.5122
+1985       11.2174
+1984       11.1825
+1983       11.0521
+1982       9.21281
+1980       10.1151
+1979       11.1073
+1977       11.3505
+1976       13.4528
+1973         10.41
+1970       11.4155
+1969       10.4153
+1967       10.2111
+1965       10.0363
+1964       10.3527
+1962       12.4768
+1961       11.9237
+1958       9.96961
+1957       11.6696
+1956       10.8137
+1955       12.0453
+1953       12.2844
+1952       13.6622
+1950       10.3002
+1949       11.6981
+1948       7.71936
+1947          12.1
+1946          10.6
+1945          11.5
+1944            12
+1943       12.1349
+1942         12.79
+1941         12.78
+1940       10.3562
+1939       10.8197
+1938        10.407
+1937       10.1393
+1936       9.81869
+1935          10.3
+1934          9.35
+1933          10.9
+1932       11.2906
+1931       8.78208
+1930       12.4536
+1928       11.3754
+1925       11.0534
+1923        12.764
+1921       12.6424
+1919       10.8313
+1917       10.8412
+1914       11.1606
+1912       11.3039
+1909        9.9854
+1905       9.23559
+1903       12.8236
+1901       8.55034
+1900       11.1532
+1898       10.2862
+1896       8.55495
+1894       10.4559
+1892        11.937
+1890       8.49101
+1888       9.33457
+1887       10.0957
+1885       12.3166
+1883       11.1236
+1880        9.6612
+1878       11.1594
+1876       11.1437
+1874       11.9743
+1872        10.376
+1870       10.2581
+1868       10.5348
+1866       9.14373
+1864       12.3043
+

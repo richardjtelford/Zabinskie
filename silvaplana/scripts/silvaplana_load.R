@@ -41,6 +41,13 @@ recon_jopl <- read_table("data/silvaplana2008.txt", skip = 78) %>%
 #Load 1000 yr reconstruction - QSR 2010
 recon_qsr <- read_table("data/silvaplana2010.txt", skip = 98) %>% 
   filter(!is.na(Year)) %>%   
-  select(Year, JulyT = `3-year`) %>% 
+  mutate(JulyT = `3-year`, 
+         JulyT = ifelse(is.na(JulyT), `10-year`, JulyT)) %>% #use 10-yr smooth if needed
+  select(Year, JulyT) %>% 
   filter(!is.na(JulyT)) %>% 
   arrange(desc(Year))
+
+## --- read_2010_QSR_unsmoothed
+#not archived
+
+recon_qsr2 <- read_table("data/chironomids_Silvaplana.txt", skip = 1, col_names = FALSE) %>% rename(Year = X1, JulyT = X2) %>% filter(!is.na(JulyT)) %>% arrange(desc(Year))
