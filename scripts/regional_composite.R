@@ -15,18 +15,28 @@ vilnius <- read_station("data/vilnius26730.dat")
 kalingrad<- read_station("data/kalingrad26702.dat")
 
 ##
-allStations <- kanuas %>% mutate(station = "Kanuas") %>%
-  bind_rows(warsaw %>% mutate(station = "Warsaw")) %>% 
-  bind_rows(vilnius %>% mutate(station = "Vilnius")) %>%
-  bind_rows(kalingrad %>% mutate(station = "Kalingrad")) %>% 
+allStations <- bind_rows(
+  Kanuas = kanuas,
+  Warsaw =  warsaw, 
+  Vilnius = vilnius,
+  Kalingrad = kalingrad, 
+    .id = "station") %>% 
   gather(key = month, value = temperature, -year, -station) %>%
   mutate(temperature = if_else(temperature == -999.9, NA_real_, temperature)) %>% 
   filter(between(year, 1896, 2010))
 
 
-composite <- allStations %>% 
+normals <- allStations %>% 
+  filter(year > 1950, year <= 1980) %>% 
+#  group_by(station) %>% 
+#  summarise(na = sum(is.na(temperature)))
   group_by(station, month) %>% 
-  mutate(temperature = temperature - mean(temperature, na.rm = TRUE)) %>% 
+  summarise(normal = mean(temperature, na.rm = TRUE))
+
+composite <- allStations %>% 
+  left_join(normals) %>% 
+  group_by(station, month) %>% 
+  mutate(temperature = temperature - normal) %>% 
   group_by(year, month) %>% 
   summarise(temperature = mean(temperature, na.rm = TRUE)) %>% 
   mutate(station = "Mine")
@@ -58,5 +68,3 @@ cor(fat_composite$Aug, fat_composite$Jun)
 cor(fat_composite$Aug, fat_composite$Jul)
 cor(fat_composite$Aug, fat_composite$Sep)
 cor(fat_composite$Aug, fat_composite$summer)
-
-
