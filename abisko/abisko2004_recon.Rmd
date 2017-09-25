@@ -1,0 +1,132 @@
+---
+title: "Abisko"
+author: "Richard J. Telford"
+date: "September 6, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library("readxl")
+library("tidyverse")
+library("readr")
+library("magick")
+library("grid")
+
+knitr::read_chunk("scripts/read_abisko.R")
+
+```
+
+```{r read_reconstructions}
+```
+```{r read_marcott}
+marcott_850 <- read_excel("data/Marcott.SM.database.S1.xlsx", sheet = "Lake 850", skip = 2, col_names = FALSE) %>%
+  select(3:5) %>%
+  setNames(c("Depth", "Temperature", "Age"))
+
+marcott_N <- read_excel("data/Marcott.SM.database.S1.xlsx", sheet = "Lake Nujulla", skip = 2, col_names = FALSE) %>%
+  select(3:5) %>%
+  setNames(c("Depth", "Temperature", "Age"))
+
+
+```
+
+
+```{r overlay_fun}
+```
+```{r }
+## ---- overlay_jopl_6a 
+
+fig2 <- image_read("data/1-s2.0-S0277379104001301-gr2.gif")
+fig2_V <- fig2 %>% image_crop(geometry = "380x270+0+0") %>% image_flop()
+fig2_850 <- fig2 %>% image_crop(geometry = "380x270+0+270") %>% image_flop()
+fig2_N <- fig2 %>% image_crop(geometry = "380x270+0+540") %>% image_flop()
+
+xmin <- -350
+xmax <- 11800
+
+V_plot <- ggplot(Vuoskku, aes(x = Age, y = Temperature)) +
+  annotation_custom(
+    rasterGrob(as.raster(fig2_V), width=unit(1,"npc"), height=unit(1,"npc")),
+    xmin = xmin, xmax = xmax, ymin = 7.3, ymax = 16.5) +
+  geom_point(colour = scales::hue_pal()(2)[1], size = 2) +
+  geom_line(colour = scales::hue_pal()(2)[1]) + 
+  scale_x_continuous(breaks = seq(0, 10000, 2000)) +
+  theme_classic() +
+  theme(plot.margin = margin(t = 10, r = 50, b = 90, l = 40))
+
+makefig(V_plot)
+
+```
+```{r}
+L850_plot <- ggplot(L850, aes(x = Age, y = Temperature)) +
+  annotation_custom(
+    rasterGrob(as.raster(fig2_850), width=unit(1,"npc"), height=unit(1,"npc")),
+    xmin = xmin, xmax = xmax, ymin = 6.1, ymax = 13.3) +
+  geom_point(colour = scales::hue_pal()(2)[1], size = 2) +
+  geom_line(colour = scales::hue_pal()(2)[1]) + 
+  geom_point(data = marcott_850, colour = scales::hue_pal()(2)[2], size = 2) +
+  geom_line(data = marcott_850, colour = scales::hue_pal()(2)[2], linetype = "dashed") + 
+
+  scale_x_continuous(breaks = seq(0, 10000, 2000)) +
+  theme_classic() +
+  theme(plot.margin = margin(t = 10, r = 50, b = 90, l = 40))
+
+makefig(L850_plot)
+```
+
+```{r}
+N_plot <- ggplot(Njulla, aes(x = Age, y = Temperature)) +
+  annotation_custom(
+    rasterGrob(as.raster(fig2_N), width=unit(1,"npc"), height=unit(1,"npc")),
+    xmin = xmin, xmax = xmax, ymin = 3., ymax = 14.4) +
+  geom_point(colour = scales::hue_pal()(2)[1], size = 2) +
+  geom_line(colour = scales::hue_pal()(2)[1]) + 
+  geom_point(data = marcott_N, colour = scales::hue_pal()(2)[2], size = 2) +
+  geom_line(data = marcott_N, colour = scales::hue_pal()(2)[2], linetype = "dashed") + 
+  scale_x_continuous(breaks = seq(0, 10000, 2000)) +
+  theme_classic() +
+  theme(plot.margin = margin(t = 10, r = 50, b = 40, l = 40))
+
+makefig(N_plot)
+
+```
+
+Lake 850 again
+```{r Bigler_Larocque}
+fig3 <- image_read("data/1-s2.0-S1040618204000448-gr3.gif")
+fig3
+fig3_850 <- fig3 %>% image_crop(geometry = "352x126+20+0") %>% image_flop()#should use image_chop but it crashes Rstudio
+#fig3_850 <- fig3 %>% image_crop(geometry = "352x126+20+330") %>% image_flop()#for age axis
+
+L850_plot2 <- ggplot(L850, aes(x = Age, y = Temperature)) +
+  annotation_custom(
+    rasterGrob(as.raster(fig3_850), width=unit(1,"npc"), height=unit(1,"npc")),
+    xmin = -850, xmax = 10650, ymin = 8.45, ymax = 11.55) +
+  geom_point(colour = scales::hue_pal()(2)[1], size = 2) +
+  geom_line(colour = scales::hue_pal()(2)[1]) + 
+  scale_x_continuous(breaks = seq(0, 10000, 2000)) +
+  theme_classic() +
+  theme(plot.margin = margin(t = 10, r = 20, b = 20, l = 20))
+
+makefig(L850_plot2)
+
+```
+
+
+
+```{r}
+marcott_850 %>% ggplot(aes(x = Age, y = Depth)) + geom_path() + 
+  geom_abline(intercept = 1, slope = 120/9150, col = 2) + 
+  geom_abline(intercept = 1, slope = 0.013, col = 3)
+
+marcott_850 %>% mutate(newAge = Depth * 10/0.13, delta = Age - newAge) %>% ggplot(aes(x = Depth, y = delta)) + geom_path() + geom_rug(data = data_frame(), aes(x = c(32.5, 49.5, 72.5, 96.5, 106.5)), inherit.aes = FALSE)
+
+```
+Lake V Recon initial matches, then chron offset. No obvious match in EH. Replication only matches after ~6000BP
+
+Lake 850. Multiple chronologies. Otherwise good match between version. Recalculation only matches when data are not logged
+
+Lake N Archived recon ~replicates with no log. Correct calc replicated paper.
+

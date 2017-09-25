@@ -1,0 +1,62 @@
+---
+title: "Abisko 2003"
+author: "Richard J. Telford"
+date: "September 6, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+
+library("tidyverse")
+library("magick")
+library("grid")
+library("magrittr")
+library("gridExtra")
+
+knitr::read_chunk("scripts/abisko_short_2003.R")
+
+```
+
+As it includes four of the relatively few very-high resolution palaeoenvironmental reconstructions that have been validated against instrumental data, I thought I ought to finally have a closer look at [Larocque and Hall (2003)](https://www.researchgate.net/profile/Roland_Hall/publication/223457254_Holocene_temperature_estimates_and_chironomid_community_composition_in_the_Abisko_Valley_northern_Sweden/links/54a2e10c0cf267bdb9042b36.pdf). Larocque and Hall correlate high-resolution (1--7 years) reconstructions of of July air temperature inferred from chironomid assemblages in four lakes near Abisko (northern Sweden) with instrumental temperature data. 
+
+The paper reports that
+
+`Strong, statistically significant correlations (p <= 0.05) were observed between chironomid-inferred mean July air temperatures and mean meteorological data at all four sites.`
+
+The correlations and their associated significance values are given on one of the figures.
+
+![](data/abisko_short5n.png)
+
+```{r reported_correlations}
+```
+```{r, corr_table}
+abisko_short %>% select(Lake, `N reconstructions` = n_recon, r, p) %>% 
+  knitr::kable()
+```
+
+Although the text reports that the all the p-values are below 0.05, the figure reports that Lake 850 has a p-value greater than this threshold. However, since Lake 850's correlation is comparable to those of the other lakes and the number of reconstructed values is high, this must be an error.
+
+It is easy to recalculate the p-value from the correlations and the number of reconstructed values. Using a one-sided test (which is reasonable as we expect a positive correlation), Lake 850 has a p-value below 0.05, but Vuoskkujavri has a p-value of 0.11. The other two lakes have p-values below 0.05.
+
+Intrigued by these discrepancies, and, noticing some other oddities such as Lake 850 missing an assemblage for 1999 but having a reconstruction, I want to recalculate the correlations. I also really want to see a plot of reconstructed against instrumental temperature, not just plots against time. It is time to use [xyscan](http://rhig.physics.yale.edu/~ullrich/software/xyscan/) again. 
+
+```{r digitised, fig.keep='none'}
+```
+
+```{r all_lakes_plot, fig.cap = "Reconstructed agaist instrumental temperatures for four lakes near Abisko"}
+```
+
+With the digitised data, I can only replicate the reported correlation for one of the lakes. One of the lakes has far worse correlation than reported, and one far better.
+
+```{r all_lakes_cor}
+all_lakes %>% 
+  do(data_frame(r = cor(.$reconstruction, .$instrumental))) %>% 
+  knitr::kable(digits = 2)
+```
+
+Correlations are not the most difficult of statistics to calculate (most people can [estimate it fairly well](http://guessthecorrelation.com/)), so if the correlations have been blatently miscalculated, I am disinclined to trust the reconstructions as this involves more complicated calculations (which the first author has been known to get wrong - see for example the corrigendum to [Larocque-Tobler et al (2015)](http://www.sciencedirect.com/science/article/pii/S0277379116300221). Since the chironomid assemblage data have not yet been archived, I cannot tell whether the reconstructions are correct.
+
+[Bigler and Hall (2003)](https://doi.org/10.1016/S0031-0182(02)00638-7) use three of the same lakes to reconstruct July air temperature from diatom assemblages. They do not quantify the agreement between the reconstruction and the instrumental data smoothed with a 13-year running mean, but write in the abstract that the reconstructions "correspond in general closely with the meteorological records". The results section is still optimistic, but lists several differences. It is not clear from the method section whether the lakes for which reconstructions were made were removed from the calibration set. If this was not done, there is a lack of independence between the reconstruction and the observed temperature.
+
