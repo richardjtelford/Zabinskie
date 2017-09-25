@@ -61,32 +61,56 @@ ggplot(canada1, aes(x = long, y = lat)) +
   geom_point()
 
 #canada2
+
 canada2 <- read.table("data/canada_locations.txt") %>% 
   select(long = V1, lat = V2) %>% 
-  bind_rows(.[9, ]) %>% 
+  bind_rows(.[9, ]) %>% #lakes 9 & 10 very close together
   arrange(desc(lat)) 
 
-ggplot(canada2 %>% slice(1:60), aes(x = long, y = lat, label = 60:1)) +
-  geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80", inherit.aes = FALSE) + 
-  geom_point()+
-  ggrepel::geom_text_repel(size = 2, min.segment.length = unit(0.1, "lines"))+
-  coord_quickmap()+ labs(x = "", y = "")
-
- setdiff(paste0("Lake", 1:60), sites$Lake)#lakes without data (lake25 Lake 29 OK)
-
-canada2 
-
-
 canada2 <- canada0 %>% filter(grepl("^[Ll]ake {0,1}\\d{1,2}$", Lake)) %>% #remove L08 lakes
+  mutate(Lake = gsub(" ", "", Lake), gsub("l", "L", Lake)) %>% 
   select(Lake) %>% bind_cols(canada2 %>% 
-                               slice(-c(1, 10, 13, 19, 38, 43, 54, 55, 60:63)) # remove lakes on map but without data/southern L08 sites)
+                           slice(-c(1, 10, 13, 19, 38, 43, 54, 55, 60:63)) # remove lakes on map but without data/southern L08 sites)
 )
+
+#canada06
+canada06 <- read_csv("data/CCIN12504_20151119_JOPL-D-14-00075_location-version2-2015.csv") %>% select(Lake = NAME, lat = LAT, long = LONG)
+
+ggplot(canada06, aes(x = long, y = lat, label = Lake)) +
+  geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80", inherit.aes = FALSE) + 
+  geom_point() +
+  ggrepel::geom_text_repel(size = 2, min.segment.length = unit(0.1, "lines")) +
+  coord_quickmap() + 
+  labs(x = "", y = "") +
+  xlim(-80, -75)
+
+
+# #canada 06
+# canada06 <- read.table("data/Quebec environmental data.csv", sep = ",", header = TRUE)#sites appear to be mislablled
+# 
+# canada06 <- canada06 %>% 
+#   filter(!grepl("^M", Lake)) %>% 
+#   mutate(Lake = paste0("Lake", Lake)) %>% 
+#   select(Lake, lat = Lat, long = Long) %>% 
+#   semi_join(sites)
+  
+
+ggplot(canada2, aes(x = long, y = lat, label = Lake)) +
+  geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80", inherit.aes = FALSE) + 
+  geom_point() +
+  ggrepel::geom_text_repel(size = 2, min.segment.length = unit(0.1, "lines")) +
+  coord_quickmap() + 
+  labs(x = "", y = "") +
+  xlim(-80, -75)
+
+#misplaced lakes (in Hudson Bay)
+
 
 canada <- canada2 %>% 
   bind_rows(canada1) %>% 
   mutate(country = "Canada")
 
-dim(canada)#couple missing
+dim(canada)#few missing
 
 ggplot(canada, aes(x = long, y = lat, label = Lake)) +
   geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80", inherit.aes = FALSE) + 
@@ -95,7 +119,8 @@ ggplot(canada, aes(x = long, y = lat, label = Lake)) +
 
 
 
-all_sites <- sites %>% left_join(bind_rows(poland, canada))
+all_sites <- sites %>% 
+  left_join(bind_rows(poland, canada))
 all_sites2 <- all_sites %>% filter(!is.na(lat))
 coordinates(all_sites2) <- ~ long + lat
 
@@ -119,7 +144,7 @@ cor(climate$summer, climate$Aug, use = "pair")
 
 ## ---- check_worldClim
 Jan <- raster::raster(x = "data/worldclim/wc2.0_10m_tavg_01.tif")
-Janr <- raster::as.data.frame(Jan, xy = TRUE) %>% filter(x < -50, x> -100, y > 45, y < 65)
+Janr <- raster::as.data.frame(Jan, xy = TRUE) %>% filter(x < -51, x> -96, y > 46, y < 63)
 
 library(mapdata)
 mp <- map_data("worldHires", region = "Canada")
@@ -128,7 +153,8 @@ ggplot(Janr, aes(x = x, y = y, fill = wc2.0_10m_tavg_01)) +
   scale_x_continuous(expand = c(0, 0))+ 
   scale_y_continuous(expand = c(0,0)) + 
   labs(fill = "Jan") +
-  geom_point(data = filter(climate, source == "L06"), aes(x = long, y = lat), shape = 1, inherit.aes = FALSE) +
+  geom_point(data = filter(climate, source == "L06"), aes(x = long, y = lat), shape = 1, inherit.aes = FALSE, col = 2)+ 
+geom_point(data = canada06, aes(x = long, y = lat), shape = 1, inherit.aes = FALSE, col = 3) +
   geom_map(map = mp, data = mp, aes(map_id = region), inherit.aes = FALSE, fill = NA, colour = "black")
 
 Aug <- raster::raster(x = "data/worldclim/wc2.0_10m_tavg_08.tif")
