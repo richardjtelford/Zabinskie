@@ -1,0 +1,58 @@
+---
+title: "Chironomids = Temperature; 6 = 30"
+author: "Richard J. Telford"
+date: "August 19, 2017"
+output: 
+  html_document:
+    self_contained: no
+---
+```{r setup, message = FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TRUE, cache.lazy=TRUE)
+
+options(digits = 2)
+
+library("tidyverse")
+
+knitr::read_chunk("scripts/silvaplana_load.R")
+knitr::read_chunk("scripts/silvaplana_examine.R")
+Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
+```
+
+At the 2012 International Paleolimnology Symposium in Glasgow, Dr Larocque-Tobler gave a presentation "Chironomids = Temperature: a
+validation for the past 1000 years". Even at the time, a year before Steve Juggins' "sick science" paper, the talk was at odds with the creeping acknowledgement of the limitations of transfer functions given by other presenters. 
+
+I have belatedly realised that part of the data from [Lake Silvaplana](https://quantpalaeo.wordpress.com/2017/08/19/the-lake-silvaplana-papers/) discussed in that presentation have [been archived](https://www1.ncdc.noaa.gov/pub/data/paleo/paleolimnology/europe/switzerland/silvaplana2009.txt).
+
+```{r read_silvaplana_Holocene_fossil}
+```
+```{r read_silvaplana_Holocene_reconstruction}
+```
+
+One of the first strange patterns I noticed in the `r Zabinskie` fossil data was that the count sums appeared to be much lower than the reported fifty. That the counts were low was subsequently acknowledged in the [corrigendum](http://www.sciencedirect.com/science/article/pii/S0277379116300221) which reported that count sums were as low as 19 in the fossil data, and that count sums were too low in nine of the forty-eight Polish calibration set lakes.
+
+Given these low counts, and the hint of low count sums in a few of the lakes in the Canadian calibration set first published in 2006, and some earlier papers, I am interested to see if there is evidence of low count sums in the data from Lake Silvaplana.
+
+The [paper](http://journals.sagepub.com/doi/abs/10.1177/0959683609348253) report that count sums are at least thirty.
+
+`Starting from the last sample at the bottom of the
+core, subsequent samples were therefore merged together so that
+the number of head capsules in each sample reached at least 30.`
+
+```{r estimated_count}
+```
+
+The chironomid count sums are not archived, but can be estimated from the percent data assuming that the rarest taxon in each sample is represented by a single head capsule. With a count of 30, this single head capsule would represent 3.33% of the assemblage. Samples where the rarest taxon is represented by more than one individual are expected to be infrequent (if the rarest taxon is represented by half a head capsule, the estimated count will be doubled.). Figure 1 shows that `r round(lowcount * 100)`% of the samples appear to have counts below 30, and the lowest count appears to be `r round(min(min_count))`. 
+
+```{r lowCountPlot, echo=FALSE, fig.cap="Figure 1. Estimated count sums for the 540 yr _Holocene_ chironomid stratigraphy. The red line is at a count of 30 head capsules"}
+low_count_plot
+```
+
+The count data are shown, before merging, in figure 3a of the Holocene paper. Examining this figure closely gives support to my assertion that some count sums are very low. For example, the earliest sample (1580) has 16.67% _Microtendipes_ and 83.3% _Cricotopus_. This is aggregated from several different counts, only one of which has _Microtendipes_, which is present with a count of one or perhaps two.
+
+## include holocene fig 3a
+
+If a few samples had slightly (perhaps 10 -- 20%) fewer individuals than reported, I would not be concerned. But here, where many counts appear to be much lower than reported, I think concern in reasonable. The reported count of 30 is already rather low and consequently the uncertainty of the count and the reconstruction is high. The uncertainty on the absurdly small counts will be large; they cannot be expected to give precise reconstructions. If the count sums have been misreported, what else has?
+
+Some might ask how could this possible misreport have occurred. I don't know and frankly I don't care:  [Any sufficiently crappy research is indistinguishable from fraud](http://andrewgelman.com/2016/06/20/clarkes-law-of-research/)
+
+This document is reproducible with code archived on [github](https://github.com/richardjtelford/Zabinskie/tree/master/silvaplana).

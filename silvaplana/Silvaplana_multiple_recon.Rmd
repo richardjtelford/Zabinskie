@@ -1,0 +1,103 @@
+---
+title: "The Silvaplana reconstructions"
+author: "Richard J. Telford"
+date: "August 19, 2017"
+output: 
+  html_document:
+    self_contained: no
+---
+```{r setup, message = FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TRUE, cache.lazy=TRUE)
+
+options(digits = 2)
+
+library("tidyverse")
+library("magrittr")
+library("png")
+library("grid")
+
+knitr::read_chunk("scripts/silvaplana_load.R")
+knitr::read_chunk("scripts/silvaplana_plot_reconstructions.R")
+knitr::read_chunk("scripts/silvaplana_met_data.R")
+knitr::read_chunk("scripts/silvaplana_correlation_with_met.R")
+Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
+```
+
+Climate modellers often run their models many times with slightly different initial configurations to get an [ensemble](https://en.wikipedia.org/wiki/Climate_ensemble) of alternate realisations of climate history - parallel universes _in silico_. What is less well known is that certain proxies, mainly from small lakes because of their extreme sensitivity to quantum interactions with space-time substitutions, can also provide multiple realisations of climate history.
+
+While many palaeoecologists (perhaps unwisely) attempt to reconstruct several environmental variables from one microfossil stratigraphy using transfer functions, the state-of-the-art, exemplified by the chironomid studies from [Lake Silvaplana](https://quantpalaeo.wordpress.com/2017/08/19/the-lake-silvaplana-papers/), is to reconstruct several alternative realisations of a single environmental variable.
+
+```{r read_silvaplana_2008_JoPL}
+```
+```{r silvaplana_met_data}
+```
+
+### Realisation number 1
+
+The first realisation (fig 1) was published in the Journal of Paleolimnology. This near-annual resolution reconstruction is reported as having an excellent correlation (r = 0.65) with the instrumental data from a weather station close to the lake. This correlation would not be possible if there were substantial errors in the chronology or taxonomy, ergo, both must be at least nearly perfect.
+
+### Realisation number 2
+
+One might expect the archived _JoPL_ reconstruction to be exactly the same as the published reconstruction. Some parts of the curves are indeed identical (fig 1), for example near 1960 CE and near 1980 CE. Other parts have a chronological offset, for example 1860--1880 CE where the archived reconstruction lags the published figure by a few years, while yet other parts of the curves are difficult to reconcile, for example near 1900 CE. 
+
+```{r overlay_fun}
+```
+```{r overlay_jopl_6a, fig.cap= "Figure 1. _JoPL_ archived reconstruction (red) plotted on top of the published _JoPL_ figure 6a (reconstruction - open circles, instrumental - filled circles"}
+```
+
+```{r correlations_with_climate_jopl}
+```
+The correlation between the archived _JoPL_ reconstruction and the instrumental temperature from [Segl-Maria](
+http://www.meteoswiss.admin.ch/home/climate/past/homogenous-monthly-data.html?region=Table) is `r jopl_cor$estimate` (p = `r jopl_cor$p.value`), far lower than that reported in the paper.
+
+### Realisation number 3
+
+The overlapping portion of the 540-year _Holocene_ reconstruction (Fig 2) should be identical (save for possible taxonomic and chronological revision). It is not.  
+
+### Realisation number 4
+
+```{r read_silvaplana_Holocene_reconstruction}
+```
+
+The archived _Holocene_ reconstruction is far from identical to the published _Holocene_ reconstruction (Fig 2). Only the earliest and latest periods appear to match.
+
+```{r overlay_holocene_4a, fig.cap= "Figure 2. _Holocene_ archived reconstruction (blue) plotted on top of the published _Holocene_ figure 4a" }
+```
+
+```{r correlations_with_climate_holocene}
+```
+
+The correlation between the archived _Holocene_ reconstruction and the instrumental air temperature since 1864 is `r holocene_cor$estimate` (p = `r holocene_cor$p.value`). 
+
+### Realisation number 5
+
+The 1000-year _QSR_ reconstruction differs in the overlapping period from all the other reconstructions. Shockingly, the published and archived reconstructions appear to be identical. 
+
+### Comparison of the archived _JoPL_ and _Holocene_ realisations
+
+The archived 140-yr _JoPL_ and 540-yr _Holocene_ reconstructions are very different in the overlapping period. The most recent value is identical, the next few values appear to have a chronological offset, thereafter any relationship is difficult to see (fig 3). 
+
+```{r compare_2_reconstruction, fig.cap = "Figure 3. Reconstructions from the JoPL and Holocene papers for the last 140 years."}
+```
+
+The apparent chronological offset at the end of the reconstruction suggests there might be issues with the chronology. If the chronologies are ignored and the reconstructions are instead plotted in stratigraphic order, the agreement between the reconstructions improves substantially (fig 4).
+
+```{r side_by_side, fig.cap = "Figure 4. Reconstruction plotted in stratigraphical order. The youngest sample is sample 1. "}
+```
+
+Of the `r total` values in the 140-yr _JoPL_ reconstruction, `r identical` are identical to the value in the same chronological rank as the 540-yr _Holocene_ reconstruction. Of the `r total - identical` remaining values, which are reported to five decimal places, `r nrow(integer_offsets)` have an integer difference ranging from `r min(integer_offsets$delta)`°C to `r max(integer_offsets$delta)`°C.
+
+The chronological adjustment required to align the two reconstructions is large, up to `r with(side_by_side, max(Year - Year.Holocene))` years (fig 5), far larger than can reasonably be ascribed to chronological uncertainty in the varved sediment. 
+
+```{r implied_chronology, fig.cap = "Figure 5. Chronological offset required to align 140 yr _JoPL_ and 540 yr _Holocene_ reconstructions", fig.height = 3}
+```
+
+The jump in the offset at about 1890 reflects an overlap in the _Holocene_ chronology which might be because of an overlap between the two cores from Lake Silvaplana used in the _Holocene_ paper, but that is supposed to have been removed and should be older.
+
+### Summary
+
+I am extremely excited by the hitherto unrecognised potential of chironomids to reconstruct alternative climate realisations. Regrettably, the authors did not draw our attention to this aspect of chironomid ecology and we have spent the last few years discussing whether Holocene chironomid reconstructions are [reliable](http://journals.sagepub.com/doi/pdf/10.1177/0959683612449757) rather than the infinitely more important question of whether chironomids prove the existence of parallel universes.
+
+In my next post, I will look at the archived fossil data for the _Holocene_ reconstruction which might give some clue in the hunt for Schrödinger's chironomid.
+
+This document is reproducible with code archived on [github](https://github.com/richardjtelford/Zabinskie/tree/master/silvaplana). I'm sure that simultaneous reconstructions across parallel universes is the most parsimonious explanation for the different reconstructions.

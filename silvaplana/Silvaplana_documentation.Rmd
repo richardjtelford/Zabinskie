@@ -49,7 +49,7 @@ Larocque et al [-@Larocque2009, _JoPL_] report a 140-yr chironomid stratigraphy 
 ```{r read_silvaplana_Holocene_reconstruction}
 ```
 
-Ideally the three reconstructions should be identical for the periods they have in common. Differences, hopefully small, are possible if the taxonomy has been revised, the chronology corrected, or the numerical methods have been changed. If the reconstructions are very different, the authors have demonstrated that their work is not reproducible. Figure 1 shows that the 140 _JoPL_ and 540 yr _Holocene_ reconstructions are very different. The most recent value is identical, but the next few values appear to have an chronological offset, thereafter any relationship is difficult to see. The 1000 yr _QSR_ reconstruction is different to both the other reconstructions but as it has been smoothed and only the anomalies archived, it is more difficult to compare and is not considered here.
+Ideally the three reconstructions should be identical for the periods they have in common. Differences, hopefully small, are possible if the taxonomy has been revised, the chronology corrected, or the numerical methods have been changed. If the reconstructions are very different, the authors have demonstrated that their work is not reproducible. Figure 1 shows that the 140 yr _JoPL_ and 540 yr _Holocene_ reconstructions are very different. The most recent value is identical, but the next few values appear to have an chronological offset, thereafter any relationship is difficult to see. The 1000 yr _QSR_ reconstruction is different to both the other reconstructions but as it has been smoothed and only the anomalies are archived, it is more difficult to compare and is not considered here.
 
 ```{r compare_2_reconstruction, fig.cap = "Figure 1. Reconstructions from the JoPL and Holocene papers for the last 140 years."}
 ```
@@ -69,9 +69,16 @@ The jump in the offset at about 1890 reflects an overlap in the _Holocene_ chron
 
 The archived 140 yr _JoPL_ reconstruction is not identical to the published reconstruction (Figure 4).
 
-```{r overlay_jopl_6a, fig.cap= "Figure 4. Archived reconstruction plotted on top of the published _JoPL_ figure 6a"}
+```{r overlay_fun}
+```
+
+```{r overlay_jopl_6a, fig.cap= "Figure 4. _JoPL_ archived reconstruction (red) plotted on top of the published _JoPL_ figure 6a"}
 ```
 Some parts of the curves are identical, for example near 1960 CE and near 1980 CE, other parts have a chronological offset, for example 1860--1880 CE where the archived reconstruction lags the published figure by a few years. Other parts of the curves are difficult to reconcile, for example near 1900 CE. 
+
+The archived 540 yr _Holocene_ reconstruction is not identical to the published reconstruction (Figure 5), except for the earliest and latest parts.
+```{r overlay_holocene_4a, fig.cap= "Figure 5. _Holocene_ archived reconstruction (blue) plotted on top of the published _Holocene_ figure 4a" }
+```
 
 ## Correlation with instrumental temperatures
 
@@ -80,13 +87,15 @@ Some parts of the curves are identical, for example near 1960 CE and near 1980 C
 
 ```{r correlations_with_climate_jopl}
 ```
+```{r correlations_with_climate_holocene}
+```
 
 The correlation between the _JoPL_ reconstruction and the instrumental temperature from [Segl-Maria](
-http://www.meteoswiss.admin.ch/home/climate/past/homogenous-monthly-data.html?region=Table) is `r jopl_cor$estimate` (p = `r jopl_cor$p.value`), far lower than that reported in the paper.
+http://www.meteoswiss.admin.ch/home/climate/past/homogenous-monthly-data.html?region=Table) is `r jopl_cor$estimate` (p = `r jopl_cor$p.value`), far lower than that reported in the paper. For the _Holocene_ reconstruction, this correlation is `r holocene_cor$estimate` (p = `r holocene_cor$p.value`)
 
-### Comparing the stratigraphies
+## Comparing the stratigraphies
 
-Although assemblage data are only archived for the 540 yr _Holocene_ stratigraphy, stratigraphic diagrams are presented in all three papers and can be compared for the shared period. Below I compare the records for three species.
+Although assemblage data are only archived for the 540 yr _Holocene_ stratigraphy, stratigraphic diagrams are presented in all three papers and can be compared for the shared period. Figure 6 compares the records for three species.
 
 ```{r magick_markdown_setup, echo = FALSE}
 ```
@@ -97,23 +106,23 @@ Although assemblage data are only archived for the 540 yr _Holocene_ stratigraph
 ```{r load_published_stratigraphies, cache = FALSE}
 ```
 
-```{r Microtendipes, fig.cap = "Figure 5a. _Microtendipes_ percent. From left to right, _JoPL_, _Holocene_ archived, _Holocene_, _QSR_. The _JoPL_ stratigraphy is plotted against depth, so is non-linear in time.", cache = FALSE}
+```{r Microtendipes, fig.cap = "Figure 6a. _Microtendipes_ percent. From left to right, _JoPL_, _Holocene_ archived, _Holocene_, _QSR_. The _JoPL_ stratigraphy is plotted against depth, so is non-linear in time.", cache = FALSE}
 ```
 
 The stratigraphies seem to match for _Microtendipes_.
 
 
-```{r Cricotopus, fig.cap = "Figure 5b. _Cricotopus_ percent", cache = FALSE}
+```{r Cricotopus, fig.cap = "Figure 6b. _Cricotopus_ percent", cache = FALSE}
 ```
 
 The stratigraphies are similar for _Cricotopus_, but a large peak in the _JoPL_ and _QSR_ stratigraphies at ~1890 is not in the _Holocene_ stratigrahy, whereas a peak at ~1860 is only in the _Holocene_ record. The _JoPL_ record has three large values at ~ 1950, whereas the other records only have one.
 
-```{r Procladius, fig.cap = "Figure 5c. _Procladius_ percent", cache = FALSE}
+```{r Procladius, fig.cap = "Figure 6c. _Procladius_ percent", cache = FALSE}
 ```
 
 The records for _Procladius_ seem similar.
 
-Across the three taxa examined, there are some differences.
+Across the three taxa examined, there are some differences but no obvious evidence for chronological shift several decades.
 
 ## Estimating count sums
 
@@ -122,16 +131,16 @@ All three papers report that the minimum number of head capsules used in the rec
 ```{r estimated_count}
 ```
 
-The chironomid count sums are not archived, but can be estimated from the percent data assuming that the rarest taxon in each sample is represented by a single head capsule. With a count of 30, this single head capsule would represent 3.33% of the assemblage. Samples where the rarest taxon is represented by more than one individual are expected to be infrequent (if the rarest taxon is represented by half a head capsule, the estimated count will be doubled.). Figure 6 shows that `r lowcount * 100`% of the samples appear to have counts below 30, and the lowest count appears to be `r round(min(min_count))`.
+The chironomid count sums are not archived, but can be estimated from the percent data assuming that the rarest taxon in each sample is represented by a single head capsule. With a count of 30, this single head capsule would represent 3.33% of the assemblage. Samples where the rarest taxon is represented by more than one individual are expected to be infrequent (if the rarest taxon is represented by half a head capsule, the estimated count will be doubled.). Figure 7 shows that `r round(lowcount * 100)`% of the samples appear to have counts below 30, and the lowest count appears to be `r round(min(min_count))`.
 
-```{r lowCountPlot, echo=FALSE, fig.cap="Figure 6. Estimated count sums for the 540 yr _Holocene_ chironomid stratigraphy. The red line is at a count of 30 head capsules"}
+```{r lowCountPlot, echo=FALSE, fig.cap="Figure 7. Estimated count sums for the 540 yr _Holocene_ chironomid stratigraphy. The red line is at a count of 30 head capsules"}
 low_count_plot
 ```
 
 This method identified that many of the count sums in Larocque-Tobler et al [@Larocque-Tobler2015] were lower than that claimed, as was subsequently acknowledged [@Larocque-Tobler2016]. 
 
 
-### Conclusions
+## Conclusions
 
 It is not possible to be sure which, _if any_, of the Silvaplana papers are valid from the archived data.
 
@@ -141,8 +150,8 @@ It is not possible to be sure which, _if any_, of the Silvaplana papers are vali
 
 Raw and merged count data need to be archived for all the papers along with the calibration set. Explanations of any chronological adjustments made need to be given. 
 
-Because of the similarities between Silvaplana, Zabinskie and Seebergsee [@LarocqueTobler2011b; @LarocqueTobler2012], the equivalent data should be archived for this lake. Other papers dependent on the Silvaplana chironomid stratigraphy, for example Larocque et al [-@Larocque-Tobler2011], also need to be evaluated.
+Larocque-Tobler et al [-@LarocqueTobler2011b; -@LarocqueTobler2012] report temperature reconstructions from Seebergsee. Because of the similarities between this lake and Lake Silvaplana and Zabinskie the equivalent data should be archived for Seebergsee. An inspection of the chironomid stratigraphy suggests that several of the chironomid count sums at Seebergsee are very small. Other papers dependent on the Silvaplana chironomid stratigraphy, for example Larocque et al [-@Larocque-Tobler2011], also need to be evaluated.
 
 This document is reproducible with code archived on [github](https://github.com/richardjtelford/Zabinskie/tree/master/silvaplana).
 
-##References
+## References
