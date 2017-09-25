@@ -25,8 +25,8 @@ run_simulation <- function(data, nrep = 100){
     extra <- rbinom(n = len, prob = data$pextra, size = 1)
     
     #resample data
-    data2 <- data1 %>% filter(missing == 0) %>%
-      bind_rows(data1 %>% filter(extra == 1)) %>% 
+    data2 <- data1 %>% filter(extra == 0) %>%
+      bind_rows(data1 %>% filter(missing == 1)) %>% 
       arrange(desc(year)) %>%
       mutate(actualyear = year) %>% 
       mutate(year = seq(2010, by = -1, length = nrow(.)))
@@ -64,9 +64,10 @@ len <- nrow(data)
 
 data <- data %>% 
   mutate(temperature = rnorm(len)) %>% 
-  mutate(#need to get correct dates for uncertain varves
-    pmissing = if_else(year %in% c(1930, 1925, 1915, 1907, 1900), 1/3, pmissing),   
-    pextra = if_else(year %in% c(1960, 1950), 1/3, pextra)) 
+  mutate(# dates of uncertain varves from Prof Tylmann
+    pmissing = if_else(year %in% c(1926, 1924, 1912, 1903, 1899), 1/3, pmissing), #perhaps year missing  
+    pextra = if_else(year %in% c(1964, 1963), 1/3, pextra)#perhaps extra year needs deleting
+    ) 
 
 set.seed(9524)#random.org
 simulation <- run_simulation(data, nrep = 1000)
@@ -92,9 +93,9 @@ dataz <- data.frame(year = 2010:1896, pmissing = 0.005, pextra = 0.005)
 
 dataz <- dataz %>% 
   mutate(temperature = rnorm(len)) %>% 
-  mutate(
-    pmissing = if_else(year %in% c(1930, 1925, 1915, 1907, 1900), 1/3, pmissing),   
-    pextra = if_else(year %in% c(1960, 1950), 1/3, pextra)) 
+  mutate(# dates of uncertain varves from Prof Tylmann
+    pmissing = if_else(year %in% c(1926, 1924, 1912, 1903, 1899), 1/3, pmissing),   
+    pextra = if_else(year %in% c(1964, 1963), 1/3, pextra)) 
 
 set.seed(7777)#random.org
 simulationz <- run_simulation(dataz, nrep = 1000)
