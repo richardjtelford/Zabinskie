@@ -24,10 +24,10 @@ recon_jopl %>% mutate(source = "140 yr JoPL") %>%
       filter(Year > min(recon_jopl$Year)) %>% 
       mutate(source = "540 yr Holocene") 
   ) %>% 
-  ggplot(aes(x = Year, y = JulyT, colour = source)) +
+  ggplot(aes(x = Year, y = JulyT, colour = source, linetype = source)) +
   geom_point() +
   geom_line() +
-  labs(x = "Year CE", y = "Reconstructed July Temperature °C", colour = "") +
+  labs(x = "Year CE", y = "Reconstructed July Temperature °C", colour = "", linetype = "") +
   theme(legend.position = c(.02, .98), legend.justification = c(0, 1), legend.title = element_blank())
 
 
@@ -62,10 +62,10 @@ side_by_side <- recon_jopl %>%
 
 side_by_side %>% gather(key = source, value = JulyT, -Year, -Year.Holocene, -Rank) %>% 
   mutate(source = recode(source, "JulyT" = "140 yr JoPL", "JulyT.Holocene" = "540 yr Holocene")) %>%  
-  ggplot(aes(x = Rank, y = JulyT, colour = source)) + 
+  ggplot(aes(x = Rank, y = JulyT, colour = source, linetype = source)) + 
   geom_line() +
   scale_x_reverse() +
-  labs(x = "Stratigraphic Rank", y = "Reconstructed temperature °C", colour = "Source") +
+  labs(x = "Stratigraphic Rank", y = "Reconstructed temperature °C", colour = "Source", linetype = "Source") +
   theme(legend.position = c(.02, .98), legend.justification = c(0, 1), legend.title = element_blank())
 
 total <- nrow(recon_jopl)
@@ -91,26 +91,47 @@ side_by_side %>%
   coord_equal() +
   labs(x = "Year CE 140 yr JoPL", y = "Offset, years") 
 
-## ---- overlay_jopl_6a 
+## ---- overlay_fun
 makefig<-function(g){
   gt <- ggplot_gtable(ggplot_build(g))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
   grid.draw(gt)
 }
 
+## ---- overlay_jopl_6a 
 fig6a <- readPNG("images/JoPL_6a.png")
 
 jopl <- ggplot(recon_jopl, aes(x = Year, y = JulyT)) +
   annotation_custom(
     rasterGrob(fig6a, width=unit(1,"npc"), height=unit(1,"npc")),
     xmin = 1816, xmax = 2011, ymin = 4.2, ymax = 16.25) +
-  geom_point(colour = "red", size = 1) +
-  geom_line(colour = "red") + 
+  geom_point(colour = scales::hue_pal()(2)[1], size = 1) +
+  geom_line(colour = scales::hue_pal()(2)[1]) + 
   scale_x_continuous(breaks = seq(1860, 2000, 20)) +
   theme_classic() +
   theme(plot.margin = margin(t = 10, r = 10, b = 50, l = 40))
 
 makefig(jopl)
+
+
+## ---- overlay_holocene_4a 
+fig4a <- readPNG("images/Holocene_4a.png")
+
+
+holocene <- ggplot(recon_holocene, aes(x = Year, y = JulyT)) +
+  annotation_custom(
+    rasterGrob(fig4a, width=unit(1,"npc"), height=unit(1,"npc")),
+    xmin = 1518, xmax = 2030, ymin = -1.65, ymax = 15.55) +
+  geom_point(colour = scales::hue_pal()(2)[2], size = 1, shape = 1) +
+#  geom_line(data = recon_qsr %>% filter(Year > 1580) %>% mutate(JulyT = JulyT + mean(recon_holocene$JulyT)), colour = "blue") +
+  scale_x_continuous(breaks = seq(1600, 2000, 50)) +
+  scale_y_continuous(breaks = 8:15) +
+  theme_classic() +
+  theme(plot.margin = margin(t = 10, r = 10, b = 20, l = 15))
+
+makefig(holocene)
+
+
 
 ## ---- Holocene_chronology
 recon_holocene %>% 

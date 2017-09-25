@@ -21,3 +21,13 @@ holocene_join <- silva_july %>%
 #holocene_join %$% cor.test(Temperature, JulyT, use = "pair")
 holocene_cor <- holocene_join %$% cor.test(meanT, JulyT, use = "pair")
 
+
+## ---- correlations_with_climate_qsr
+qsr_join <- silva_july %>% 
+  mutate(Temperature = gtools::running(Temperature, fun = mean, width = 3, pad = TRUE, align = "center")[-c(1, 140)]) %>% #should change to triangular filter
+  left_join(recon_qsr %>% mutate(merged_year = Year))
+
+
+
+qsr_cor <- qsr_join %$% cor.test(Temperature, JulyT, use = "pair")
+

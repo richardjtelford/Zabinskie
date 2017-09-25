@@ -46,3 +46,11 @@ eigenvals(silv_ca)[1:2]/sum(eigenvals(silv_ca))
 
 plot(silv_ca)
 
+nmds <- metaMDS(fos_holocene)
+plot(nmds)
+library(ggvegan)
+fortify(nmds) %>% filter(Score == "sites") %>% bind_cols(recon_holocene) %>% filter(Year > 1850) %>%  
+  ggplot(aes(x = Dim1, y = Dim2, colour = Year >= 1950)) +
+  geom_point()
+
+

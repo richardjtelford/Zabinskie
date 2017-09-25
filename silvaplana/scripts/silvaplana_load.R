@@ -50,4 +50,7 @@ recon_qsr <- read_table("data/silvaplana2010.txt", skip = 98) %>%
 ## --- read_2010_QSR_unsmoothed
 #not archived
 
-recon_qsr2 <- read_table("data/chironomids_Silvaplana.txt", skip = 1, col_names = FALSE) %>% rename(Year = X1, JulyT = X2) %>% filter(!is.na(JulyT)) %>% arrange(desc(Year))
+recon_qsr2 <- read_table("data/chironomids_Silvaplana.txt", skip = 1, col_names = FALSE) %>% 
+  rename(Year = X1, JulyT = X2) %>% 
+  filter(!is.na(JulyT)) %>% 
+  arrange(desc(Year))
