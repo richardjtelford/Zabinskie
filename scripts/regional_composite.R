@@ -62,6 +62,12 @@ fat_composite_as_zab_published <- fat_composite %>%
               mutate(recon_year = year)) %>% 
   arrange(desc(recon_year))
 
+composite_as_zab <- full_join(
+  fat_composite_as_zab_correct %>% select(year = recon_year, meanAug = Aug),
+  fat_composite_as_zab_published %>% select(year = recon_year, spotAug = Aug)
+) %>% 
+  full_join(instrumental %>% rename(Aug.Zab = Aug)) %>% 
+  mutate_at(.vars = vars(matches("Aug")), scale, scale = FALSE)
 
 ## ---- check
 cor(fat_composite$Aug, fat_composite$Jun)
