@@ -47,7 +47,7 @@ mean(sd_cor_sim <= sd(abisko_short$r) )
 ## ---- digitised
 
 #lake850
-lake850 <- read.table("data/lake850.txt") %>% 
+lake850 <- read.table("abisko/data/lake850.txt") %>% 
   select(1:2) %>% 
   setNames(c("date", "temp")) %>% 
   mutate(type = rep(c("reconstruction", "instrumental"), each = 23),
@@ -58,7 +58,7 @@ time_plot850 <- lake850 %>% ggplot(aes(x = date, y = temp, colour = type), shape
 time_plot850
 
 #lakeV
-lakeV <- read.table("data/lakeV.txt") %>% 
+lakeV <- read.table("abisko/data/lakeV.txt") %>% 
   select(1:2) %>% 
   setNames(c("date", "temp")) %>% 
   mutate(type = rep(c("reconstruction", "instrumental"), each = 14),
@@ -67,7 +67,7 @@ lakeV <- read.table("data/lakeV.txt") %>%
 time_plot850 %+% lakeV
 
 #lakeA
-lakeA <- read.table("data/lakeA.txt") %>% 
+lakeA <- read.table("abisko/data/lakeA.txt") %>% 
   select(1:2) %>% 
   setNames(c("date", "temp")) %>% 
   mutate(type = rep(c("reconstruction", "instrumental"), each = 24),
@@ -76,7 +76,7 @@ lakeA <- read.table("data/lakeA.txt") %>%
 time_plot850 %+% lakeA 
 
 #lakeN
-lakeN <- read.table("data/lakeN.txt") %>% 
+lakeN <- read.table("abisko/data/lakeN.txt") %>% 
   select(1:2) %>% 
   setNames(c("date", "temp")) %>% 
   mutate(type = rep(c("reconstruction", "instrumental"), each = 19),
@@ -117,7 +117,7 @@ makefig<-function(g){
 
 library(magick)
 library(grid)
-fig5va <- image_read("abisko/data/abisko_short5a.png")
+fig5va <- image_read("data/abisko_short5a.png")
 
 
 V_plot <- ggplot(lakeV, aes(x = date, y = temp, colour = type)) +
@@ -146,7 +146,7 @@ makefig(A_plot)
 
 
 #n
-fig5n <- image_read("abisko/data/abisko_short5n.png")
+fig5n <- image_read("data/abisko_short5n.png")
 
 
 N_plot <- ggplot(lakeN, aes(x = date, y = temp, colour = type)) +
