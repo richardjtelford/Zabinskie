@@ -49,8 +49,7 @@ sum(rlen$passive > quantile(rlen$train, probs = 0.90))
 nrow(fos)
 
 ## ---- randomTF
-library("palaeoSig")
-rtf <- randomTF(as.data.frame(spp), env, fos, n = 999, fun = WAPLS, col = 2)
+rtf <- randomTF(sqrt(as.data.frame(spp)), env, fos, n = 999, fun = WAPLS, col = 2)
 
 ## ---- plot_rtf
 plot(rtf)
