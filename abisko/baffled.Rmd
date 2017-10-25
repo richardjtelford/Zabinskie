@@ -2,7 +2,9 @@
 title: "Abisko 2003"
 author: "Richard J. Telford"
 date: "September 6, 2017"
-output: html_document
+output: 
+  html_document:
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
@@ -18,8 +20,9 @@ library("gridExtra")
 knitr::read_chunk("scripts/abisko_short_2003.R")
 
 ```
+I the summer of 2003, our first summer in Bergen, Cathy and I took a grand tour of Scandinavia on the way to the Paleolimnology Symposium in Espoo. On the way, we stopped in [Abisko](https://en.wikipedia.org/wiki/Abisko_National_Park), northern Sweden, for a few days to hike through the forests and alpine grassland. It was beautiful, but that is not what I have to write about today. 
 
-As it includes four of the relatively few very-high resolution palaeoenvironmental reconstructions that have been validated against instrumental data, I thought I ought to finally have a closer look at [Larocque and Hall (2003)](https://www.researchgate.net/profile/Roland_Hall/publication/223457254_Holocene_temperature_estimates_and_chironomid_community_composition_in_the_Abisko_Valley_northern_Sweden/links/54a2e10c0cf267bdb9042b36.pdf). Larocque and Hall correlate high-resolution (1--7 years) reconstructions of of July air temperature inferred from chironomid assemblages in four lakes near Abisko (northern Sweden) with instrumental temperature data. 
+[Larocque and Hall (2003)](https://www.researchgate.net/profile/Roland_Hall/publication/223457254_Holocene_temperature_estimates_and_chironomid_community_composition_in_the_Abisko_Valley_northern_Sweden/links/54a2e10c0cf267bdb9042b36.pdf) correlate high-resolution (1--7 years) reconstructions of of July air temperature inferred from chironomid assemblages in four lakes near Abisko with instrumental temperature data. These sub-decadal resolution palaeoenvironmental reconstructions are within the scope of a review paper I am writing, I thought I ought to finally have a closer look at them.
 
 The paper reports that
 
@@ -40,7 +43,7 @@ Although the text reports that the all the p-values are below 0.05, the figure r
 
 It is easy to recalculate the p-value from the correlations and the number of reconstructed values. Using a one-sided test (which is reasonable as we expect a positive correlation), Lake 850 has a p-value below 0.05, but Vuoskkujavri has a p-value of 0.11. The other two lakes have p-values below 0.05.
 
-Intrigued by these discrepancies, and, noticing some other oddities such as Lake 850 missing an assemblage for 1999 but having a reconstruction, I want to recalculate the correlations. I also really want to see a plot of reconstructed against instrumental temperature, not just plots against time. It is time to use [xyscan](http://rhig.physics.yale.edu/~ullrich/software/xyscan/) again. 
+Intrigued by these discrepancies, and, noticing some other oddities such as Lake 850 having a reconstruction but no assemblage for 1999, I want to recalculate the correlations. I also really want to see a plot of reconstructed against instrumental temperature, not just plots against time. It is time to use [xyscan](http://rhig.physics.yale.edu/~ullrich/software/xyscan/) again. 
 
 ```{r digitised, fig.keep='none'}
 ```
@@ -56,7 +59,9 @@ all_lakes %>%
   knitr::kable(digits = 2)
 ```
 
-Correlations are not the most difficult of statistics to calculate (most people can [estimate it fairly well](http://guessthecorrelation.com/)), so if the correlations have been blatently miscalculated, I am disinclined to trust the reconstructions as this involves more complicated calculations (which the first author has been known to get wrong - see for example the corrigendum to [Larocque-Tobler et al (2015)](http://www.sciencedirect.com/science/article/pii/S0277379116300221). Since the chironomid assemblage data have not yet been archived, I cannot tell whether the reconstructions are correct.
+Correlations are not the most difficult of statistics to calculate (most people can [estimate them fairly well](http://guessthecorrelation.com/) by eye), so if the correlations have been blatantly miscalculated, I am disinclined to trust the reconstructions as this involves more complicated calculations (which the first author has been known to get wrong - see for example the corrigendum to [Larocque-Tobler et al (2015)](http://www.sciencedirect.com/science/article/pii/S0277379116300221). Since the chironomid assemblage data have not yet been archived, I cannot tell whether the reconstructions are correct.
 
-[Bigler and Hall (2003)](https://doi.org/10.1016/S0031-0182(02)00638-7) use three of the same lakes to reconstruct July air temperature from diatom assemblages. They do not quantify the agreement between the reconstruction and the instrumental data smoothed with a 13-year running mean, but write in the abstract that the reconstructions "correspond in general closely with the meteorological records". The results section is still optimistic, but lists several differences. It is not clear from the method section whether the lakes for which reconstructions were made were removed from the calibration set. If this was not done, there is a lack of independence between the reconstruction and the observed temperature.
+A few weeks ago, I wrote to the first author, advising them of the problems with this and other several papers, suggesting that they should correct or retract non-reproducible papers and archive data for the remainder so that the community can be assured that the results are reproducible. I have had no reply.
+
+Three of the lakes studied by Larocque and Hall and also studies by [Bigler and Hall (2003)](https://doi.org/10.1016/S0031-0182(02)00638-7) to reconstruct July air temperature from diatom assemblages. They do not quantify the agreement between the reconstruction and the instrumental data smoothed with a 13-year running mean, but write in the abstract that the reconstructions "correspond in general closely with the meteorological records". The results section is still optimistic, but lists several differences. It is not clear from the method section whether the lakes for which reconstructions were made were removed from the calibration set. If this was not done, there is a lack of independence between the reconstruction and the observed temperature. Because of the 13-year smooth, this paper falls outside the scope of my review.
 
