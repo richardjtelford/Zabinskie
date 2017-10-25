@@ -60,21 +60,11 @@ ggplot(canada1, aes(x = long, y = lat)) +
   geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80") + 
   geom_point()
 
-#canada2
-
-canada2 <- read.table("data/canada_locations.txt") %>% 
-  select(long = V1, lat = V2) %>% 
-  bind_rows(.[9, ]) %>% #lakes 9 & 10 very close together
-  arrange(desc(lat)) 
-
-canada2 <- canada0 %>% filter(grepl("^[Ll]ake {0,1}\\d{1,2}$", Lake)) %>% #remove L08 lakes
-  mutate(Lake = gsub(" ", "", Lake), gsub("l", "L", Lake)) %>% 
-  select(Lake) %>% bind_cols(canada2 %>% 
-                           slice(-c(1, 10, 13, 19, 38, 43, 54, 55, 60:63)) # remove lakes on map but without data/southern L08 sites)
-)
-
 #canada06
-canada06 <- read_csv("data/CCIN12504_20151119_JOPL-D-14-00075_location-version2-2015.csv") %>% select(Lake = NAME, lat = LAT, long = LONG)
+canada06 <- read_csv("data/CCIN12504_20151119_JOPL-D-14-00075_location-version3-2015.csv") %>% 
+  filter(AUTHOR == "Larocque") %>%
+  mutate(NAME = paste0("Lake", substring(NAME, 3, 4))) %>% 
+  select(Lake = NAME, lat = LAT, long = LONG)
 
 ggplot(canada06, aes(x = long, y = lat, label = Lake)) +
   geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80", inherit.aes = FALSE) + 
@@ -84,38 +74,35 @@ ggplot(canada06, aes(x = long, y = lat, label = Lake)) +
   labs(x = "", y = "") +
   xlim(-80, -75)
 
+sites %>% 
+  left_join(canada06) %>% 
+  mutate(temp = env) %>% 
+  filter(source == "L06") %>% 
+  ggplot(aes(x = lat, y = temp)) + 
+  geom_point()#looks good
 
-# #canada 06
-# canada06 <- read.table("data/Quebec environmental data.csv", sep = ",", header = TRUE)#sites appear to be mislablled
-# 
-# canada06 <- canada06 %>% 
-#   filter(!grepl("^M", Lake)) %>% 
-#   mutate(Lake = paste0("Lake", Lake)) %>% 
-#   select(Lake, lat = Lat, long = Long) %>% 
-#   semi_join(sites)
+#southern canada08 lakes - very approximate locations
+c1 <- filter(canada06, Lake == "Lake1") 
+minLat <- 42 + 32/60
   
+canada08S <- canada0 %>% 
+  filter(grepl("^Lac [A-H]$", Lake)) %>% 
+  select(Lake) %>% 
+  mutate(
+    long = pull(c1, long),
+    lat = seq(pull(c1, lat), minLat, length = 9)[1:8])
 
-ggplot(canada2, aes(x = long, y = lat, label = Lake)) +
-  geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80", inherit.aes = FALSE) + 
-  geom_point() +
-  ggrepel::geom_text_repel(size = 2, min.segment.length = unit(0.1, "lines")) +
-  coord_quickmap() + 
-  labs(x = "", y = "") +
-  xlim(-80, -75)
-
-#misplaced lakes (in Hudson Bay)
+env[grepl("^Lac [A-H]$", sites$Lake)]
 
 
-canada <- canada2 %>% 
-  bind_rows(canada1) %>% 
+
+canada <- bind_rows(canada1, canada06, canada08S) %>% 
   mutate(country = "Canada")
-
-dim(canada)#few missing
 
 ggplot(canada, aes(x = long, y = lat, label = Lake)) +
   geom_map(map = mp, data = mp, aes(map_id = region), fill = "grey80", inherit.aes = FALSE) + 
   geom_point()+
-  ggrepel::geom_label_repel()
+  ggrepel::geom_label_repel(size = 2)
 
 
 
@@ -158,15 +145,17 @@ geom_point(data = canada06, aes(x = long, y = lat), shape = 1, inherit.aes = FAL
   geom_map(map = mp, data = mp, aes(map_id = region), inherit.aes = FALSE, fill = NA, colour = "black")
 
 Aug <- raster::raster(x = "data/worldclim/wc2.0_10m_tavg_08.tif")
-Augr <- raster::as.data.frame(Aug, xy = TRUE) %>% filter(x < -61, x > -95, y > 60, y < 84)
+Augr <- raster::as.data.frame(Aug, xy = TRUE) %>% filter(x < -70, x > -85, y > 40, y < 64)
 
 ggplot(Augr, aes(x = x, y = y, fill = wc2.0_10m_tavg_08)) + 
   geom_raster() + 
   scale_x_continuous(expand = c(0, 0))+ 
   scale_y_continuous(expand = c(0,0)) + 
   labs(fill = "Aug") +
-  geom_point(data = filter(climate, source == "L2008"), aes(x = long, y = lat), shape = 1, inherit.aes = FALSE, colour = "red") +
-  geom_map(map = mp, data = mp, aes(map_id = region), inherit.aes = FALSE, fill = NA, colour = "black")
+#  geom_point(data = filter(climate, source == "L2008"), aes(x = long, y = lat), shape = 1, inherit.aes = FALSE, colour = "red") +
+  geom_map(map = mp, data = mp, aes(map_id = region), inherit.aes = FALSE, fill = NA, colour = "black") +
+  geom_point(data = canada06, aes(x = long, y = lat), inherit.aes = FALSE)+
+  geom_hline(yintercept = 42.5)
 
 
 
@@ -176,5 +165,4 @@ sites %>% left_join(climate) %>%
   mutate(LT15 = env) %>% 
   ggplot(aes(x = LT15, y = Aug, colour = source))+ 
   geom_point() + 
-  geom_smooth(aes(group = 1)) +
-  geom_abline() #weird in arctic / one site mislocated in HudsonBay littoral
+  geom_abline() #weird in arctic 
