@@ -30,7 +30,14 @@ sites <- env %>% select(Lake = Name) %>%
   mutate(source = c(rep("Poland", 39), rep("L2008", 13), rep("L06", 52), rep("L2008", 8))) %>% 
   mutate(Lake  = case_when(
     Lake == "Lake 29" ~  "Lake29", 
-    Lake == "lake25" ~ "lake25",
+    Lake == "lake25" ~ "Lake25",
+    TRUE ~ Lake))
+
+sites_all <- env_all %>% select(Lake = Name) %>% 
+  mutate(source = c(rep("Poland", 39 + length(lowCount)), rep("L2008", 13), rep("L06", 52), rep("L2008", 8))) %>% 
+  mutate(Lake  = case_when(
+    Lake == "Lake 29" ~  "Lake29", 
+    Lake == "lake25" ~ "Lake25",
     TRUE ~ Lake))
 
 #make env a vector to simplify later code
