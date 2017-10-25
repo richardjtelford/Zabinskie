@@ -1,0 +1,80 @@
+---
+title: "The limits of high resolution palaeoecology"
+author: 
+- name: Richard J. Telford
+  affiliation: Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen
+  email: richard.telford@uib.no
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  html_document: default
+  keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = TRUE, warning = TRUE, cache = TRUE, cache.lazy=TRUE)
+
+Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
+```
+
+
+Concerned by the slightest of hints of rare mønsters in the Lake `r Zabinskie` chironomid data, I decided to have a look at the papers on the chironomid stratigraphy from the varved [Lake Silvaplana](https://en.wikipedia.org/wiki/Lake_Silvaplana), Switzerland, by the same author. These papers, which reconstruct July air temperatures, cover different time periods and use different recontruction methods: here is a brief synopsis.
+
+
+###[Journal of Paleolimnology 2009](https://link.springer.com/article/10.1007/s10933-008-9228-0)
+Time period: 1850--2001 CE 
+Resolution: Near annual  
+Reconstruction method: Calibration-in-space  
+
+Key point: Good correlation of reconstruction with instrumental record (r = 0.65)
+
+Data archived: [Reconstruction](https://www.ncdc.noaa.gov/paleo-search/study/6394)
+
+###[Holocene 2009](http://journals.sagepub.com/doi/abs/10.1177/0959683609348253)
+
+Time period: 1580--2001 CE  
+Resolution: Near annual  
+Reconstruction method: Calibration-in-space
+
+Key point: Correlation of reconstruction with estimates of summer temperature from early instrumental and documentary data, and proxy data.  
+Data archived: [Reconstruction and fossil data](https://www.ncdc.noaa.gov/paleo-search/study/8737)
+
+### [Quaternary Science Reviews 2010a](https://doi.org/10.1016/j.quascirev.2010.04.018)
+Time period: 1032--2001 CE  
+Resolution: 1--20 years  
+Reconstruction method: Calibration-in-space  
+
+Key points: Last part of the Medieval Climate Anomaly was 1°C warmer than 1961–1990 CE. The Little Ice Age was colder by up to −1.2°C and separated into three phases. This pattern agrees with other records of the past millennium. Inferred July temperatures between ca 1900 and 2001 AD were warmer than the climate reference period (1961–1990) by 1°C, in agreement with the instrumental data.
+
+Data archived: [Smoothed reconstruction](https://www.ncdc.noaa.gov/paleo-search/study/10427)
+
+### [Quaternary Science Reviews 2010b](https://www.st-andrews.ac.uk/~rjsw/all%20pdfs/Trachseletal2010.pdf)
+Time period: 1177--2001 CE  
+Resolution: annual  
+Reconstruction method: Compilation of existing chironomid and new biogenic silica proxy records.
+
+Key point: record suggests that the current decade [2000--2010 CE] is slightly warmer than the warmest decade in the previous 800 years.
+
+Data archived: [Reconstruction](https://www.ncdc.noaa.gov/paleo-search/study/13015)
+
+###[Palaeogeography, Palaeoclimatology, Palaeoecology 2011](https://doi.org/10.1016/j.palaeo.2010.11.008)
+Time period: 1032--2001 CE  
+Resolution: 1 -- ~20 years  
+Reconstruction method: Calibration-in-time
+
+Key point: Inconclusive whether calibration-in-space or calibration-in-time gives better estimates.  
+Data archived: ?
+
+###[Journal of Quaternary Science 2011](http://onlinelibrary.wiley.com/doi/10.1002/jqs.1480/full)
+
+Time period:  570 BCE to 120 CE  
+Resolution: Annual  
+Reconstruction method: Calibration-in-space, combined with biogenic silica
+
+Key points: Inter-annual to decadal temperature variability was strongly enhanced in the warm the Iron Age–Roman Period compared to the last millennium
+
+Data archived: ?
+
+###Next steps
+
+The most promising papers for a closer read are 
+JoPL2009, Holocene2009, QSR2010a, PPP2011 as all present new chironomid data, they overlap in time and the reconstructions are archived for the first three.
