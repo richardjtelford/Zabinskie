@@ -81,12 +81,7 @@ The pre-1939 correlation between the authors' composite and mine is much higher 
 
 The problem is that a relatively cold year such as 1899 can be followed by a couple of warm years. The method that the authors use to change the resolution of their termperature data is not influenced by these warm years, but the chironomid assemblages should be. Hence, one might expect the correlation between the reconstruction and the instrumental record to be weak before 1939.
 
-```{r}
-composite_as_zab <- composite_as_zab %>% 
-  full_join(recon %>% rename(recon = temperature))
-pre_thinned <- composite_as_zab %>% filter(year < 1939) %$% cor.test(recon, spotAug)
-pre_mean <- composite_as_zab %>% filter(year < 1939) %$% cor.test(recon, meanAug)
-post <- composite_as_zab %>% filter(year >= 1939) %$% cor(recon, spotAug)
+```{r temperature_correlations}
 ```
 Not so. The pre-1939 correlation between the reconstruction and my thinned composite is high (r = `r pre_thinned$estimate`, p = `r pre_thinned$p.value %>% format(digits = 1, scientific = FALSE)`), comparable with the later data (r = `r post`), whereas the correlation with the mean composite is much lower (r = `r pre_mean$estimate`, p = `r pre_mean$p.value`).
 
