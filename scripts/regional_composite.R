@@ -58,16 +58,27 @@ fat_composite_as_zab_correct <- fat_composite %>%
 fat_composite_as_zab_published <- fat_composite %>% 
   ungroup() %>% 
   inner_join(recon %>% 
-              select(-temperature) %>% 
+#              select(-temperature) %>% 
               mutate(recon_year = year)) %>% 
   arrange(desc(recon_year))
 
 composite_as_zab <- full_join(
   fat_composite_as_zab_correct %>% select(year = recon_year, meanAug = Aug),
-  fat_composite_as_zab_published %>% select(year = recon_year, spotAug = Aug)
+  fat_composite_as_zab_published %>% select(year = recon_year, spotAug = Aug, recon= temperature)
 ) %>% 
   full_join(instrumental %>% rename(Aug.Zab = Aug)) %>% 
   mutate_at(.vars = vars(matches("Aug")), scale, scale = FALSE)
+
+## ---- temperature_correlations
+#vs instrumental
+i_pre_thinned <- composite_as_zab %>% filter(year < 1939) %$% cor(Aug.Zab, spotAug)
+i_pre_mean <- composite_as_zab %>% filter(year < 1939) %$% cor(Aug.Zab, meanAug)
+i_post <- composite_as_zab %>% filter(year >= 1939) %$% cor(Aug.Zab, spotAug)
+
+#vs reconstruction 
+pre_thinned <- composite_as_zab %>% filter(year < 1939) %$% cor.test(recon, spotAug)
+pre_mean <- composite_as_zab %>% filter(year < 1939) %$% cor.test(recon, meanAug)
+post <- composite_as_zab %>% filter(year >= 1939) %$% cor(recon, spotAug)
 
 ## ---- check
 cor(fat_composite$Aug, fat_composite$Jun)
