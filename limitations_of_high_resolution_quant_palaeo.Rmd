@@ -68,7 +68,7 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 ```
 ## todo
 
-Do - Seebergsee and Silvaplana chunks
+Do - references for chronological uncertainty.
 
 ## Abstract
 
@@ -182,7 +182,7 @@ In the lakes with oxic hypolimnia, there are other taphonomic and ecological pro
 
 Reliable chronologies are essential for any proxy-proxy or proxy-instrumental data comparison [@Trachsel2016]. The impact of chronological error will depend on the magnitude of the chronological error relative to the persistence in environmental variable being reconstructed. In cases such as the diatom reconstructions of total phosphorous [@Lotter1998; @Alefs1999], where the target environmenal variable rises and declines over decades, a small chronological error will have little effect on the agreement between the reconstruction and the instrumental records. If, however, the target variable has little or no autocorrelation, as for example with the Lake `r Zabinskie` regional August air-temperature  composite which has an AR1 coeficient of `r ar(fat_composite$Aug, order.max = 1)$ar`, then even an error of a single year would seriously degrade the agreement.
 
-The chronologies supporting the sub-decadal resolution resolution reconstructions listed in Table 1 are either ^210^Pb or varve based. ^210^Pb chronologies typically have an uncertainty of about 10 years on sediment 100 years old [#ref - check if this is 1 or 2 sd]. Varved chronologies are usually more precise, with a typical uncertainty of less that 5% [#ref] and allow the sediment from a single year (or known number of years) to be analysed. The error in varved chronologies tends to accumulate, becoming higher further back in time. It may be possible to correct for chronological errors in varved sediments [@Werner2015] .
+The chronologies supporting the sub-decadal resolution resolution reconstructions listed in Table 1 are either ^210^Pb or varve based. ^210^Pb chronologies typically have an uncertainty of about 10 years on sediment 100 years old [#ref - appleby MOLAR? - check if this is 1 or 2 sd]. Varved chronologies are usually more precise, with a typical uncertainty of less that 5% [#ref - ] and allow the sediment from a single year (or known number of years) to be analysed. The error in varved chronologies tends to accumulate, becoming higher further back in time. It may be possible to correct for chronological errors in varved sediments [@Werner2015] .
 
 ```{r age_uncertainty_setup}
 ```
@@ -220,8 +220,10 @@ One might expect that a reconstruction as excellent as the Lake `r Zabinskie` ch
 
 ```{r regional_composite}
 ```
+```{r temperature_correlations}
+```
 
-The surprisingly poor reconstruction diagnostics are not the only problematic aspect of Larocque-Tobler et al. [-@Larocque-Tobler2015]. A comparison with a regional composite shows that the pre-1939 CE instrumental temperatures, which correspond to the merged chironomid samples, have been miscalculated. Rather than showing the mean temperature over the duration of the chironomid sample, they show the temperature of the first year. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `r composite_as_zab %>% filter(year < 1939) %$% cor(Aug.Zab, spotAug)`) with the incorrectly calculated temperature data than with the the correct data (r = `r composite_as_zab %>% filter(year < 1939) %$% cor(Aug.Zab, meanAug)`).
+The surprisingly poor reconstruction diagnostics are not the only problematic aspect of Larocque-Tobler et al. [-@Larocque-Tobler2015]. The instrumental temperature series used by Larocque-Tobler et al. [-@Larocque-Tobler2015] has an excellent correlation (r = `r i_post`) with a regional composite of long instrumental temperature series from 1939 CE onwards. Pre-1939 CE, the period in which chironomid samples were merged because of low abundances, the correlation deteriorates substantially (r = `r i_pre_mean`) if the mean temperature corresponding to each merged sample is used. Conversely, if the temperature from the first year corresponding to each merged sample is used, the correlation remains strong (r = `r i_pre_thinned`). It would appear that the temperature for the pre-1939 section of the record has been miscalculated. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `r pre_thinned$estimate`, p = `r pre_thinned$p.value %>% format.pval(eps = 0.001)`) with the incorrectly calculated temperature data than with the the correct data (r = `r pre_mean$estimate`, p = `r pre_mean$p.value`).
 
 ```{r replicating_figure_2}
 ```
