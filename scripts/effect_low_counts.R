@@ -1,19 +1,23 @@
 ## ---- count_error
-library("nlme")
-
 all_fos <- colSums(fos_counts)
+
 count_sums <- rowSums(fos_counts)
+
+all_fos <- spp %>% 
+  slice(nrow(spp)) %>% 
+  select_if(. > 0) %>% 
+  unlist()
 
 mod <- WAPLS(sqrt(spp), env)
 nrep <- 1000
-size_sd <- map_df(min(count_sums):80, function(size){
+size_sd <- map_df(min(count_sums):70, function(size){
   sim <- rmultinom(nrep, size = size, prob = all_fos)/size * 100
   sim<- t(sim)
   data_frame(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
 })
 
-mod_nls <- nls(sd ~ a + b/size^c, data = size_sd, start = list(a = 0, b = 5, c = 1))
-all_pred <- data.frame(size = min(count_sums):80, sd = predict(mod_nls))
+mod_nls <- nls(sd ~ a + b/size^c, data = size_sd, start = list(a = 0, b = 5, c = 0.5))
+all_pred <- data.frame(size = min(count_sums):70, sd = predict(mod_nls))
 
 count_error_plot <- size_sd %>% ggplot(aes(x = size, y = sd)) + 
   geom_point() + 
@@ -56,7 +60,7 @@ recon %>%
 
 ## ---- large_counts
 
-size_sd2 <- map_df(seq(10, 2000, 10), function(size){
+size_sd2 <- map_df(seq(5, 200, 5), function(size){
   sim <- rmultinom(1000, size = size, prob = all_fos)/size * 100
   sim<- t(sim)
   data_frame(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
@@ -64,7 +68,7 @@ size_sd2 <- map_df(seq(10, 2000, 10), function(size){
 
 mod_nls2 <- nls(sd ~ a + b/size^c, data = size_sd2, start = list(a = 0, b = 5, c = 1))
 mod_nls2
-all_pred2 <- data.frame(size = seq(10, 2000, 10), sd = predict(mod_nls2))
+all_pred2 <- data.frame(size = seq(5, 200, 5), sd = predict(mod_nls2))
 
 size_sd2 %>% ggplot(aes(x = size, y = sd)) +
   geom_point() + 
@@ -76,6 +80,68 @@ size_sd2 %>% mutate(pred = all_pred2$sd, resid = pred - sd) %>%
   geom_point() # not a perfect fit - small ~quadratic term needed
 
 
+data_frame(spp = names(all_fos), abun = all_fos) %>% 
+  arrange(desc(abun)) %>%mutate(n = 1:n()) %>%
+  mutate(n = 1:n()) %>%
+  ggplot(aes(x = n, y = abun)) + geom_col() + scale_y_log10()
 
 
+## ---- count_error2
+spp100 <- spp_all %>% #use sites with apparent counts of more than 100
+  bind_cols(sites_all %>% select(Lake)) %>%
+  filter(countSums$apparent_count >= 100) %>%
+  gather(key = taxon, value = perc, -Lake) %>% 
+  filter(perc > 0) %>% 
+  arrange(desc(perc)) %>% 
+  group_by(Lake) %>% 
+  mutate(n = row_number())
 
+rank_abundance_plots <- spp100 %>% ggplot(aes(x = n, y = perc)) +
+  geom_step() + 
+  scale_y_log10() +
+  facet_wrap(~Lake) +
+  theme(strip.text = element_blank())
+
+count_sums <- rowSums(fos_counts)
+
+mod <- WAPLS(sqrt(spp), env)
+nrep <- 500
+
+spp100_size_sd <- spp100 %>% do({
+    size_sd <- map_df(seq(min(count_sums), 200, 2), function(size){
+      p <- setNames(.$perc, .$taxon) 
+      sim <- rmultinom(nrep, size = size, prob = p)/size * 100
+      sim<- t(sim)
+      data_frame(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
+    })
+    size_sd
+  })
+
+
+nls_mods <- spp100_size_sd %>% 
+  do(mod = {
+    m <- nls(sd ~ a + b / size ^ c, 
+             data = ., 
+             start = list(a = 0, b = 7, c = 0.5))
+})
+
+nls_fitted <- nls_mods %>% 
+  group_by(Lake) %>% 
+  do({broom::augment(.$mod[[1]])})
+
+nls_fitted %>% 
+  filter(size <= 70) %>% 
+  ggplot(aes(x = size, y = .fitted, group = Lake)) +
+  geom_line(show.legend = FALSE) +
+  ylim(0, NA) + 
+  labs(x = "Count sum", y = "Standard deviation °C")
+
+est_error <- nls_mods %>% 
+  group_by(Lake) %>% 
+  do(broom::augment(.$mod[[1]], newdata = data_frame(size = count_sums))) %>% 
+  summarise(mean = mean(.fitted))
+
+est_error$mean %>% range()
+est_error %>% ggplot(aes(x = mean)) + geom_histogram()
+
+est_error %>% summarise(med = median(mean))
