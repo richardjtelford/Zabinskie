@@ -31,6 +31,7 @@ library("directlabels")
 library("readr")
 library("palaeoSig")
 library("zoo")
+library("nlme")
 #"analogue", english, stringi also needed
 
 #helper functions
@@ -69,6 +70,9 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 ## todo
 
 Do - references for chronological uncertainty.
+Write - count based uncertainties based on calibration set resampling
+Cite - Velle et al 2010
+Write - Highlights
 
 ## Abstract
 
@@ -174,13 +178,13 @@ The importance of intense sediment focusing in Lake `r Zabinskie` is evident in 
 
 The importance of sediment reworking in transporting chironomids to the centre of Lake `r Zabinskie` is demonstrated by the high proportion (73% on average) of littoral taxa in the samples analysed [@Larocque-Tobler2015]. In Lake Silvaplana, an average of 50% of the assemblage is littoral taxa [@Larocque2009]. 
 
-In lakes with oxic hypolimnia, there are other taphonomic and ecological processes that will degrade the proxy record. Bioturbation will mix the top few centimetres of sediment, acting as a low-pass filter. Stratigraphy can potentially be futher compromised as chironomids can burrow several centimetres into the sediment [@Charbonneau1998]. Chironomids living in the hypolimion are isolated from summer temperature by the thermocline [@Livingstone1998], and cannot be expected to respond directly to it.
+In lakes with oxic hypolimnia, there are other taphonomic and ecological processes that will degrade the proxy record. Bioturbation will mix the top few centimetres of sediment, acting as a low-pass filter. Stratigraphy can potentially be further compromised as chironomids can burrow several centimetres into the sediment [@Charbonneau1998]. Chironomids living in the hypolimion are isolated from summer temperature by the thermocline [@Livingstone1998], and cannot be expected to respond directly to it.
 
 
 
 ### Chronological precision
 
-Reliable chronologies are essential for any proxy-proxy or proxy-instrumental data comparison [@Trachsel2016]. The impact of chronological error will depend on the magnitude of the chronological error relative to the persistence in the environmental variable being reconstructed. In cases such as the diatom reconstructions of total phosphorus [@Lotter1998; @Alefs1999], where the target environmenal variable rises and declines over decades, a small chronological error will have little effect on the agreement between the reconstruction and the instrumental records. If, however, the target variable has little or no autocorrelation, as for example with the Lake `r Zabinskie` regional August air-temperature  composite which has an autocorrelation coeficient of `r ar(fat_composite$Aug, order.max = 1)$ar`, then even an error of a single year would seriously degrade the agreement.
+Reliable chronologies are essential for any proxy-proxy or proxy-instrumental data comparison [@Trachsel2016]. The impact of chronological error will depend on the magnitude of the chronological error relative to the persistence in the environmental variable being reconstructed. In cases such as the diatom reconstructions of total phosphorus [@Lotter1998; @Alefs1999], where the target environmental variable rises and declines over decades, a small chronological error will have little effect on the agreement between the reconstruction and the instrumental records. If, however, the target variable has little or no autocorrelation, as for example with the Lake `r Zabinskie` regional August air-temperature  composite which has an autocorrelation coefficient of `r ar(fat_composite$Aug, order.max = 1)$ar`, then even an error of a single year would seriously degrade the agreement.
 
 The chronologies supporting the sub-decadal resolution reconstructions listed in Table 1 are either ^210^Pb or varve based. ^210^Pb chronologies typically have an uncertainty of about 10 years on sediment 100 years old [#ref - appleby MOLAR? - check if this is 1 or 2 sd]. Varved chronologies are usually more precise, with a typical uncertainty of less than 5% [#ref - ] and allow the sediment from a single year (or known number of years) to be analysed. The error in varved chronologies tends to accumulate, becoming higher further back in time. It may be possible to correct for chronological errors in varved sediments [@Werner2015].
 
@@ -284,7 +288,7 @@ Of the four correlations, all between `r min(abisko_short$r)` and `r max(abisko_
 
 ### Lake Silvaplana [@Larocque2009]
 
-The chironomid-based July temperature reconstruction from Lake Silvaplana for the period 1850--2001 CE is first presented in Larocque-Tobler et al. [-@Larocque2009]. Subsequently,  Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] and Larocque-Tobler et al. [-@LarocquTobler2010] published a 420 year long and 1000 year long reconstruction which both include the 1850--2001 CE period. The three reconstructions for the last 150 years should be identical, or at least nearly so, however they are very different. Futhermore, archived reconstructions for Larocque-Tobler et al. [-@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] are different from their associated papers, giving five different reconstructions for this time interval. None of the papers include any explanation of the differences. The archived reconstructions for Larocque-Tobler et al. [@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] can largely be reconciled by allowing a chronological offset of up to 42 years -- far more than the chronological uncertainty of the varve record. Remaining differences between these two archived reconstructions are nearly all interger differences. The archived reconstructions have low correlations with the instrumental data.
+The chironomid-based July temperature reconstruction from Lake Silvaplana for the period 1850--2001 CE is first presented in Larocque-Tobler et al. [-@Larocque2009]. Subsequently,  Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] and Larocque-Tobler et al. [-@LarocquTobler2010] published a 420 year long and 1000 year long reconstruction which both include the 1850--2001 CE period. The three reconstructions for the last 150 years should be identical, or at least nearly so, however they are very different. Furthermore, archived reconstructions for Larocque-Tobler et al. [-@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] are different from their associated papers, giving five different reconstructions for this time interval. None of the papers include any explanation of the differences. The archived reconstructions for Larocque-Tobler et al. [@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] can largely be reconciled by allowing a chronological offset of up to 42 years -- far more than the chronological uncertainty of the varve record. Remaining differences between these two archived reconstructions are nearly all integer differences. The archived reconstructions have low correlations with the instrumental data.
 
 
 ```{r read_silvaplana_Holocene_fossil}
@@ -299,11 +303,11 @@ small_counts <- 100/apply(fos_holocene, 1, function(x)min(x[x > 0]))
 ```
 
 
-Fossil assemblage percent data have been archived for Larocque-Tobler et al. [-@LarocqueTobler2009Holocene]. Unfortunatly the count sums have not been archived but were reported to be at least 30. However the data suggest that many of the samples have much smaller counts. For example, the sample for `r min(holocene_year$YearAD)` CE has `r as.english(ncol(last_sample))` taxa with relative abundances of `r last_sample[1]`% and `r last_sample[2]`%. Given that the rarest taxa is probably represented by a single individual, it seem that this represents a count of `r 100/last_sample[1]` individuals. Inspection of Figure 3a from Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] supports this interpretation. `r as.English(sum(small_counts < 20))` of the `r nrow(fos_holocene)` samples appear to have a count of fewer than 20 head capsules. Such extremely low counts cannot be expected to yield precise reconstructions.
+Fossil assemblage percent data have been archived for Larocque-Tobler et al. [-@LarocqueTobler2009Holocene]. Unfortunately the count sums have not been archived but were reported to be at least 30. However the data suggest that many of the samples have much smaller counts. For example, the sample for `r min(holocene_year$YearAD)` CE has `r as.english(ncol(last_sample))` taxa with relative abundances of `r last_sample[1]`% and `r last_sample[2]`%. Given that the rarest taxa is probably represented by a single individual, it seem that this represents a count of `r 100/last_sample[1]` individuals. Inspection of Figure 3a from Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] supports this interpretation. `r as.English(sum(small_counts < 20))` of the `r nrow(fos_holocene)` samples appear to have a count of fewer than 20 head capsules. Such extremely low counts cannot be expected to yield precise reconstructions.
 
 ### Seebergsee [@LarocqueTobler2011b]
 
-No fossil data have been archived from the anoxic Seebergsee. Larocque-Tobler et al [-@LarocqueTobler2011b] report that adjacent fossil samples were merged until there were at least 30 chironomids. However inspection of figure 4 a & b in Larocque-Tobler et al [-@LarocqueTobler2011b] strongly suggests that the count sum in many samples was much lower than this. The oldest sample has one taxon at 66% and a second at 33%, suggesting a count sum of three. 
+No fossil data have been archived from the anoxic Seebergsee. Larocque-Tobler et al [-@LarocqueTobler2011b] report that adjacent fossil samples were merged until there were at least 30 chironomids. However inspection of Figure 4 a & b in Larocque-Tobler et al [-@LarocqueTobler2011b] strongly suggests that the count sum in many samples was much lower than this. For example, the oldest sample has one taxon at 66% and a second at 33%. The sum of the total abundances shown in Figure 4a for the three samples merged into the oldest sample is 12, far below the reported threshold of 30. Curiously, the lowest count observed in Figure 4a is four chironomids and all differences in abundances are multiples of four. Since the rarest taxa the fossil data is almost certainly present with a single individual, the likelihood that all counts are multiples of four is infinitesimally small. This suggests that the counts have been multiplied by four and that the true count sum for the oldest sample is three head capsules. 
 
 ### Nurmijärvi [@Luoto2016]
 
@@ -322,7 +326,7 @@ The polluted, eutrophic Speke Hall Lake [@Lang2017] is a curious choice of site 
 
 ## Conclusions
 
-Reliable annual-resolution reconstructions depend on the conjunction of a strong direct ecological link to the variable being reconstructed and a simple taphonomy. Accurate and precise chronologies are also needed for a direct comparison with instrumental records. These requirements might be met by diatom-total phosphorus reconstructions, and perhaps by chrysophyte reconstructions of winter climate. It appears unlikely that they will be met by the relatively long-lived, predominately littoral chironomids for reconstructions of a single month's temperature. Some of the chironomid-based reconstructions disussed above owe their apparent good perfomance to single fortuitous errors or simple good luck. The reconstructions from lakes `r Zabinskie`, Seebergsee, Silvaplana, and the four lakes near Abisko are plagued by such pervasive errors and improbabilies that their veracity has to be doubted until their results be confirmed.
+Reliable annual-resolution reconstructions depend on the conjunction of a strong direct ecological link to the variable being reconstructed and a simple taphonomy. Accurate and precise chronologies are also needed for a direct comparison with instrumental records. These requirements might be met by diatom-total phosphorus reconstructions, and perhaps by chrysophyte reconstructions of winter climate. It appears unlikely that they will be met by the relatively long-lived, predominately littoral chironomids for reconstructions of a single month's temperature. Some of the chironomid-based reconstructions discussed above owe their apparent good performance to single fortuitous errors or simple good luck. The reconstructions from lakes `r Zabinskie`, Seebergsee, Silvaplana, and the four lakes near Abisko are plagued by such pervasive errors and improbabilities that their veracity has to be doubted until their results be confirmed by replication.
 
 ## Methods
 
