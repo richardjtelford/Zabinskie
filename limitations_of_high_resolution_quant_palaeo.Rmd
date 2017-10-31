@@ -1,9 +1,9 @@
 ---
 title: "The limits of high-resolution palaeoecology"
-author: 
-- name: Richard J. Telford
-  affiliation: Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen
-  email: richard.telford@uib.no
+author: |
+  | Richard J. Telford 
+  | Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen
+  | email: richard.telford@uib.no
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
    - \usepackage{lineno}
@@ -81,7 +81,6 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 
 ## todo
 
-YAML - get name and affilication to work
 Do - references for chronological uncertainty.  
 Write - count based uncertainties based on calibration set resampling  
 Cite - Velle et al 2010 & response  
