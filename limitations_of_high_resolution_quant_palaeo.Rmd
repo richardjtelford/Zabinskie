@@ -1,19 +1,29 @@
 ---
-title: "The limits of high resolution palaeoecology"
+title: "The limits of high-resolution palaeoecology"
 author: 
 - name: Richard J. Telford
   affiliation: Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen
   email: richard.telford@uib.no
 date: "`r format(Sys.Date(), '%d %B %Y')`"
-output:
+header-includes:
+   - \usepackage{lineno}
+   - \linenumbers
+   - \usepackage{pdflscape}
+   - \newcommand{\blandscape}{\begin{landscape}}
+   - \newcommand{\elandscape}{\end{landscape}}   
+#output:
 #  word_document: default
-  html_document: default
-#csl: journal-of-paleolimnology.csl
+#  html_document: default
+#  pdf_document: default
+output:
+  pdf_document:
+      latex_engine: xelatex
+csl: journal-of-paleolimnology.csl
 bibliography: chironomid.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE, cache = TRUE, cache.lazy=TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TRUE, cache.lazy=TRUE)
 
 options(digits = 2)
 
@@ -60,6 +70,7 @@ knitr::read_chunk("scripts/curiousCounts.R")
 knitr::read_chunk("scripts/calibration_set_issues.R")
 knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
+knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
 knitr::read_chunk("zhang_et_al/zhang_et_al.R")
 
 Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
@@ -67,12 +78,14 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 
 ```{r load_Zabinskie_data, include = FALSE}
 ```
+
 ## todo
 
-Do - references for chronological uncertainty.
-Write - count based uncertainties based on calibration set resampling
-Cite - Velle et al 2010
-Write - Highlights
+YAML - get name and affilication to work
+Do - references for chronological uncertainty.  
+Write - count based uncertainties based on calibration set resampling  
+Cite - Velle et al 2010 & response  
+Write - Highlights  
 
 ## Abstract
 
@@ -87,34 +100,38 @@ Very high, even annual, resolution quantitative palaeoenvironmental reconstructi
 
 Palaeoecologists and others value high-resolution palaeolimnological data [@Perga2015, @Pages2013]. Of the `r nrow(lakesHi)` very high resolution palaeolimnological time series in the Pages2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of the varves, which can be difficult to interpret [@Blass2007], while only `r sum(lakesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(lakesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(lakesHi$proxy == "BSi") == 1)` biogenic silica series. 
 
-The two chironomid records are part of a growing move towards subdecadal-resolution microfossil-based reconstructions using transfer functions. As such records require large investments of time, it is important to understand the circumstances in which they are likely to yield good results. Evidence for the utility of these high, even annual, resolution reconstructions comes from comparisons of instrumental records with the reconstructions, typically from varved sediments.[# (Bridging sentence needed here – Examples of such reconstructions include… (Table 1)) #] Lotter [-@Lotter1998] and Alefs and Müller [-@Alefs1999] reconstruct total phosphorous concentrations from annually-resolved, mainly planktic, lacustrine diatom assemblages. In all three lakes studied, the reconstructed nutrient concentration has a good correlation with the slowly varying monitoring data (Table 1). High-resolution chrysophyte stomatocysts stratigraphies have been used to reconstruct winter conditions as reflected by the date of spring mixing [@DeJong2011] and the duration of cold water [-@HernandezAlmeida2015]. Since there are no long instrumental time series of these limnological variables, the reconstructions are correlated with winter air temperatures. Chrysophyte stomatocysts have also been used to reconstruct summer calcium concentrations [@HernandezAlmeida2015b], which might reflect summer mixing and so were correlated with summer wind speeds. High-resolution chironomid head capsules stratigraphies have been used to reconstruct summer air temperatures [@Larocque2009; @Larocque-Tobler2011; @LarocqueTobler2011b;  @Larocque-Tobler2015; @Luoto2016; @Zhang2017]. Some of the correlations shown in Table 1 are surprisingly good given the ecological sensitivity of the proxy, taphonomic issues, and the inherent chronological uncertainty that occurs even in the best dated palaeolimnological records.
+The two chironomid records are part of a growing move towards subdecadal-resolution microfossil-based reconstructions using transfer functions. As such records require large investments of time, it is important to understand the circumstances in which they are likely to yield good results. Evidence for the utility of these high, even annual, resolution reconstructions comes from comparisons of instrumental records with the reconstructions, typically from varved sediments. Examples of such reconstructions include are listed in Table 1. Lotter [-@Lotter1998] and Alefs and Müller [-@Alefs1999] reconstruct total phosphorous concentrations from annually-resolved, mainly planktic, lacustrine diatom assemblages. In all three lakes studied, the reconstructed nutrient concentration has a good correlation with the slowly varying monitoring data (Table 1). High-resolution chrysophyte stomatocysts stratigraphies have been used to reconstruct winter conditions as reflected by the date of spring mixing [@DeJong2011] and the duration of cold water [-@HernandezAlmeida2015]. Since there are no long instrumental time series of these limnological variables, the reconstructions are correlated with winter air temperatures. Chrysophyte stomatocysts have also been used to reconstruct summer calcium concentrations [@HernandezAlmeida2015b], which might reflect summer mixing and so were correlated with summer wind speeds. High-resolution chironomid head capsules stratigraphies have been used to reconstruct summer air temperatures [@Larocque2009; @Larocque-Tobler2011; @LarocqueTobler2011b;  @Larocque-Tobler2015; @Luoto2016; @Zhang2017]. Some of the correlations shown in Table 1 are surprisingly good given the ecological sensitivity of the proxy, taphonomic issues, and the inherent chronological uncertainty that occurs even in the best dated palaeolimnological records.
 
+\blandscape
 
 ```{r table1}
 studies <- read.table(header = TRUE, sep = ";", text = 
 "Study;Proxy;Variable;Location;Resolution;Correlation
-Lotter [-@Lotter1998];Diatoms;Total phosphorus;Baldegersee, Switzerland;Annual;'compares well'*
+Lotter [-@Lotter1998];Diatoms;Total phosphorus;Baldegersee, Switzerland;Annual;\'compares well\'*
 Alefs and Müller [-@Alefs1999];Diatoms;Total phosphorus;Ammersee, Germany;Annual;0.91* 
- ---〃--- ; ---〃--- ; ---〃--- ;Starnberger See, Germany;Annual;0.77*
+  ;  ;  ;Starnberger See, Germany;Annual;0.77*
 
-De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana, Switzerland; Annual (3 yr smooth);–0.58 vs mean October--May air temperature*
-Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentrations;Lake Żabińskie, Poland;Annual (3 yr smooth);0.5 vs May--October zonal wind speed*
-Hernández-Almeida et al. [-@HernandezAlmeida2015];Chrysophytes;Number of consecutive days with water below 4°C;Lake Żabińskie, Poland;Annual smoothed?;0.35 vs January--March air temperature*
+De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana, Switzerland; Annual (3 yr smooth);–0.58 vs mean Oct.--May air temperature*
+Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentrations;Lake Żabińskie, Poland;Annual (3 yr smooth);0.5 vs May--Oct. zonal wind speed*
+Hernández-Almeida et al. [-@HernandezAlmeida2015];Chrysophytes;Number consecutive days with water < 4°C;Lake Żabińskie, Poland;Annual smoothed?;0.35 vs Jan.--March air temperature*
 
 Larocque and Hall [-@Larocque2003];Chironomids;July air-temperature;Lake Njulla, Sweden;2--7 years;0.39
- ---〃--- ; ---〃--- ; ---〃--- ;Lake 850;2--6 years;0.365
- ---〃--- ; ---〃--- ; ---〃--- ;Alanen Laanijavri;1--5 years;0.35
- ---〃--- ; ---〃--- ; ---〃--- ;Vuoskkujavri;1--6 years;0.37
+   ;  ;  ;Lake 850;2--6 years;0.365
+  ;  ;  ;Alanen Laanijavri;1--5 years;0.35
+  ;  ;  ;Vuoskkujavri;1--6 years;0.37
 Larocque et al. [-@Larocque2009], Larocque-Tobler et al. [-@Larocque-Tobler2011];Chironomids;July air-temperature;Lake Silvaplana, Switzerland;Near annual;0.65/0.53*
 Larocque-Tobler et al. [-@LarocqueTobler2011b];Chironomids;July air-temperature;Seebergsee, Switzerland;3--8 yrs;0.64/0.73
 'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-temperature;Lake Żabińskie, Poland;Mostly annual;0.76*
 Luoto and Ojala [-@Luoto2016];Chironomids;July air-temperature;Nurmijärvi, Finland;1--11 years;0.38/0.51*
 Zhang et al. [-@Zhang2017];Chironomids;July air-temperature;Tiancai Lake, China;1--4 years;0.45
-Lang et al. [-@Lang2017];Chironomids;July air-temperature;Speke Hall Lake, UK; ~8 years;0.62" )
+Lang et al. [-@Lang2017];Chironomids;July air-temperature;Speke Hall Lake, UK; ~8 years;0.62", stringsAsFactors = FALSE )
 
-studies %>% knitr::kable(caption = "Table 1: Location, proxy, resolution and correlation of with the instrumental record of the reconstructions considered. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model. Asterisks indicate lakes with varve chronologies.")
+#studies %>% kable(caption = "Location, proxy, resolution and correlation of with the instrumental record of the reconstructions considered. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model. Asterisks indicate lakes with varve chronologies.") %>% column_spec(column)
 
+pander::pander(studies, caption = "Location, proxy, resolution and correlation of with the instrumental record of the reconstructions considered. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model. Asterisks indicate lakes with varve chronologies.", split.cells = 25, split.tables = 150)
 ```
+
+\elandscape
 
 The performances of several of the chironomid reconstructions are comparable with the best treering-width--climate correlations where the 99^th^ percentile of statistically significant (p < 0.05) correlations is 0.7 for winter precipitation and 0.63 for summer temperature [@StGeorge2014]. Although the treering-width--climate relationship has its complexities [@DArrigo2008], it is much simpler than the multi-species relationship between microfossil assemblages and climate, has no chronological error, and no taphonomic complications.  
 
@@ -142,20 +159,20 @@ The choice of calibration target, however, has a large impact on the correlation
 
 ```{r percent_variance, message  = FALSE, results = "hide", fig.keep='none'}
 ```
-```{r plot_explained_variance, fig.cap = "Fig. 1. By month, a) the percent of intertia explained in a cannonical correspondence analysis CCA constrained by temperature, b) transfer function cross-validation r^2^ calibrated against temperature, c) correlation between the predicted temperature and the instrumental temperature"}
+```{r plot_explained_variance, fig.cap = "By month, a) the percent of intertia explained in a cannonical correspondence analysis CCA constrained by temperature, b) transfer function cross-validation r^2^ calibrated against temperature, c) correlation between the predicted temperature and the instrumental temperature"}
 variance_plot 
 ```
 
 ```{r reconstruction_by_month}
 ```
 
-```{r plot_recon_by_month, fig.cap = "Fig. 2. Reconstruction of temperature for different months at Lake Żabińskie"}
+```{r plot_recon_by_month, fig.cap = "Reconstruction of temperature for different months at Lake Żabińskie"}
 recon_by_month_plot
 ```
 
 ```{r weather_climate, results = "hide", fig.keep='none'}
 ```
-```{r weather_climate_plot, fig.cap = "Fig. 3. Correlation between August and June (blue line), and August and summer temperatures (red line) averaged over different length periods in the central England temperature series [@Parker1992]"}
+```{r weather_climate_plot, fig.cap = "Correlation between August and June (blue line), and August and summer temperatures (red line) averaged over different length periods in the central England temperature series [@Parker1992]"}
 JuneAugustSummer_plot
 ```
 
@@ -186,7 +203,7 @@ In lakes with oxic hypolimnia, there are other taphonomic and ecological process
 
 Reliable chronologies are essential for any proxy-proxy or proxy-instrumental data comparison [@Trachsel2016]. The impact of chronological error will depend on the magnitude of the chronological error relative to the persistence in the environmental variable being reconstructed. In cases such as the diatom reconstructions of total phosphorus [@Lotter1998; @Alefs1999], where the target environmental variable rises and declines over decades, a small chronological error will have little effect on the agreement between the reconstruction and the instrumental records. If, however, the target variable has little or no autocorrelation, as for example with the Lake `r Zabinskie` regional August air-temperature  composite which has an autocorrelation coefficient of `r ar(fat_composite$Aug, order.max = 1)$ar`, then even an error of a single year would seriously degrade the agreement.
 
-The chronologies supporting the sub-decadal resolution reconstructions listed in Table 1 are either ^210^Pb or varve based. ^210^Pb chronologies typically have an uncertainty of about 10 years on sediment 100 years old [#ref - appleby MOLAR? - check if this is 1 or 2 sd]. Varved chronologies are usually more precise, with a typical uncertainty of less than 5% [#ref - ] and allow the sediment from a single year (or known number of years) to be analysed. The error in varved chronologies tends to accumulate, becoming higher further back in time. It may be possible to correct for chronological errors in varved sediments [@Werner2015].
+The chronologies supporting the sub-decadal resolution reconstructions listed in Table 1 are either ^210^Pb or varve based. ^210^Pb chronologies typically have an uncertainty of about 10 years on sediment 100 years old [#ref - Appleby MOLAR? - check if this is 1 or 2 sd]. Varved chronologies are usually more precise, with a typical uncertainty of less than 5% [#ref - ] and allow the sediment from a single year (or known number of years) to be analysed. The error in varved chronologies tends to accumulate, becoming higher further back in time. It may be possible to correct for chronological errors in varved sediments [@Werner2015].
 
 ```{r age_uncertainty_setup}
 ```
@@ -234,9 +251,9 @@ The surprisingly poor reconstruction diagnostics are not the only problematic as
 ```{r supplementary_data_fig_1}
 ```
 
-The two ordinations in Larocque-Tobler et al. [-@Larocque-Tobler2015] cannot be reproduced from the archived data (seven substantially different versions of the fossil data were archived before the current version). Larocque-Tobler et al. [-@Larocque-Tobler2015] Figure 2 is a principal component analysis of the calibration set. There are `r nrow(spp_all)` lakes in the calibration set (the paper reports 122) but Figure 2 shows only 103 lakes: 18 lakes have been omitted, including all `r sum(env_all > 23) %>% as.english()` lakes warmer than 23°C (Fig. 4a). The omission of these lakes makes the relationship between the chironomid assemblages and temperature appear to be stronger than it is.   
+The two ordinations in Larocque-Tobler et al. [-@Larocque-Tobler2015] cannot be reproduced from the archived data (seven substantially different versions of the fossil data were archived before the current version). Larocque-Tobler et al. [-@Larocque-Tobler2015] Figure 2 is a principal component analysis of the calibration set. There are `r nrow(spp_all)` lakes in the calibration set (the paper reports 122) but Figure 2 shows only 103 lakes: 18 lakes have been omitted, including all `r sum(env_all > 23) %>% as.english()` lakes warmer than 23°C (Fig. 4a). The omission of these lakes makes the relationship between the chironomid assemblages and temperature appear to be stronger than it is.  
 
-```{r LTfigure2, fig.cap = "Fig. 4. a) Attempt to replicate Larocque-Tobler et al. [-@Larocque-Tobler2015] Figure 2. Lakes enclosed by a red circle are missing from the published figure. b) Attempt to replicate Larocque-Tobler et al. [-@Larocque-Tobler2015] Supplementary Data Figure 1. The original figure has six more Canadian lakes in the lower right quadrant.", warning=FALSE}
+```{r LTfigure2, fig.cap = "a) Attempt to replicate Larocque-Tobler et al. [-@Larocque-Tobler2015] Figure 2. Lakes enclosed by a red circle are missing from the published figure. b) Attempt to replicate Larocque-Tobler et al. [-@Larocque-Tobler2015] Supplementary Data Figure 1. The original figure has six more Canadian lakes in the lower right quadrant.", warning=FALSE}
 th <- theme(legend.position = "bottom")
 cowplot::plot_grid(
   fig2 + th + 
@@ -255,7 +272,7 @@ Conversely, supplementary data figure 1 in Larocque-Tobler et al. [-@Larocque-To
 ```
 Larocque-Tobler et al. [-@Larocque-Tobler2015] report that the count sums in both the fossil and modern data sets were at least 50 chironomid head capsules. In a corrigendum, Larocque-Tobler et al. [-@Larocque-Tobler2016] subsequently acknowledged that many samples had lower count sums: `r as.english(length(lowCount))` of the  `r sum(sites_all$source == "Poland")` Polish lakes were removed from the calibration set and the minimum count sum for the fossil data reported as `r min(rowSums(fos_counts))`. `r as.English(round(mean(rowSums(fos_counts) < 50) * 100))` percent of fossil samples have a count sum less that that initially reported. It is well known [@Heiri2001; @Larocque2001a; @Quinlan2001] that low count sums are associated with increased uncertainty in reconstructions. The effect of low count sums on the precision of the reconstruction estimates from Lake `r Zabinskie` can be estimated by resampling the aggregated fossil counts many times to different count sums (with replacement). Figure 5 shows the standard deviation of `r nrep` weighted-averaging partial least squares (WAPLS) reconstructions for samples covering the range of count sums in Larocque-Tobler et al. [-@Larocque-Tobler2015].  
 
-```{r count_error_plot, fig.cap="Figure 4. Standard deviation of WAPLS reconstuction based on samples with different count sums."}
+```{r count_error_plot, fig.cap="Standard deviation of WAPLS reconstuction based on samples with different count sums."}
 count_error_plot
 ```
 
@@ -307,7 +324,10 @@ Fossil assemblage percent data have been archived for Larocque-Tobler et al. [-@
 
 ### Seebergsee [@LarocqueTobler2011b]
 
-No fossil data have been archived from the anoxic Seebergsee. Larocque-Tobler et al [-@LarocqueTobler2011b] report that adjacent fossil samples were merged until there were at least 30 chironomids. However inspection of Figure 4 a & b in Larocque-Tobler et al [-@LarocqueTobler2011b] strongly suggests that the count sum in many samples was much lower than this. For example, the oldest sample has one taxon at 66% and a second at 33%. The sum of the total abundances shown in Figure 4a for the three samples merged into the oldest sample is 12, far below the reported threshold of 30. Curiously, the lowest count observed in Figure 4a is four chironomids and all differences in abundances are multiples of four. Since the rarest taxa the fossil data is almost certainly present with a single individual, the likelihood that all counts are multiples of four is infinitesimally small. This suggests that the counts have been multiplied by four and that the true count sum for the oldest sample is three head capsules. 
+```{r seeberg_occur}
+```
+
+No fossil data have been archived from the anoxic Seebergsee. Larocque-Tobler et al [-@LarocqueTobler2011b] report that adjacent fossil samples were merged until there were at least 30 chironomids. However inspection of Figure 4 a & b in Larocque-Tobler et al [-@LarocqueTobler2011b] strongly suggests that the count sum in many samples was much lower than this. For example, the oldest sample has one taxon at 66% and a second at 33%. The sum of the total abundances shown in Figure 4a for the three samples merged into the oldest sample is 12, far below the reported threshold of 30. Curiously, the lowest count observed in Figure 4a is four chironomids and all differences in abundances are multiples of four. Since the rarest taxa the fossil data is almost certainly present with a single individual, the likelihood that all counts are multiples of four is infinitesimally small (under very optimistic assumptions, the probablity that a given  count is divisible by four is 0.25. The probability that all `r sum_occur` counts are divisible by four is 10^`r log10(seeberg_prob) %>% round()`^). This suggests that the counts have been multiplied by four and that the true count sum for the oldest sample is three head capsules. 
 
 ### Nurmijärvi [@Luoto2016]
 
