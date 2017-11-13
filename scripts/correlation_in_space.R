@@ -35,7 +35,8 @@ canada0 <- read_excel("data/zabinskie2015cit.xls", sheet = "Poland-Canada Lakes"
   select(Lake = LAKE, `Latitude/Longitude`, Location)
   
 
-canada1 <- canada0 %>% 
+canada1 <- canada0 %>%
+  mutate(`Latitude/Longitude`  = if_else(Lake == "NorthLake", "81° 21’ N, 69° 32'W", `Latitude/Longitude` )) %>% #set unknown location of NorthLake to that of UML
   filter(!is.na(`Latitude/Longitude`)) %>% 
   mutate(`Latitude/Longitude` = gsub("’|′", "'",`Latitude/Longitude`)) %>% 
   separate(`Latitude/Longitude`, into = c("Latitude", "Longitude"), sep = "N", remove = FALSE) %>% 
