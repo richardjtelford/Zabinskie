@@ -18,7 +18,7 @@ header-includes:
 output:
   pdf_document:
       latex_engine: xelatex
-csl: journal-of-paleolimnology.csl
+#csl: journal-of-paleolimnology.csl
 bibliography: chironomid.bib
 ---
 
@@ -42,6 +42,7 @@ library("readr")
 library("palaeoSig")
 library("zoo")
 library("nlme")
+library("xml2")
 #"analogue", english, stringi also needed
 
 #helper functions
@@ -63,6 +64,7 @@ knitr::read_chunk("scripts/percent_variance_by_month.R")
 knitr::read_chunk("scripts/age_uncertainty.R")
 knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 knitr::read_chunk("scripts/regional_composite.R")
+knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
 knitr::read_chunk("scripts/air_water_correlation.R")
 knitr::read_chunk("scripts/figure2_ordination.R")
 knitr::read_chunk("scripts/effect_low_counts.R")
@@ -239,12 +241,12 @@ Given the high correlations between chironomid-inferred temperatures and air tem
 ```
 One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, Larocque-Tobler et al. [-@Larocque-Tobler2015] report that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in Larocque-Tobler et al. [-@Larocque-Tobler2015], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor or very poor fit, and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation between principal component axis 1 of the fossil data and August air temperature reported in Larocque-Tobler et al. [-@Larocque-Tobler2015]. Perhaps we need to question the utility of these diagnostics?
 
-```{r regional_composite}
+```{r load_xml_temperature}
 ```
-```{r temperature_correlations}
+```{r temperature_correlation}
 ```
 
-The surprisingly poor reconstruction diagnostics are not the only problematic aspect of Larocque-Tobler et al. [-@Larocque-Tobler2015]. The instrumental temperature series used by Larocque-Tobler et al. [-@Larocque-Tobler2015] has an excellent correlation (r = `r i_post`) with a regional composite of long instrumental temperature series from 1939 CE onwards. Pre-1939 CE, the period in which chironomid samples were merged because of low abundances, the correlation deteriorates substantially (r = `r i_pre_mean`) if the mean temperature corresponding to each merged sample is used. Conversely, if the temperature from the first year corresponding to each merged sample is used, the correlation remains strong (r = `r i_pre_thinned`). It would appear that the temperature for the pre-1939 section of the record has been miscalculated. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `r pre_thinned$estimate`, p = `r pre_thinned$p.value %>% format.pval(eps = 0.001)`) with the incorrectly calculated temperature data than with the correct temperature data (r = `r pre_mean$estimate`, p = `r pre_mean$p.value`).
+The surprisingly poor reconstruction diagnostics are not the only problematic aspect of Larocque-Tobler et al. [-@Larocque-Tobler2015]. The instrumental temperature series used by Larocque-Tobler et al. [-@Larocque-Tobler2015] was miscalculated for the period before 1939, the period in which chironomid samples were merged because of low abundances (Larocque-Tobler, pers comm). Rather than using the mean temperature for the interval corresponding to each sample, the temperature of the first year was used. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `r incorrect_correlation`) with the incorrectly calculated temperature data than with the correct temperature data (r = `r correct_correlation`).
 
 ```{r replicating_figure_2}
 ```
@@ -354,7 +356,7 @@ Reliable annual-resolution reconstructions depend on the conjunction of a strong
 
 All analyses were done in `r gsub("(.*) \\(.*", "\\1", R.version.string)` [@R2017]. Ordinations were fitted with vegan version 2.4-3 [@vegan2017]. Transfer functions were fitted with rioja version 0.9-15 [@rioja2017] using square-root transformed species data. Some diagnostics were performed using analogue version 0.17-0 [@analogue2016]. The reconstruction significance test was run with randomTF from palaeoSig version 1.1-3 [@palaeoSig2015] with 999 trials for the null distribution.
 
-Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as location data have not been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN [#] series extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series. The authors of Larocque et al. [-@Larocque-Tobler2015] refused to make the their August air temperature compilation available.
+Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as location data have not been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN [#] series extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series.
   
 
 ## Acknowledgements
