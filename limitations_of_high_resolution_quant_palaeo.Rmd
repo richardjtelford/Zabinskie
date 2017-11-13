@@ -66,6 +66,7 @@ knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 knitr::read_chunk("scripts/regional_composite.R")
 knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
 knitr::read_chunk("scripts/air_water_correlation.R")
+knitr::read_chunk("scripts/ordinations.R")
 knitr::read_chunk("scripts/figure2_ordination.R")
 knitr::read_chunk("scripts/effect_low_counts.R")
 knitr::read_chunk("scripts/curiousCounts.R")
@@ -239,10 +240,15 @@ Given the high correlations between chironomid-inferred temperatures and air tem
 ```
 ```{r randomTF}
 ```
-One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, Larocque-Tobler et al. [-@Larocque-Tobler2015] report that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in Larocque-Tobler et al. [-@Larocque-Tobler2015], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor or very poor fit, and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation between principal component axis 1 of the fossil data and August air temperature reported in Larocque-Tobler et al. [-@Larocque-Tobler2015]. Perhaps we need to question the utility of these diagnostics?
+One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, Larocque-Tobler et al. [-@Larocque-Tobler2015] report that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in Larocque-Tobler et al. [-@Larocque-Tobler2015], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor or very poor fit, and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation (r = ##) between principal component axis 1 of the fossil data and August air temperature reported in Larocque-Tobler et al. [-@Larocque-Tobler2015]. Perhaps we need to question the utility of these diagnostics?
 
 ```{r load_xml_temperature}
 ```
+```{r ordinations}
+```
+
+Since both the assemblage and instrumental temperature data are available, more direct tests can be applied than the reconstruction diagnostics used above. A canonical correspondence analysis fitted to the assemblage data with August temperature as the sole predictor explains `r pc_explained`% of the variance in the assemblage data. This is statistically significant (p = `r anova_fos %>% format.pval()`) but the ratio of the constrained eigenvalue to the first unconstrained eigenvalue is far below one ($\lambda_1/\lambda_2$ = `r L1L2`) suggesting that August temperature is not the most important axis of variability in the assemblage data and hence precise reconstructions cannot be expected [@Juggins2013]. 
+
 ```{r temperature_correlation}
 ```
 
