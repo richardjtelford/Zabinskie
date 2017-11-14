@@ -350,7 +350,12 @@ No fossil data have been archived from the anoxic Seebergsee, but the raw count 
 ```{r digitised_seebergsee_climate, fig.keep="none", results = "hide"}
 ```
 
-Digitising the July instrumental temperature daa from figure 6 in Larocque-Tobler et al [-@LarocqueTobler2011b] (which is difficult to reconciled with instrumental data from Château d’Oex) allows the replicatablity of calibration-in-time result to be tested. The paper does not report which transfer function method was used, but a two component WAPLS model on square-root transformed assemblage data yields a reconstruction that has a correlation of `r sbs_perf$object[2, 2] ^ 0.5` with the instrumental data, identical to that reported, _if_ the model is not cross-validated. With cross-validation, which is essential to prevent overfitting, the correlation drops to `r sbs_perf$crossval[2, 2] ^ 0.5`, and the reconstruction has no skill.
+Digitising the July instrumental temperature daa from figure 6 in Larocque-Tobler et al [-@LarocqueTobler2011b] allows the replicatablity of calibration-in-time result to be tested. The paper does not report which transfer function method was used, but a two component WAPLS model on square-root transformed assemblage data yields a reconstruction that has a correlation of `r sbs_perf$object[2, 2] ^ 0.5` with the instrumental data, identical to that reported. However, this performance is only achieved if the model is not cross-validated. With cross-validation, which is essential to prevent overfitting and give an unbiased estimate of performance, the correlation drops to `r sbs_perf$crossval[2, 2] ^ 0.5`, and the reconstruction has no skill.
+
+```{r sbs_ca}
+```
+
+There are some other issues with Larocque-Tobler et al [-@LarocqueTobler2011b]. These include substantial discrepancies between the age-depth model shown in their figure 3 and figure 4b, and the report that the first and second axis of a correspondence analysis (CA) of the fossil data explain 45% and 27% of the inertia respectively. Replicating the CA shows that the first and second axis explain only `r eigenvals(sbs_ca)[1]/sbs_ca$tot.chi * 100`% and `r eigenvals(sbs_ca)[2]/sbs_ca$tot.chi * 100`% of the inertia.
 
 ### Nurmijärvi [@Luoto2016]
 
@@ -375,7 +380,7 @@ Reliable annual-resolution reconstructions depend on the conjunction of a strong
 
 ## Methods
 
-All analyses were done in `r gsub("(.*) \\(.*", "\\1", R.version.string)` [@R2017]. Ordinations were fitted with vegan version 2.4-3 [@vegan2017]. Transfer functions were fitted with rioja version 0.9-15 [@rioja2017] using square-root transformed species data. Some diagnostics were performed using analogue version 0.17-0 [@analogue2016]. The reconstruction significance test was run with randomTF from palaeoSig version 1.1-3 [@palaeoSig2015] with 999 trials for the null distribution.
+All analyses were done in `r gsub("(.*) \\(.*", "\\1", R.version.string)` [@R2017]. Ordinations were fitted with vegan version 2.4-3 [@vegan2017] with square-root transformed assemblage data. Transfer functions were fitted with rioja version 0.9-15 [@rioja2017] using square-root transformed species data. Some diagnostics were performed using analogue version 0.17-0 [@analogue2016]. The reconstruction significance test was run with randomTF from palaeoSig version 1.1-3 [@palaeoSig2015] with 999 trials for the null distribution.
 
 Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as location data have not been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN [#] series extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series.
   

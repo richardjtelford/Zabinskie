@@ -56,6 +56,6 @@ makefig(see_chrono_plot )
 
 ## ---- sbs_ca
 sbs_ca <- cca(sqrt(seeberg_pc))
-eigenvals(sbs_ca)[1:2]/sum(eigenvals(sbs_ca))
+
 
 
