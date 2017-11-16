@@ -26,7 +26,9 @@ fig2 <- ggplot(fpca, aes(-Dim1, -Dim2, colour = temp, shape= country)) +
   geom_point(data = fpca[missing, ], colour = "red", pch = 21, size = 3) +
   scale_colour_manual(values = c("skyblue", "salmon", "black", "green")) +
   scale_shape_manual(values = c(15, 18)) +
-  labs(x = "PCA1", y = "PCA2", colour = "", shape = "")
+  labs(
+    x = paste0("PCA1 (", round(eigenvals(pca)[1]/pca$tot.chi * 100, 1),"%)"),
+    y = paste0("PCA2 (", round(eigenvals(pca)[2]/pca$tot.chi * 100, 1),"%)"), colour = "", shape = "")
 
 
 
