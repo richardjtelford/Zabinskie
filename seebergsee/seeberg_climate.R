@@ -5,7 +5,7 @@ seeberg_normal <- seeberg_climate %>%
   summarise(normal = mean(Temperature)) %>% pull(normal)
 
 seeberg_climate <- seeberg_climate %>% 
-  filter(Month == 7, between(Year, 1900, 2005)) %>% 
+  filter(Month == 7, between(Year, 1901, 2005)) %>% 
   mutate(
     normal = seeberg_normal,
     anomaly = Temperature - normal
@@ -54,23 +54,44 @@ ggplot(sbs_digitised, aes(x = year, y = july)) + geom_point() + geom_line()
 
 #seeberg_merged$merged_depth
 
-sbs_mod <- WAPLS(sqrt(seeberg_pc), rev(sbs_digitised$july))
-sbs_perf <- crossval(sbs_mod) %>% performance()
+sbs_mod <- WAPLS(sqrt(seeberg_pc), rev(sbs_digitised$july)) %>% crossval()
+sbs_perf <- sbs_mod%>% performance()
 #sbs_perf
 #sbs_perf$object[2, 2] ^ 0.5
 #sbs_perf$crossval[2, 2] ^ 0.5
 
+data_frame(Reconstruction  = sbs_mod$fitted.values[, 2], 
+         #  cv = sbs_mod$predicted[, 2], 
+           Instrumental =rev(sbs_digitised$july), 
+           year = rev(sbs_digitised$year)) %>% 
+  gather(key = type, value = temperature, -year) %>% 
+  ggplot(aes(x = year, y = temperature, linetype = type, colour = type)) +
+    geom_line() +
+    labs(x = "Year CE", y = "July temperature anomaly, °C", colour = "", linetype = "") +
+  theme(legend.position = c(1, 0), legend.justification = c(1, 0), legend.title = element_blank(), legend.margin = margin(1,1,1,1, unit = "pt"))
+
+
+## ---- sbs_temperature_versions
+ggplot(seeberg_climate, aes(x = Year, y = anomaly, colour = "CHD")) +
+  geom_point() +
+  geom_line(aes(y = zoo::rollmean(seeberg_climate$anomaly, k = 3, fill = NA))) +
+  geom_line(aes(x = year, y = july, colour = "ILT"), data = sbs_digitised) +
+  labs(x = "Year CE", y = "July temperature anomaly, °C", colour = "Source") +
+  theme(legend.position = c(0, 1), legend.justification = c(0, 1), legend.title = element_blank(), legend.margin = margin())
 
 
 
 ## ---- random_temperature
-random_perf <- replicate(1000, {
-  mod_r <- WAPLS(seeberg_merged %>% select(-merged_depth) %>% sqrt(), rnorm(nrow(seeberg_merged)))
+nrep <- 1000
+random_perf <- replicate(nrep, {
+  mod_r <- WAPLS(sqrt(seeberg_pc), rnorm(nrow(seeberg_pc)))
   perf_r <- mod_r %>% performance()
   perf_r$object[2, 2]
 })
 
-ggplot(data_frame(r2 = random_perf), aes(x = r2)) + geom_histogram() + geom_vline(xintercept = performance(mod)$object[2, 2])
+random_hist <- ggplot(data_frame(r = random_perf^0.5), aes(x = r)) + 
+  geom_histogram() + 
+  geom_vline(xintercept = performance(sbs_mod)$object[2, 2]^0.5)
 
-mean(random_perf >  performance(mod)$object[2, 2])
-sqrt(performance(mod)$object[2, 2] )
+
+#sqrt(performance(sbs_mod)$object[2, 2] )
