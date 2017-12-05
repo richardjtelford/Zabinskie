@@ -33,6 +33,7 @@ abisko_short %>%
 sum(abisko_short$n_recon)
 
 ## ---- similar_correlations
+set.seed(528)
 cv <- matrix(c(1, rep(mean(abisko_short$r), 2), 1), nrow = 2)
 
 sd_cor_sim <- replicate(10000, {
@@ -42,7 +43,12 @@ sd_cor_sim <- replicate(10000, {
   })
   sd(cors)
 })
-mean(sd_cor_sim <= sd(abisko_short$r) )
+p_low_cor <- mean(sd_cor_sim <= sd(abisko_short$r))
+
+# data_frame(sd = sd_cor_sim) %>% 
+#   ggplot(aes(x = sd)) + 
+#   geom_histogram() + 
+#   geom_vline(xintercept = sd(abisko_short$r))
 
 ## ---- digitised
 
