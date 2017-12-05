@@ -9,16 +9,18 @@ fpca <- fortify(pca, display = "sites", scaling = 1)
 #Find missing lakes
 #plot(-fpca$Dim1, -fpca$Dim2)
 #abline(v = 0, h = 0)
-#missing <- identify(-fpca$Dim1, -fpca$Dim2)
+#missing <- identify(-fpca$PC1, -fpca$PC2)
 missing <-  c(3, 48, 66, 67, 68, 69, 70, 71, 72, 73, 114, 115, 116, 117, 118, 119, 120, 121)
 
 #temperature cuts to match published version
 breaks <-  c(3, 11, 16, 23, 28)
 
-fpca$temp <- cut(env_all, breaks = breaks, include.lowest = TRUE, labels = paste0(breaks[-length(breaks)], "\u2012", breaks[-1],"°C"))
-fpca$country <- c(rep("Poland", 48), rep("Canada", 73))
+fpca <- fpca %>% mutate(
+  temp = cut(env_all, breaks = breaks, include.lowest = TRUE, labels = paste0(breaks[-length(breaks)], "-", breaks[-1],"°C")), 
+  country =  c(rep("Poland", 48), rep("Canada", 73))
+)
 
-fig2 <- ggplot(fpca, aes(-Dim1, -Dim2, colour = temp, shape= country)) + 
+fig2 <- ggplot(fpca, aes(x = -PC1, y = -PC2, colour = temp, shape= country)) + 
   geom_vline(xintercept = 0, colour = "grey50") +
   geom_hline(yintercept = 0, colour = "grey50") +
   geom_point(size = 2) + 
@@ -36,12 +38,10 @@ fig2 <- ggplot(fpca, aes(-Dim1, -Dim2, colour = temp, shape= country)) +
 mod <- rda(sqrt(spp_all) ~ env_all)
 
 scaling <- "sites"
-frda <- fortify(mod, display = "sites", scaling = scaling)
+frda <- fortify(mod, display = "sites", scaling = scaling) %>% 
+  mutate(country = c(rep("Poland", 48), rep("Canada", 73)))#country information
 
-#country information
-frda$country <- c(rep("Poland", 48), rep("Canada", 73))
-
-sdf1 <- ggplot(frda, aes(-Dim1, Dim2, colour = country, shape = country)) + #axis 1 flipped to match published figure
+sdf1 <- ggplot(frda, aes(x = -RDA1, y = PC1, colour = country, shape = country)) + #axis 1 flipped to match published figure
   geom_vline(xintercept = 0, colour = "grey50") +
   geom_hline(yintercept = 0, colour = "grey50") +
   geom_point(size = 2) + 
