@@ -18,7 +18,7 @@ header-includes:
 output:
   pdf_document:
       latex_engine: xelatex
-#csl: journal-of-paleolimnology.csl
+csl: journal-of-paleolimnology.csl
 bibliography: chironomid.bib
 ---
 
@@ -43,7 +43,7 @@ library("palaeoSig")
 library("zoo")
 library("nlme")
 library("xml2")
-#"analogue", english, stringi also needed
+#"analogue", stringi also needed
 
 #helper functions
 as.english <- function(x){ # problem with new version of rmarkdown
@@ -84,10 +84,6 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 ```{r load_Zabinskie_data, include = FALSE}
 ```
 
-## todo
-
-write - zabinskie ordination. long axes, misreported % explained. interpretation.
-Write - count based uncertainties based on calibration set resampling  
 
 ## Highlights
 
@@ -111,7 +107,7 @@ Very high, even annual, resolution quantitative palaeoenvironmental reconstructi
 
 Palaeoecologists and others value high-resolution palaeolimnological data [@Perga2015, @Pages2013]. Of the `r nrow(lakesHi)` very high resolution palaeolimnological time series in the Pages2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of the varves, which can be difficult to interpret [@Blass2007], while only `r sum(lakesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(lakesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(lakesHi$proxy == "BSi") == 1)` biogenic silica series. 
 
-The two chironomid records are part of a growing move towards subdecadal-resolution microfossil-based reconstructions using transfer functions. As such records require large investments of time, it is important to understand the circumstances in which they are likely to yield good results. Evidence for the utility of these high, even annual, resolution reconstructions comes from comparisons of instrumental records with the reconstructions, typically from varved sediments. All sub-decadal microfossil-based reconstruction identified by a literature search are listed in Table 1. Lotter [-@Lotter1998] and Alefs and Müller [-@Alefs1999] reconstruct total phosphorous concentrations from annually-resolved, mainly planktic, lacustrine diatom assemblages. In all three lakes studied, the reconstructed nutrient concentration has a good correlation with the slowly varying monitoring data (Table 1). High-resolution chrysophyte stomatocysts stratigraphies have been used to reconstruct winter conditions as reflected by the date of spring mixing [@DeJong2011] and the duration of cold water [-@HernandezAlmeida2015]. Since there are no long instrumental time series of these limnological variables, the reconstructions are correlated with winter air temperatures. Chrysophyte stomatocysts have also been used to reconstruct summer calcium concentrations [@HernandezAlmeida2015b], which might reflect summer mixing and so were correlated with summer wind speeds. High-resolution chironomid head capsules stratigraphies have been used to reconstruct summer air temperatures [@Larocque2009; @Larocque-Tobler2011; @LarocqueTobler2011b;  @Larocque-Tobler2015; @Luoto2016; @Zhang2017]. Some of the correlations shown in Table 1 are surprisingly good given the ecological sensitivity of the proxy, taphonomic issues, and the inherent chronological uncertainty that occurs even in the best dated palaeolimnological records.
+The two chironomid records are part of a growing move towards subdecadal-resolution microfossil-based reconstructions using transfer functions. As such records require large investments of time, it is important to understand the circumstances in which they are likely to yield good results. Evidence for the utility of these high, even annual, resolution reconstructions comes from comparisons of instrumental records with the reconstructions, typically from varved sediments. All sub-decadal microfossil-based reconstruction identified by a literature search are listed in Table 1. Lotter [-@Lotter1998] and Alefs and Müller [-@Alefs1999] reconstruct total phosphorous concentrations from annually-resolved, mainly planktic, lacustrine diatom assemblages. In all three lakes studied, the reconstructed nutrient concentration has a good correlation with the slowly varying monitoring data (Table 1). High-resolution chrysophyte stomatocysts stratigraphies have been used to reconstruct winter conditions as reflected by the date of spring mixing [@DeJong2011] and the duration of cold water [@HernandezAlmeida2015]. Since there are no long instrumental time series of these limnological variables, the reconstructions are correlated with winter air temperatures. Chrysophyte stomatocysts have also been used to reconstruct summer calcium concentrations [@HernandezAlmeida2015b], which might reflect summer mixing and so were correlated with summer wind speeds. High-resolution chironomid head capsules stratigraphies have been used to reconstruct summer air temperatures [@Larocque2009; @Larocque-Tobler2011; @LarocqueTobler2011b;  @Larocque-Tobler2015; @Luoto2016; @Zhang2017]. Some of the correlations shown in Table 1 are surprisingly good given the ecological sensitivity of the proxy, taphonomic issues, and the inherent chronological uncertainty that occurs even in the best dated palaeolimnological records.
 
 \blandscape
 
@@ -144,13 +140,13 @@ pander::pander(studies, caption = "Location, proxy, resolution and correlation o
 
 \elandscape
 
-The performances of several of the chironomid reconstructions are comparable with the best treering-width--climate correlations where the 99^th^ percentile of statistically significant (p < 0.05) correlations is 0.7 for winter precipitation and 0.63 for summer temperature [@StGeorge2014]. Although the treering-width--climate relationship has its complexities [@DArrigo2008], it is much simpler than the multi-species relationship between microfossil assemblages and climate, has no chronological error, and no taphonomic complications.  
+The performances of several of the chironomid reconstructions are comparable with the best treering-width--climate correlations where the 99^th^ percentile of statistically significant (p < 0.05) correlations is 0.7 for winter precipitation and 0.63 for summer temperature [@StGeorge2014]. Although the treering-width--climate relationship has its complexities [@DArrigo2008], it is much simpler than the multi-species relationship between microfossil assemblages and climate, has no chronological error, and no taphonomic complications.
 
-Here, I consider the ecological, chronological and taphonomic issues faced by sub-decadal resolution reconstructions with a focus on chironomid-based reconstructions as these reconstructions, which have exceptional correlations with instrumental data, are from contrasting lakes. For example, lakes  `r Zabinskie` [@Larocque-Tobler2015], Nurmijärvi [@Ojala2013] and Seebergsee [@LarocqueTobler2011b] have anoxic hypolimnia, at least seasonally, whereas anoxia is not reported for the lakes Silvaplana [@Larocque2009; @Larocque-Tobler2011], Tiancai [@Zhang2017], or the four lakes near Abisko [@Larocque2003]. Lake Silvaplana underwent human-induced eutrophication and recovery during the 20th century [@Bigler2007].
+Here, I consider the ecological, chronological and taphonomic issues faced by sub-decadal resolution reconstructions with a focus on chironomid-based reconstructions as these reconstructions, which have exceptional correlations with instrumental data, are from contrasting lakes. For example, lakes  `r Zabinskie` [@Larocque-Tobler2015], Nurmijärvi [@Ojala2013] and Seebergsee [@LarocqueTobler2011b] have anoxic hypolimnia, at least seasonally, whereas anoxia is not reported for lakes Silvaplana [@Larocque2009; @Larocque-Tobler2011] and Tiancai [@Zhang2017], or the four lakes near Abisko [@Larocque2003]. Lake Silvaplana underwent human-induced eutrophication and recovery during the 20th century [@Bigler2007].
 
 The best correlation between chironomid-inferred temperature and the instrumental record is in Larocque-Tobler et al. [-@Larocque-Tobler2015], so this study is the focus of this review. Larocque-Tobler et al. [-@Larocque-Tobler2015] reconstruct August air temperature since 1896 at ~annual resolution from chironomid in the varved Lake `r Zabinskie`, using a combined Polish-Canadian calibration set. Many other studies on this lake [@Amann2014; @Bonk2015; @Bonk2015a; @Bonk2016; @Tylmann2016; @Witak2017] provide supporting information which aids the interpretation of this reconstruction.
 
-?????#importance of reproducibility#?????
+Given that the exceptional performance shown in Table 1 is used to justify the development of millennium-long temperature reconstructions [@LarocquTobler2010; @LarocqueTobler2012; @HernandezAlmeida2016] which have been used in regional [@TRACHSEL2012] climate compilations, and could be used in hemispheric or global compliations, with policy relevance [@Masson-Delmotte2013], it is critical to assertain that the results are valid. Pre-publication peer-review is not a sufficient guarantee of validity, not least because the raw data are typically not made available to reviewers. The exceptional performance despite the ecological, chronological and taphonomic issues faced by sub-decadal resolution reconstructions, this paper includes an attempt to reproduce the chironomid-inferred reconstructions from the available archived data. 
 
 ### Ecological sensitivity 
 
@@ -250,7 +246,8 @@ Given the high correlations between chironomid-inferred temperatures and air tem
 ```
 ```{r randomTF}
 ```
-One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, Larocque-Tobler et al. [-@Larocque-Tobler2015] report that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in Larocque-Tobler et al. [-@Larocque-Tobler2015], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor or very poor fit, and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation (r = ##) between principal component axis 1 of the fossil data and August air temperature reported in Larocque-Tobler et al. [-@Larocque-Tobler2015]. Perhaps we need to question the utility of these diagnostics?
+One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, Larocque-Tobler et al. [-@Larocque-Tobler2015] report that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in Larocque-Tobler et al. [-@Larocque-Tobler2015] with the archived data [@LT15_data], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor (> 90% of calibration-set squared residual distances) or very poor fit (> 95%), and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation (r = 0.36) between principal component axis 1 of the fossil data and August air temperature reported in Larocque-Tobler et al. [-@Larocque-Tobler2015]. Perhaps we need to question the utility of these diagnostics?
+
 
 ```{r load_xml_temperature}
 ```
@@ -262,7 +259,7 @@ Since both the assemblage and instrumental temperature data are available, more 
 ```{r temperature_correlation}
 ```
 
-The surprisingly poor reconstruction diagnostics are not the only problematic aspect of Larocque-Tobler et al. [-@Larocque-Tobler2015]. The instrumental temperature series used by Larocque-Tobler et al. [-@Larocque-Tobler2015] was miscalculated for the period before 1939, the period in which chironomid samples were merged because of low abundances (Larocque-Tobler, pers comm). Rather than using the mean temperature for the interval corresponding to each sample, the temperature of the first year was used. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `r incorrect_correlation`) with the incorrectly calculated temperature data than with the correct temperature data (r = `r correct_correlation`).
+The surprisingly poor reconstruction diagnostics are not the only problematic aspect of Larocque-Tobler et al. [-@Larocque-Tobler2015]. The instrumental temperature series used by Larocque-Tobler et al. [-@Larocque-Tobler2015] was miscalculated for the period before 1939, the period in which chironomid samples were merged because of low abundances (Larocque-Tobler, pers comm). Rather than using the mean temperature for the interval corresponding to each sample, the temperature of the first year of the interval was used. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `r incorrect_correlation`) with the incorrectly calculated temperature data than with the correct temperature data (r = `r correct_correlation`).
 
 ```{r replicating_figure_2}
 ```
@@ -284,17 +281,17 @@ cowplot::plot_grid(
 Conversely, supplementary data figure 1 in Larocque-Tobler et al. [-@Larocque-Tobler2015], a redundancy analysis of the calibration set constrained to temperature with the fossil data added passively, has more lakes than expected (Fig. 4b). There are `r sum(sites$source != "Poland")` Canadian lakes in the calibration set (the paper reports 72) but the figure shows 78. The extra Canadian lakes are mostly in the same quadrant as the Polish lakes and falsely suggest "a similarity between the assemblages in warmer lakes in Canada and those which cover the same temperature gradient in Poland" [@Larocque-Tobler2015].
 
 
-```{r count_error}
+```{r count_error2}
 ```
 ```{r fossil_residual_sd}
 ```
-Larocque-Tobler et al. [-@Larocque-Tobler2015] report that the count sums in both the fossil and modern data sets were at least 50 chironomid head capsules. In a corrigendum, Larocque-Tobler et al. [-@Larocque-Tobler2016] subsequently acknowledged that many samples had lower count sums: `r as.english(length(lowCount))` of the  `r sum(sites_all$source == "Poland")` Polish lakes were removed from the calibration set and the minimum count sum for the fossil data reported as `r min(rowSums(fos_counts))`. `r as.English(round(mean(rowSums(fos_counts) < 50) * 100))` percent of fossil samples have a count sum less that that initially reported. It is well known [@Heiri2001; @Larocque2001a; @Quinlan2001] that low count sums are associated with increased uncertainty in reconstructions. The effect of low count sums on the precision of the reconstruction estimates from Lake `r Zabinskie` can be estimated by resampling the aggregated fossil counts many times to different count sums (with replacement). Figure 5 shows the standard deviation of `r nrep` weighted-averaging partial least squares (WAPLS) reconstructions for samples covering the range of count sums in Larocque-Tobler et al. [-@Larocque-Tobler2015].  
+Larocque-Tobler et al. [-@Larocque-Tobler2015] report that the count sums in both the fossil and modern data sets were at least 50 chironomid head capsules. In a corrigendum, Larocque-Tobler et al. [-@Larocque-Tobler2016] subsequently acknowledged that many samples had lower count sums: `r as.english(length(lowCount))` of the  `r sum(sites_all$source == "Poland")` Polish lakes were removed from the calibration set and the minimum count sum for the fossil data reported as `r min(rowSums(fos_counts))`. `r as.English(round(mean(rowSums(fos_counts) < 50) * 100))` percent of fossil samples have a count sum less that that initially reported. It is well known [@Heiri2001; @Larocque2001a; @Quinlan2001] that low count sums are associated with increased uncertainty in reconstructions.  The magnitude of the increase in precision depends on the species diversity and the differences in optima between taxa. I estimate the uncertainty due to low counts by finding the standard deviation of the transfer function  predictions for the `r n_distinct(spp100$Lake)` lakes in the calibration set which appear to have a large count sums (> 100 chironomids) when resampled to count sums spanning the range observed in the fossil data (Figure 5). For each fossil sample from Lake `r Zabinskie`, I estimate the reconstruction uncertainty from the mean of these standard deviations.
 
-```{r count_error_plot, fig.cap="Standard deviation of WAPLS reconstuction based on samples with different count sums."}
+```{r count_error_plot, fig.cap="Standard deviation of WAPLS reconstuction for 60 lakes based on samples with different count sums. Red line shows the mean."}
 count_error_plot
 ```
 
-The expected standard deviation of the residuals between the reconstructed and instrumental temperature given the count sums is `r est_error %>% format(digits = 3)`°C. This is slightly larger than the observed residuals, `r fos_sd`°C, which is due to all sources of error. 
+The expected uncertainty in the reconstruction given the count sums is `r  mean(est_error$mean) %>% format(digits = 3)`°C. This is slightly larger than the observed standard deviation of the residuals, `r fos_sd`°C, which is due to all sources of error. 
 
 ```{r curiousCounts}
 ```
@@ -313,17 +310,20 @@ The calibration set also has problems. Lac A and Lac H have identical assemblage
 ```
 ```{r all_lakes_plot, include = FALSE}
 ```
+```{r similar_correlations}
+```
 
-Of the four correlations, all between `r min(abisko_short$r)` and `r max(abisko_short$r)`, between chironomid inferred July air temperature and instrumental data reported by Larocque and Hall [-@Larocque2003] only one for matches the correlation of data digitised from their figure 4 -- Alanen Laanijavri. For the other lakes, the correlations are 
+Larocque and Hall [-@Larocque2003] report reconstructions of July air temperature for four lakes in northern Sweden. The correlations of the reconstructions with instrumental data, all between `r min(abisko_short$r)` and `r max(abisko_short$r)`, are surprisingly similar. Using a simulation analogous to that used by Simonsohn [-@Simonsohn2013], the probability of obtaining a standard deviation of the correlations as low as that observed is `r p_low_cor %>% format(digits = 3)`.
+
+Of the four correlations, only one for matches the correlation of data digitised from the authors' figure 4 -- Alanen Laanijavri. For the other lakes, the correlations are 
 `r all_lakes %>% filter(lake == "Njulla") %$% cor(instrumental, reconstruction)`,
 `r all_lakes %>% filter(lake == "Lake850") %$% cor(instrumental, reconstruction)`, and
 `r all_lakes %>% filter(lake == "Vuoskkujavri") %$% cor(instrumental, reconstruction)`
  for Lake Njulla, Lake 850 and Vuoskkujavri, respectively. No assemblage data have been archived, so the reconstructions cannot be verified, but there are some discrepancies between the published stratigraphies and the reconstructions. Lake 850 lacks an assemblage for 1999 CE but has a reconstruction. Similarly, Lake Njulla has a reconstruction but no assemblage for 1923 CE and the converse for 1949 CE.
 
-
 ### Lake Silvaplana [@Larocque2009]
 
-The chironomid-based July temperature reconstruction from Lake Silvaplana for the period 1850--2001 CE is first presented in Larocque-Tobler et al. [-@Larocque2009]. Subsequently,  Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] and Larocque-Tobler et al. [-@LarocquTobler2010] published 420 and 1000 year long reconstructions which both include the 1850--2001 CE period. The three reconstructions for the last 150 years should be identical, or at least nearly so, however they are very different. Furthermore, archived reconstructions for Larocque-Tobler et al. [-@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] are different from their associated papers, giving five different reconstructions for this time interval  (Figure 6###). None of the papers include any explanation of these differences. The archived reconstructions for Larocque-Tobler et al. [@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] can largely be reconciled by allowing a chronological offset of up to 42 years (Figure ###) -- far more than the chronological uncertainty of the varve record. Remaining differences between these two archived reconstructions are nearly all integer differences. The archived reconstructions have low correlations with the instrumental data (r = ##).
+The chironomid-based July temperature reconstruction from Lake Silvaplana for the period 1850--2001 CE is first presented in Larocque et al. [-@Larocque2009]. Subsequently,  Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] and Larocque-Tobler et al. [-@LarocquTobler2010] published 420 and 1000 year long reconstructions which both include the 1850--2001 CE period. The three reconstructions for the last 150 years should be identical, or at least nearly so, however they are very different. Furthermore, archived reconstructions for the 150-year reconstruction [@larocque2008_data] and the 420-year reconstruction [@Larocque420] are different from their associated papers, giving five different reconstructions for this time interval. None of the papers include any explanation of these differences. The archived reconstructions for Larocque et al. [@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] can largely be reconciled by allowing a chronological offset of up to 42 years -- far more than the chronological uncertainty of the varve record. Remaining differences between these two archived reconstructions are nearly all integer differences.
 
 
 ```{r read_silvaplana_Holocene_fossil}
@@ -355,34 +355,70 @@ No fossil data have been archived from the anoxic Seebergsee, but the raw count 
 ```{r random_temperature}
 ```
 
-Digitising the July instrumental temperature daa from figure 6 in Larocque-Tobler et al [-@LarocqueTobler2011b] allows the replicatablity of calibration-in-time result to be tested. The paper does not report which transfer function method was used, but a two component WAPLS model on square-root transformed assemblage data yields a reconstruction that has a correlation of `r sbs_perf$object[2, 2] ^ 0.5` with the instrumental data, identical to that reported and the reconstruction appears to be identical. However, this performance is only achieved if the model is not cross-validated. With cross-validation, which is essential to prevent overfitting and give an unbiased estimate of performance, the correlation drops to `r sbs_perf$crossval[2, 2] ^ 0.5`, and the reconstruction has no skill. The importance of cross-validation can be demonstrated by trying to reconstruct random noise: the observed correlation is exceeded by `r mean(random_perf >  performance(sbs_mod)$object[2, 2]) * 100`% of `r nrep` trials reconstructing Gaussian noise, and so cannot be considered remarkable.
+Digitising the July instrumental temperature data from figure 6 in Larocque-Tobler et al [-@LarocqueTobler2011b] allows the reproducibility of calibration-in-time result to be tested. The paper does not report which transfer function method was used, but a two component WAPLS model on square-root transformed assemblage data yields a reconstruction that has a correlation of `r sbs_perf$object[2, "R2"] ^ 0.5` with the instrumental data, identical to that reported and the reconstruction appears to be identical. However, this performance is only achieved if the model is not cross-validated. With cross-validation, which is essential to prevent overfitting and give an unbiased estimate of performance, the correlation drops to `r sbs_perf$crossval[2, "R2"] ^ 0.5`, and the reconstruction has no skill. The importance of cross-validation can be demonstrated by trying to reconstruct random noise: the observed correlation is exceeded by `r mean(random_perf >  performance(sbs_mod)$object[2, "R2"]) * 100`% of `r nrep` trials reconstructing Gaussian noise, and so cannot be considered remarkable.
 
 ```{r sbs_ca}
 ```
 
 There are some other issues with Larocque-Tobler et al [-@LarocqueTobler2011b]. These include substantial discrepancies between the age-depth model shown in their figure 3 and figure 4b; difficulties reconciling the reported instrumental data with the series from Château d’Oex; and the report that the first and second axis of a correspondence analysis (CA) of the fossil data explain 45% and 27% of the inertia respectively. Replicating the CA shows that the first and second axis explain only `r eigenvals(sbs_ca)[1]/sbs_ca$tot.chi * 100`% and `r eigenvals(sbs_ca)[2]/sbs_ca$tot.chi * 100`% of the inertia.
 
+Larocque-Tobler et al [-@LarocqueTobler2012] use the calibration-in-time model from Larocque-Tobler et al [-@LarocqueTobler2011b] to reconstruct July air temperature from a millennium-long chironomid stratigraphy from Seebergsee. In view of the very poor cross-validated performance of the calibration-in-time model (r^2^ = `r sbs_perf$crossval[2, "R2"]`), the reconstruction from Larocque-Tobler et al [-@LarocqueTobler2012] cannot be expected to be skillful.
+
 ### Nurmijärvi [@Luoto2016]
 
-No data have been archived for Luoto and Ojala [-@Luoto2016] so it is not possible to determine if the calibration-in-time and calibration-in-space reconstructions of July air temperature in this paper are reproducible. However, the calibration-in-time model is reported as having a leave-one-out r^2^ of 0.64, whereas the reconstruction has a correlation with instrumental temperature of only 0.51 (i.e. r^2^ = `r 0.51^2`): these two performance statistics should be identical. Luoto and Ojala [-@Luoto2016] report that there is a 4--8 year lag (perhaps caused by the ecological and taphonomic processes described above) in the chironomid response to temperature, which would seem to preclude the development of a good calibration-in-time model. The number of lakes in the calibration set is variously given as 180 or 183, both higher than the sum of the number of lakes in the prior calibration sets merged for this paper. [#check references - and check in chironomid calibration sets csv#]
+No data have been archived for Luoto and Ojala [-@Luoto2016] so it is not possible to determine if the calibration-in-time and calibration-in-space reconstructions of July air temperature in this paper are reproducible. However, the calibration-in-time model is reported as having a leave-one-out r^2^ of 0.64, whereas the reconstruction has a correlation with instrumental temperature of only 0.51 (i.e. r^2^ = `r 0.51^2`): these two performance statistics should be identical. Luoto and Ojala [-@Luoto2016] report that there is a 4--8 year lag (perhaps caused by the ecological and taphonomic processes described above) in the chironomid response to temperature, which would seem to preclude the development of a good calibration-in-time model. The number of lakes in the calibration set is variously given as 180 or 183, both higher than the sum of the number of lakes in the prior calibration sets merged for this paper. 
+
+```{r eval = FALSE}
+A) Nymann et al (2005)  = 50
+B) Luoto (2009)  = 82 (77 used) 
+C) Luoto et al (2014)  = B (77) + A (62!) == 139; 
+D) Luoto et al (2016)  == 31 
+**Total** = C + D == 170 
+```
 
 ### Tiancai Lake [@Zhang2017]
 
 ```{r zhang_recon, include=FALSE}
 ```
 
-
-Zhang et al. [-@Zhang2017] report that they correlate their July air temperature reconstruction with three-year moving average of the instrumental data. However, the instrumental time series have been mis-processed. Rather than using a three year moving average, the authors take the July air temperature of every third year and interpolate.  The significant correlation between the reconstruction and the interpolated triennial data can only be a Type 1 error, unless it is believed that chironomids are only sensitive to July temperature every third year and that they can predict the temperature up to two years ahead. With a three-year moving average, the correlation is weak (r = `r zhang_smo_cor$estimate`) and not statistically significant (p = `r zhang_smo_cor$p.value`).
+Zhang et al. [-@Zhang2017] report that they correlate their July air temperature reconstruction with three-year moving average of the instrumental data [@Zhang2017_data]. However, the instrumental time series have been mis-processed. Rather than using a three year moving average, the authors take the July air temperature of every third year and interpolate.  The significant correlation between the reconstruction and the interpolated triennial data can only be a Type 1 error, unless it is believed that chironomids are only sensitive to July temperature every third year and that they can predict the temperature up to two years ahead. With a three-year moving average, the correlation is weak (r = `r zhang_smo_cor$estimate`) and not statistically significant (p = `r zhang_smo_cor$p.value`).
 
 ### Speke Hall Lake [@Lang2017]
 
 The polluted, eutrophic Speke Hall Lake [@Lang2017] is a curious choice of site on which to apply the Norwegian chironomid calibration set [@Brooks2001], conflicting with the usual guidance that sites should be within the environmental space covered by the calibration set to minimise non-analogue problems. The reported correlation between the reconstruction and instrumental data, based on sixteen samples, is statistically significant at the p < 0.05 level, but given the lack of correction for temporal autocorrelation, the inverse correlation between July temperature and most of the heavy metals measured, and the poor goodness-of-fit of several fossil samples to the calibration set, it is far more likely that the correlation is due to chance than that the reconstruction has any real skill. The correlation of the reconstruction with the long Central England Temperature series is markedly worse (r = 0.25), although chronological uncertainty in the ^210^Pb-dated record on this longer time scale probably precludes a good performance.
 
+## Identifying issues
+
+Two percent of scientists admit to falsifying or fabricating data at least once [@Fanelli2009]; four percent of papers examined by Casadevall et al [-@Casadevall2016] contained inappropriate image duplication; and all scientists occasionally make honest errors. It is thus necessary to read all papers with a degree of caution, and give increased scrutiny to those reporting remarkable results.
+
+Various tools have been developed to identify data that are invalid due to errors or misconduct. Deviations from the expected distribution of digits from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017]. Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low give the standard deviation of the data. Brown et al [-@Brown2017] develop a simple test of whether percent data are consistent with the reported sample size.
+
+Unfortunately, none of these methods are directly applicable to the sub-decadal resolution reconstructions, so alternative tests need to be developed. There are two related problems here. First, an exhaustive examination would be needed to find any problems as data issues could affect any part of the analysis, and second, such an exhaustive examination of any large and complex dataset will, because of its _post hoc_ nature, probably reveal patterns that are unlikely to occur by chance [@Simonsohn2013]. Great care needs to taken to avoid false positives, this can done by focusing on the impossible and extremely improbably results. Unexpected patterns that are repeated across multiple papers by the same authors give special cause for concern, but even this does not distingush honest errors from other problems.
+
+Pandit [-@Pandit2012], expanding on Haldane's [-@Haldane1964] "orders of faking", discusses the difficulties in fabricating data (or equivently generating data through error) that can withstand scrutiny. Not only do the means need to be correct, but also the variance and the results need to agree with established laws of nature and mathematics. 
+
+When I first read Larocque-Tobler et al [-@Larocque-Tobler2015] I did not find the results credible for the ecological, chronological and taphonomic reasons detailed above, and suspected that the authors had used a calibration-in-time model without cross-validation (as subsequent analysis showed had been done at Seebergsee by Larocque-Tobler et al [-@LarocqueTobler2011b]). However, the first version of the data archived by Larocque-Tobler et al [-@Larocque-Tobler2015] did not pass even superficial scrutiny: several fossil samples had nine taxa each with 11.11111% of the assemblage. Such counts give atypical rank abundance curves and are extremely unlikely to be the result of a count of fifty or more chironomid head capsules (p = $`r dmultinom(rep(6, 9), 54, prob = rep(1/9, 9))`$ under the most optimistic conditions). These data were replaced without explanation several times.
+
+A strong prediction can be made that any microfossil assemblage (except for very low diversity assembages) should have the rarest taxon represented by a single individual. This test identified the low count sums in Larocque-Tobler et al [-@Larocque-Tobler2015], and strongly suggests extremely low counts from Lakes Silvaplana [@Larocque2009] and Seebergsee [@LarocqueTobler2011b]. Zhang et al [-@Zhang2017] appear to have a few fossil samples with fewer than the reported count.
+
+
+
+## Recommendations
+
+One of the main impedients to investigating the issues with sub-decadal resolution reconstructions was the lack of archived data. Some papers had no data archived [ @Larocque2003; @LarocqueTobler2011b; @HernandezAlmeida2015; @Luoto2016; @Lang2017], others had partial data [@Larocque-Tobler2015; @Zhang2017]. A small amount of data was provided on request to by authors, and some data could to be digitised, which is slow and error prone.
+
+Current data archiving policies in Quaternary science journals are either inadequate or unenforced. The _Journal of Paleolimnology_ advises that authors "may" deposit data in the publishers system or an official repository. _Quaternary Science Reviews_ and _Palaeogeography, Palaeoclimatology, Palaeoecology_ "encourages" authors to share data "where appropriate". _The Holocene_ employs slightly stronger language: it "requests" that all authors submit "any primary data", but as few of the recent papers have links to data it appears that this policy is not enforced. In contrast, _Ecological Monographs_ makes the archiving of "all data" a "condition for publication". Quaternary science journals should adopt and enforce a similar policy: all the raw data required to reproduce all the results shown in the paper should be archived [@Simonsohn2013]. Data also be made available for reviewers before publication, who should treat it, like the manuscript, as confidential until the paper is published. 
+
+A second major impediment to investigating the issues was the absence or available code to reproduce the analyses. For example, Figure 5 in Larocque-Tobler et al [-@LarocqueTobler2012], which shows that ordinations of the fossil data from both Seebergsee and Lake Silvaplana have a large seperation between the pre- and post- 1950 samples, cannot be reproduced with the methods described in the paper (or similar methods). If computer code, or the analysis file from the software used, had been archived, it would probably be trivial to understand this problem. None of the other ordinations of the Lake Silvaplana chironomid stratigraphy show any sign of a break between pre- and post-1950 samples [@Larocque2009; @LarocquTobler2010]. Only _The Holocene_ requests that code is archived.
+
+Several of the papers discussed above would appear to need, at the least, corrections issuing to account for the discrepancies and errors. Data and computer code that allow the results to be reproduced should be archived so readers may be assured that the results are reproducible.
+
+
 ## Conclusions
 
 Reliable annual-resolution reconstructions depend on the conjunction of a strong direct ecological link to the variable being reconstructed and a simple taphonomy. Accurate and precise chronologies are also needed for a direct comparison with instrumental records. These requirements might be met by diatom-total phosphorus reconstructions, and perhaps by chrysophyte reconstructions of winter climate. It appears unlikely that they will be met by the relatively long-lived, predominately littoral chironomids for reconstructions of a single month's temperature. Some of the chironomid-based reconstructions discussed above owe their apparent good performance to single fortuitous errors or simple good luck. The reconstructions from lakes `r Zabinskie`, Seebergsee, Silvaplana, and the four lakes near Abisko are plagued by such pervasive errors and improbabilities that their veracity has to be doubted until their results be confirmed by reproducing the work.
 
-The number and severity of errors in the papers reviewed highlights the importance of archiving all the raw data needed to replicate the results.
+The number and severity of errors in the papers reviewed highlights the importance of archiving all the raw data and computer code needed to reproduce the results.
 
 ## Methods
 
