@@ -41,7 +41,7 @@ est_error <- predict(mod_nls, newdata = data_frame(size = rowSums(fos_counts))) 
 # 
 # mean(abs(rnorm(n = 10000, mean = 0, sd = 1.3/1.38)) < 1.3) 
 
-zab <- read.table("data/instrumental.txt") %>% 
+zab <- read.table("data/instrumental.txt") %>% ## replace with exact data
   select(1:2) %>% 
   set_names(c("year", "Aug")) %>% 
   mutate(year = round(year))
@@ -87,9 +87,11 @@ data_frame(spp = names(all_fos), abun = all_fos) %>%
 
 
 ## ---- count_error2
+estimated_countsum <- 100 / apply(spp_all, 1, function(x) min(x[x > 0])) 
+
 spp100 <- spp_all %>% #use sites with apparent counts of more than 100
   bind_cols(sites_all %>% select(Lake)) %>%
-  filter(countSums$apparent_count >= 100) %>%
+  filter(estimated_countsum >= 100) %>%
   gather(key = taxon, value = perc, -Lake) %>% 
   filter(perc > 0) %>% 
   arrange(desc(perc)) %>% 
@@ -118,6 +120,7 @@ spp100_size_sd <- spp100 %>% do({
   })
 
 
+
 nls_mods <- spp100_size_sd %>% 
   do(mod = {
     m <- nls(sd ~ a + b / size ^ c, 
@@ -126,14 +129,17 @@ nls_mods <- spp100_size_sd %>%
 })
 
 nls_fitted <- nls_mods %>% 
+  ungroup() %>% 
   group_by(Lake) %>% 
   do({broom::augment(.$mod[[1]])})
 
-nls_fitted %>% 
+count_error_plot <- nls_fitted %>% 
   filter(size <= 70) %>% 
   ggplot(aes(x = size, y = .fitted, group = Lake)) +
   geom_line(show.legend = FALSE) +
-  ylim(0, NA) + 
+  stat_summary(aes(group = 1), fun.y = mean, geom = "line", colour = "red", size = 2) +
+#  geom_line(aes(x = size, y = sd, colour = Lake), spp100_size_sd, show.legend = FALSE) +
+  ylim(0.1, NA) + 
   labs(x = "Count sum", y = "Standard deviation °C")
 
 est_error <- nls_mods %>% 
@@ -141,7 +147,33 @@ est_error <- nls_mods %>%
   do(broom::augment(.$mod[[1]], newdata = data_frame(size = count_sums))) %>% 
   summarise(mean = mean(.fitted))
 
-est_error$mean %>% range()
-est_error %>% ggplot(aes(x = mean)) + geom_histogram()
+#est_error$mean %>% range()
+#est_error %>% ggplot(aes(x = mean)) + geom_histogram()
 
-est_error %>% summarise(med = median(mean))
+#est_error %>% summarise(med = median(mean))
+
+
+## ---- no_singletons
+nrep <- 10000
+no_singletons <- spp100 %>% do({
+  p <- setNames(.$perc, .$taxon)
+  sim30 <- rmultinom(nrep, size = 30, prob = p)
+  sim50 <- rmultinom(nrep, size = 50, prob = p)
+  data_frame(
+    mean30 = mean(colSums(sim30 == 1) > 0),
+    mean50 = mean(colSums(sim50 == 1) > 0)
+  )
+})
+
+no_singletons %>% ggplot(aes(x = mean30 * 100)) + geom_histogram(center = 0)
+no_singletons %>% ggplot(aes(x = mean50 * 100)) + geom_histogram(center = 0)
+no_singletons %>% filter(mean30 < 0.98)
+no_singletons %>% filter(mean50 < 0.98)
+spp100 %>% semi_join(no_singletons %>% filter(mean50 < 0.98)) %>% arrange(Lake) %>% print(n = Inf)
+
+spp100 %>% 
+  mutate(none = Lake %in% (filter(no_singletons, mean50 < 0.98) %>% pull(Lake))) %>% 
+  ggplot(aes(x = n, y = perc, group = Lake, colour  = none)) + 
+  geom_line(show.legend = FALSE) + 
+  scale_y_log10()
+
