@@ -19,29 +19,24 @@ vignettes/*.pdf
 *.md
 *.html
 *.pdf
-
 #figures
 *.jpg
 *.png
 *.gif
 !silvaplana/images/*.png
-
 #temp files
 *~
 *#
-
 #rmarkdown cache
 *cache/
 *_files/
-
-
 #data
 *.bil
 *.hdr
 *.zip
 *.xlsx
 *.xls
-
 #bib format
 *.csl
-
+packrat/lib*/
+packrat/src/
