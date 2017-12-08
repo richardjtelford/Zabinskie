@@ -14,10 +14,11 @@ header-includes:
 #output:
 #  word_document: default
 #  html_document: default
-#  pdf_document: default
 output:
   pdf_document:
       latex_engine: xelatex
+documentclass: article
+classoption: a4paper
 csl: journal-of-paleolimnology.csl
 bibliography: chironomid.bib
 ---
@@ -133,8 +134,6 @@ Luoto and Ojala [-@Luoto2016];Chironomids;July air-temperature;Nurmijärvi, Finl
 Zhang et al. [-@Zhang2017];Chironomids;July air-temperature;Tiancai Lake, China;1--4 years;0.45
 Lang et al. [-@Lang2017];Chironomids;July air-temperature;Speke Hall Lake, UK; ~8 years;0.62", stringsAsFactors = FALSE )
 
-#studies %>% kable(caption = "Location, proxy, resolution and correlation of with the instrumental record of the reconstructions considered. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model. Asterisks indicate lakes with varve chronologies.") %>% column_spec(column)
-
 pander::pander(studies, caption = "Location, proxy, resolution and correlation of with the instrumental record of the reconstructions considered. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model. Asterisks indicate lakes with varve chronologies.", split.cells = 25, split.tables = 150)
 ```
 
@@ -219,7 +218,7 @@ The chronologies supporting the sub-decadal resolution reconstructions listed in
 ```{r chron_no_extra_error}
 ```
 
-The varve-based chronology for Lake `r Zabinskie` is supported by ^14^C dates, a ^137^Cs profile, and a microtephra [@Bonk2015a]. The counting uncertainty on the chronology is low: there are two possible extra varves in the mid-1960s and five possible missing varves between 1926 and 1899 CE. The impact of this uncertainty can be explored with a Monte Carlo procedure. Assuming that the probability of making a wrong decision at each uncertain varve is 1/3 and zero otherwise, the probability that the chronology is entirely correct is `r mean(simulation$mismatch == 0)`. If the reconstruction was perfect, chronological error is expected to reduce the correlation from 1 to `r mean(simulation$ag_correlation)`. This reduction is relatively small because most of the uncertainty occurs in the lower half of the record, so any error affects fewer years. Furthermore, because chironomid concentrations were low, samples before 1939 span two to `r max(-diff(recon$year)) %>% as.english()` years which reduces both the number of samples and their sensitivity to a single year's error. The expected correlation in the pre-1939 section of the record for a perfect reconstruction is `r mean(simulation$pre39_correlation)`. This is lower than the reported correlation between the reconstruction and the instrumental record (`r left_join(instrumental, recon) %>% filter(year < 1939) %$% cor(Aug, temperature)`) for this period.
+The varve-based chronology for Lake `r Zabinskie` is supported by ^14^C dates, a ^137^Cs profile, and a microtephra [@Bonk2015a]. The counting uncertainty on the chronology is low: there are two possible extra varves in the mid-1960s and five possible missing varves between 1926 and 1899 CE. The impact of this uncertainty can be explored with a Monte Carlo procedure. Assuming that the probability of making a wrong decision at each uncertain varve is 1/3 and zero otherwise, the probability that the chronology is entirely correct is `r mean(simulation$mismatch == 0)`. If the reconstruction was perfect, chronological error is expected to reduce the correlation from 1 to `r mean(simulation$ag_correlation)`. This reduction is relatively small because most of the uncertainty occurs in the lower half of the record, so any error affects fewer years. Furthermore, because chironomid concentrations were low, samples before 1939 span two to `r max(-diff(recon$year)) %>% as.english()` years which reduces both the number of samples and their sensitivity to a single year's error. The expected correlation in the pre-1939 section of the record for a perfect reconstruction is `r mean(simulation$pre39_correlation)`. This is lower than the reported correlation between the reconstruction and the instrumental record (`r left_join(instrumental_temperature, recon) %>% filter(year < 1939) %$% cor(old, temperature)`) for this period.
 
 ### Calibration-in-time
 
@@ -249,8 +248,6 @@ Given the high correlations between chironomid-inferred temperatures and air tem
 One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, Larocque-Tobler et al. [-@Larocque-Tobler2015] report that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in Larocque-Tobler et al. [-@Larocque-Tobler2015] with the archived data [@LT15_data], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor (> 90% of calibration-set squared residual distances) or very poor fit (> 95%), and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation (r = 0.36) between principal component axis 1 of the fossil data and August air temperature reported in Larocque-Tobler et al. [-@Larocque-Tobler2015]. Perhaps we need to question the utility of these diagnostics?
 
 
-```{r load_xml_temperature}
-```
 ```{r ordinations}
 ```
 

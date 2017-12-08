@@ -41,14 +41,10 @@ est_error <- predict(mod_nls, newdata = data_frame(size = rowSums(fos_counts))) 
 # 
 # mean(abs(rnorm(n = 10000, mean = 0, sd = 1.3/1.38)) < 1.3) 
 
-zab <- read.table("data/instrumental.txt") %>% ## replace with exact data
-  select(1:2) %>% 
-  set_names(c("year", "Aug")) %>% 
-  mutate(year = round(year))
 
 fos_sd <- recon %>% 
-  full_join(zab) %>% 
-  mutate(resid = temperature - Aug) %>% 
+  full_join(instrumental_temperature) %>% 
+  mutate(resid = temperature - old) %>% 
   summarise(sd  = sd(resid))
 
 ## ---- count_residual
