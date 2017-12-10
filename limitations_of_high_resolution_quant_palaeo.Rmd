@@ -74,6 +74,7 @@ knitr::read_chunk("scripts/curiousCounts.R")
 knitr::read_chunk("scripts/calibration_set_issues.R")
 knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
+knitr::read_chunk("silvaplana/scripts/silvaplana_plot_reconstructions.R")
 knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
 knitr::read_chunk("seebergsee/seebergsee_counts.R")
 knitr::read_chunk("seebergsee/seeberg_climate.R")
@@ -97,7 +98,7 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 
 ## Abstract
 
-Very high, even annual, resolution quantitative palaeoenvironmental reconstructions are being generated from microfossil data with transfer functions. I show that at these resolutions some ecological and taphonomic issues can become more problematic than with work at lower resolution. I suggest which types of proxy-environment cases are likely to perform better and demonstrate that the exceptionally good performance in several published reconstructions is probably not reproducible.
+Very high, even annual, resolution quantitative palaeoenvironmental reconstructions are being generated from microfossil data using transfer functions. I show that at these resolutions some ecological and taphonomic issues can become more problematic than with work at lower resolution. I suggest which types of proxy-environment cases are likely to perform better and demonstrate that the exceptionally good performance in several published reconstructions is probably not reproducible.
 
 **Keywords:** air temperature, chironomids, microfossils, quantitative palaeoenvironmental reconstructions, transfer functions
 
@@ -113,14 +114,14 @@ The two chironomid records are part of a growing move towards subdecadal-resolut
 \blandscape
 
 ```{r table1}
-studies <- read.table(header = TRUE, sep = ";", text = 
+studies <- read.table(header = TRUE, sep = ";", quote = "\'", text = 
 "Study;Proxy;Variable;Location;Resolution;Correlation
-Lotter [-@Lotter1998];Diatoms;Total phosphorus;Baldegersee, Switzerland;Annual;\'compares well\'*
+Lotter [-@Lotter1998];Diatoms;Total phosphorus;Baldegersee, Switzerland;Annual;\"compares well\"*
 Alefs and Müller [-@Alefs1999];Diatoms;Total phosphorus;Ammersee, Germany;Annual;0.91* 
   ;  ;  ;Starnberger See, Germany;Annual;0.77*
 
-De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana, Switzerland; Annual (3 yr smooth);–0.58 vs mean Oct.--May air temperature*
-Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentrations;Lake Żabińskie, Poland;Annual (3 yr smooth);0.5 vs May--Oct. zonal wind speed*
+De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana, Switzerland; Annual (3 year smooth);–0.58 vs mean Oct.--May air temperature*
+Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentrations;Lake Żabińskie, Poland;Annual (3 year smooth);0.5 vs May--Oct. zonal wind speed*
 Hernández-Almeida et al. [-@HernandezAlmeida2015];Chrysophytes;Number consecutive days with water < 4°C;Lake Żabińskie, Poland;Annual smoothed?;0.35 vs Jan.--March air temperature*
 
 Larocque and Hall [-@Larocque2003];Chironomids;July air-temperature;Lake Njulla, Sweden;2--7 years;0.39
@@ -128,15 +129,16 @@ Larocque and Hall [-@Larocque2003];Chironomids;July air-temperature;Lake Njulla,
   ;  ;  ;Alanen Laanijavri;1--5 years;0.35
   ;  ;  ;Vuoskkujavri;1--6 years;0.37
 Larocque et al. [-@Larocque2009], Larocque-Tobler et al. [-@Larocque-Tobler2011];Chironomids;July air-temperature;Lake Silvaplana, Switzerland;Near annual;0.65/0.53*
-Larocque-Tobler et al. [-@LarocqueTobler2011b];Chironomids;July air-temperature;Seebergsee, Switzerland;3--8 yrs;0.64/0.73
+Larocque-Tobler et al. [-@LarocqueTobler2011b];Chironomids;July air-temperature;Seebergsee, Switzerland;3--8 years;0.64/0.73
 'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-temperature;Lake Żabińskie, Poland;Mostly annual;0.76*
 Luoto and Ojala [-@Luoto2016];Chironomids;July air-temperature;Nurmijärvi, Finland;1--11 years;0.38/0.51*
 Zhang et al. [-@Zhang2017];Chironomids;July air-temperature;Tiancai Lake, China;1--4 years;0.45
 Lang et al. [-@Lang2017];Chironomids;July air-temperature;Speke Hall Lake, UK; ~8 years;0.62", stringsAsFactors = FALSE )
 
-pander::pander(studies, caption = "Location, proxy, resolution and correlation of with the instrumental record of the reconstructions considered. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model. Asterisks indicate lakes with varve chronologies.", split.cells = 25, split.tables = 150)
+pander::pander(studies, caption = "Location, proxy, resolution and correlation of with the instrumental record of the reconstructions considered. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model.", split.cells = 25, split.tables = 150)
 ```
 
+\* indicate lakes with varve chronologies.
 \elandscape
 
 The performances of several of the chironomid reconstructions are comparable with the best treering-width--climate correlations where the 99^th^ percentile of statistically significant (p < 0.05) correlations is 0.7 for winter precipitation and 0.63 for summer temperature [@StGeorge2014]. Although the treering-width--climate relationship has its complexities [@DArrigo2008], it is much simpler than the multi-species relationship between microfossil assemblages and climate, has no chronological error, and no taphonomic complications.
@@ -145,7 +147,7 @@ Here, I consider the ecological, chronological and taphonomic issues faced by su
 
 The best correlation between chironomid-inferred temperature and the instrumental record is in Larocque-Tobler et al. [-@Larocque-Tobler2015], so this study is the focus of this review. Larocque-Tobler et al. [-@Larocque-Tobler2015] reconstruct August air temperature since 1896 at ~annual resolution from chironomid in the varved Lake `r Zabinskie`, using a combined Polish-Canadian calibration set. Many other studies on this lake [@Amann2014; @Bonk2015; @Bonk2015a; @Bonk2016; @Tylmann2016; @Witak2017] provide supporting information which aids the interpretation of this reconstruction.
 
-Given that the exceptional performance shown in Table 1 is used to justify the development of millennium-long temperature reconstructions [@LarocquTobler2010; @LarocqueTobler2012; @HernandezAlmeida2016] which have been used in regional [@TRACHSEL2012] climate compilations, and could be used in hemispheric or global compliations, with policy relevance [@Masson-Delmotte2013], it is critical to assertain that the results are valid. Pre-publication peer-review is not a sufficient guarantee of validity, not least because the raw data are typically not made available to reviewers. The exceptional performance despite the ecological, chronological and taphonomic issues faced by sub-decadal resolution reconstructions, this paper includes an attempt to reproduce the chironomid-inferred reconstructions from the available archived data. 
+Given that the exceptional performance shown in Table 1 is used to justify the development of millennium-long temperature reconstructions [@LarocquTobler2010; @LarocqueTobler2012; @HernandezAlmeida2016] which have been used in regional [@TRACHSEL2012] climate compilations, and could be used in hemispheric or global compliations, with policy relevance [@Masson-Delmotte2013], it is critical to assertain that the results are valid. Pre-publication peer-review is not a sufficient guarantee of validity, not least because the raw data are typically not made available to reviewers. Recent replication studies in other disciplines have shown low levels of reproducibility [@Fidler2017]. Full direct replication of palaeoecological studies would be costly and time consuming, but re-analysis of archived data (where available) is an important alternative for testing for reproducibility [@Fidler2017]. Fidler [-@Fidler2017] argues for a systematic evaluation of the reproducibility of the evidence base in ecology. Papers with surprisingly good performance are an obvious target for evaluation, so this paper includes an attempt to reproduce the chironomid-inferred reconstructions. 
 
 ### Ecological sensitivity 
 
@@ -386,7 +388,7 @@ The polluted, eutrophic Speke Hall Lake [@Lang2017] is a curious choice of site 
 
 ## Identifying issues
 
-Two percent of scientists admit to falsifying or fabricating data at least once [@Fanelli2009]; four percent of papers examined by Casadevall et al [-@Casadevall2016] contained inappropriate image duplication; and all scientists occasionally make honest errors. It is thus necessary to read all papers with a degree of caution, and give increased scrutiny to those reporting remarkable results.
+All scientists occasionally make honest errors; questionable research practices, such as portraying post hoc hypothesis as if it was an a priori hypothesis, are widespread [@Fidler2017], two percent of scientists admit to falsifying or fabricating data at least once [@Fanelli2009]; and four percent of papers examined by Casadevall et al [-@Casadevall2016] contained inappropriate image duplication. It is thus necessary to read all papers with a degree of caution, and give increased scrutiny to those reporting remarkable results.
 
 Various tools have been developed to identify data that are invalid due to errors or misconduct. Deviations from the expected distribution of digits from the Newcomb-Benford law has been used to detect issues with scientific and financial data [@Barabesi2017]. Carlisle [-@Carlisle2017] identified papers where the baseline differences in means for different treatments were surprisingly high or low give the standard deviation of the data. Brown et al [-@Brown2017] develop a simple test of whether percent data are consistent with the reported sample size.
 
