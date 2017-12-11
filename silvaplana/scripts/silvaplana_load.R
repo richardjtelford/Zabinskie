@@ -1,6 +1,6 @@
 ## ---- read_silvaplana_Holocene_reconstruction
 #Load 540 yr reconstruction - Holocene 2009
-recon_holocene <- read_table("data/silvaplana2009.txt", skip = 91, n_max = 134) %>% 
+recon_holocene <- read_table("silvaplana/data/silvaplana2009.txt", skip = 91, n_max = 134) %>% 
   mutate(Year = as.numeric(Year))# '...' values to NA
 
 
@@ -37,7 +37,7 @@ rm(f, f2, YearAD)
 
 ## ---- read_silvaplana_2008_JoPL
 #Load 140 yr reconstruction - JoPL 2009
-recon_jopl <- read_table("data/silvaplana2008.txt", skip = 78) %>% 
+recon_jopl <- read_table("silvaplana/data/silvaplana2008.txt", skip = 78) %>% 
   filter(!is.na(Year))
 
 ## ---- read_silvaplana_2010_QSR
