@@ -86,7 +86,6 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 ```{r load_Zabinskie_data, include = FALSE}
 ```
 
-
 ## Highlights
 
  - Subdecadal resolution reconstructions based on microfossil assemblage composition are reviewed.
@@ -147,7 +146,7 @@ Here, I consider the ecological, chronological and taphonomic issues faced by su
 
 The best correlation between chironomid-inferred temperature and the instrumental record is in Larocque-Tobler et al. [-@Larocque-Tobler2015], so this study is the focus of this review. Larocque-Tobler et al. [-@Larocque-Tobler2015] reconstruct August air temperature since 1896 at ~annual resolution from chironomid in the varved Lake `r Zabinskie`, using a combined Polish-Canadian calibration set. Many other studies on this lake [@Amann2014; @Bonk2015; @Bonk2015a; @Bonk2016; @Tylmann2016; @Witak2017] provide supporting information which aids the interpretation of this reconstruction.
 
-Given that the exceptional performance shown in Table 1 is used to justify the development of millennium-long temperature reconstructions [@LarocquTobler2010; @LarocqueTobler2012; @HernandezAlmeida2016] which have been used in regional [@TRACHSEL2012] climate compilations, and could be used in hemispheric or global compliations, with policy relevance [@Masson-Delmotte2013], it is critical to assertain that the results are valid. Pre-publication peer-review is not a sufficient guarantee of validity, not least because the raw data are typically not made available to reviewers. Recent replication studies in other disciplines have shown low levels of reproducibility [@Fidler2017]. Full direct replication of palaeoecological studies would be costly and time consuming, but re-analysis of archived data (where available) is an important alternative for testing for reproducibility [@Fidler2017]. Fidler [-@Fidler2017] argues for a systematic evaluation of the reproducibility of the evidence base in ecology. Papers with surprisingly good performance are an obvious target for evaluation, so this paper includes an attempt to reproduce the chironomid-inferred reconstructions. 
+Given that the exceptional performance shown in Table 1 is used to justify the development of millennium-long temperature reconstructions [@LarocquTobler2010; @LarocqueTobler2012; @HernandezAlmeida2016] which have been used in regional [@TRACHSEL2012] climate compilations, and could be used in hemispheric or global compliations, with policy relevance [@Masson-Delmotte2013], it is critical to assertain that the results are valid. Pre-publication peer-review is not a sufficient guarantee of validity, not least because the raw data are typically not made available to reviewers. Recent replication studies in other disciplines have shown low levels of reproducibility [@Fidler2017]. Full direct replication of palaeoecological studies would be costly and time consuming, but re-analysis of archived data (where available) is an important alternative for testing for reproducibility [@Fidler2017]. Fidler et al [-@Fidler2017] argues for a systematic evaluation of the reproducibility of the evidence base in ecology. Papers with surprisingly good performance are an obvious target for evaluation, so this paper includes an attempt to reproduce the chironomid-inferred reconstructions. 
 
 ### Ecological sensitivity 
 
@@ -296,7 +295,6 @@ The chironomid counts from Lake `r Zabinskie` are unusual. Typically the rarest 
 ```
 The calibration set also has problems. Lac A and Lac H have identical assemblages `r stopifnot(A_equal_H)`, except that the percentages in Lac H have been multiplied by `r min_lac_H %>% format(digits = 3)` such that the sum of percent is `r rowSums_lac_AH[2]`%. The warmest Canadian lake is reported to have a mean August temperature of `r max(env)`°C which is warmer than anywhere in Quebec and adjacent areas [@Fick2017].
 
-
 ### Abisko lakes [@Larocque2003]
 
 ```{r reported_correlations}
@@ -414,20 +412,21 @@ Current data archiving policies in Quaternary science journals are either inadeq
 
 A second major impediment to investigating the issues was the absence or available code to reproduce the analyses. For example, Figure 5 in Larocque-Tobler et al [-@LarocqueTobler2012], which shows that ordinations of the fossil data from both Seebergsee and Lake Silvaplana have a large seperation between the pre- and post- 1950 samples, cannot be reproduced with the methods described in the paper (or similar methods). If computer code, or the analysis file from the software used, had been archived, it would probably be trivial to understand this problem. None of the other ordinations of the Lake Silvaplana chironomid stratigraphy show any sign of a break between pre- and post-1950 samples [@Larocque2009; @LarocquTobler2010]. Only _The Holocene_ requests that code is archived.
 
-Several of the papers discussed above would appear to need, at the least, corrections issuing to account for the discrepancies and errors. Data and computer code that allow the results to be reproduced should be archived so readers may be assured that the results are reproducible.
+Reproducibility is central requirement for testing scientific theories  and therefore testing the reproducibility of published literature should be encouraged [@Fidler2017]. There will be some who seek to find fault with palaeoecological studies because of its policy implications [@Masson-Delmotte2013]. Robust, reproducible work should withstand such challenges. Using the state-of-the-art methods for generating reproducible analyses, as descibed by Cooper and Hsing [-@Cooper2017], should increase the reproducibility of work, or at least make problems easier to diagnose.
 
+Several of the papers discussed above would appear to need, at the least, corrections issuing to account for the discrepancies and errors revealed by this re-analysis. Data and computer code that allow the results to be reproduced should be archived so readers may be assured that the results are reproducible.
 
 ## Conclusions
 
 Reliable annual-resolution reconstructions depend on the conjunction of a strong direct ecological link to the variable being reconstructed and a simple taphonomy. Accurate and precise chronologies are also needed for a direct comparison with instrumental records. These requirements might be met by diatom-total phosphorus reconstructions, and perhaps by chrysophyte reconstructions of winter climate. It appears unlikely that they will be met by the relatively long-lived, predominately littoral chironomids for reconstructions of a single month's temperature. Some of the chironomid-based reconstructions discussed above owe their apparent good performance to single fortuitous errors or simple good luck. The reconstructions from lakes `r Zabinskie`, Seebergsee, Silvaplana, and the four lakes near Abisko are plagued by such pervasive errors and improbabilities that their veracity has to be doubted until their results be confirmed by reproducing the work.
 
-The number and severity of errors in the papers reviewed highlights the importance of archiving all the raw data and computer code needed to reproduce the results.
+The number and severity of errors in the papers reviewed highlights the importance of adopting reproducible practices and archiving all the raw data and computer code needed to reproduce the results.
 
 ## Methods
 
 All analyses were done in `r gsub("(.*) \\(.*", "\\1", R.version.string)` [@R2017]. Ordinations were fitted with vegan version 2.4-3 [@vegan2017] with square-root transformed assemblage data. Transfer functions were fitted with rioja version 0.9-15 [@rioja2017] using square-root transformed species data. Some diagnostics were performed using analogue version 0.17-0 [@analogue2016]. The reconstruction significance test was run with randomTF from palaeoSig version 1.1-3 [@palaeoSig2015] with 999 trials for the null distribution.
 
-Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as location data have not been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN [#] series extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series.
+Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as location data have not been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN [@Lawrimore2011] series extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series.
   
 
 ## Acknowledgements
