@@ -52,6 +52,8 @@ fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages") %>%
   rename(year = X__1) 
 
 chron <- fos %>% select(year)
+chron <- chron %>% mutate(year = if_else(year == 1927, 1925, year)) #harmonise  chronology for stratigraphic data with reconstruction and instrumental data
+
 fos <- fos %>% select(-year, -`Nb head capsules`)
 
 #fossil_counts
