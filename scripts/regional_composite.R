@@ -66,7 +66,7 @@ composite_as_zab <- full_join(
   fat_composite_as_zab_correct %>% select(year = recon_year, meanAug = Aug),
   fat_composite_as_zab_published %>% select(year = recon_year, spotAug = Aug, recon= temperature)
 ) %>% 
-  full_join(instrumental %>% rename(Aug.Zab = Aug)) %>% 
+  full_join(instrumental_temperature %>% rename(Aug.Zab = old)) %>% 
   mutate_at(.vars = vars(matches("Aug")), scale, scale = FALSE)
 
 ## ---- temperature_correlations
