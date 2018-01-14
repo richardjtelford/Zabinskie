@@ -1,25 +1,43 @@
 ---
 title: "Performance of chironomid-temperature transfer functions"
-author: "Richard J. Telford"
-date: "December 9, 2016"
+author: |
+  | Richard J. Telford 
+  | Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen, Norway
+  | email: richard.telford@uib.no
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+header-includes:
+   - \usepackage{lineno}
+   - \linenumbers
+   - \usepackage{pdflscape}
+   - \newcommand{\blandscape}{\begin{landscape}}
+   - \newcommand{\elandscape}{\end{landscape}}   
+#output:
+#  word_document: default
+#  html_document: default
 output:
-  html_document:
-    keep_md: yes
-bibliography: chironomid.bib
-csl: journal-of-paleolimnology.csl
+  pdf_document:
+      latex_engine: xelatex
+      number_sections: true
+documentclass: article
+classoption: a4paper
+bibliography: ../chironomid.bib
+csl: ../journal-of-paleolimnology.csl
 ---
 
+
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, echo = FALSE, include  = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, echo = FALSE, include  = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+
+library("tidyverse")
+library("readr")
+library("gridExtra")
+library("broom")
 ```
 ```{r load}
 set.seed(42)
-library("ggplot2")
-library("readr")
-library("dplyr")
-library("gridExtra")
-library("broom")
-chiron <- read_csv("chironomidCalibration.csv")
+
+chiron <- read_csv("data/chironomidCalibration.csv")
 chiron <- chiron %>% 
   select(-`Altitudinal gradient (m)`) %>% 
   mutate(year = as.numeric(gsub(".*(\\d{4}).*", "\\1", Study))) %>%
@@ -34,17 +52,37 @@ format_p <- function(p) {
 }
 ```
 
-# Abstract
+# Abstract{-}
+Transfer functions for reconstructing palaeoenvironmental variables from microfossil assemblages have substantially different performance statistics. Focusing on chironomid-temperature models, I assess how different factors affect transfer function model performance as assessed by cross-validation. I find that ...
+
 
 **Keywords:** Quantitative reconstructions, transfer functions, performance statistics, chironomids
 
 # Introduction
 
-Chrironomid (non-biting midges) are sensitive to temperature [@Eggermont2011], and because their head-capsules preserve well in lake sediments, their fossil assemblages can be use to reconstruct past temperature with a transfer function trained on the chironomid-temperature relationship in a modern calibration set of chironomid assemblages and associated temperatures. They are a often used to provide a independent temperature reconstruction against which pollen or macrofossil-inferred vegetation changes can be compared [e.g., @Samartin2012].
+Many transfer functions for reconstucting palaeoenvironmental variables from microfossil assemblages have been developed [#cite review papers]. The performance of these transfer functions, estimated by some form of cross-validation, can vary substantially between models developed for the same environmental variable and microfossil group. 
+
+suggested causes of performance difference
+count sums
+number of sites
+
+
+
+Chironomid (non-biting midges) are sensitive to temperature [@Eggermont2011], and because their head-capsules preserve well in lake sediments, their fossil assemblages can be use to reconstruct past temperature with a transfer function trained on the chironomid-temperature relationship in a modern calibration set of chironomid assemblages and associated temperatures. They are a often used to provide a independent temperature reconstruction against which pollen or macrofossil-inferred vegetation changes can be compared [e.g., @Samartin2012].
 
 The performance of transfer functions for reconstructing past temperatures from chironomid assemblages in lake sediments varies enormously. The root-mean-squared-error of prediction (RMSEP) for transfer functions in a compilation by Eggermont and Heiri [-@Eggermont2011], augmented by a few recent studies (Table 1)[^1], ranges between `r min(chiron$'RMSEP (°C)')` and `r round(max(chiron$'RMSEP (°C)'), 2)` °C. The lowest RMSEP suggests that chironomids give very precise reconstructions; the highest suggests that chironomids have limited utility for anything other than reconstruction glacial-interglacial changes. What causes this `r round(max(chiron$'RMSEP (°C)')/min(chiron$'RMSEP (°C)'), 1)`-fold difference in RMSEP? Understanding this might suggest where efforts to improve chironomid-temperature, and other, transfer functions should be focused.
 
-[^1]: Data and code for this post are on [github](https://github.com/richardjtelford/zabinskie). For simplicity, all transfer functions are treated as if they are independent even though some are subsets of others.
+# Methods
+
+Transfer function model performance statistics were obtained from Eggermont and Heiri [-@Eggermont2011] and augmented by a literature search for other chironomid-temperature transfer functions. For simplicity, all transfer functions are treated as if they are independent even though some are subsets of others.
+
+
+All analyses were done in `r gsub("(.*) \\(.*", "\\1", R.version.string)` [@R2017]. Ordinations were fitted with vegan version 2.4-3 [@vegan2017] with square-root transformed assemblage data. Transfer functions were fitted with rioja version 0.9-15 [@rioja2017] using square-root transformed species data. Some diagnostics were performed using analogue version 0.17-0 [@analogue2016]. The reconstruction significance test was run with randomTF from palaeoSig version 1.1-3 [@palaeoSig2015] with 999 trials for the null distribution.
+
+Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie).
+
+# Results and discussion
+
 
 Part of the variance in performance is explained by the choice of air or water temperatures as a calibration target [@Eggermont2011, Figure 1]. Models calibrated against water temperature have a worse performance even though chironomids spend most of their life in water. This is probably because water temperatures are spot measurements, and thus reflect recent weather, whereas air temperatures are climatological means derived from local weather stations or gridded climatologies [e.g., @Hijmans2005]. 
 
@@ -58,7 +96,7 @@ ggplot(chiron, aes(x = AirWater, y = `RMSEP (°C)`, colour = AirWater)) +
 chiron <- filter(chiron, AirWater != "water")
 ```
 
-The following analyses concern only the `r nrow(chiron)` transfer functions calibrated against air temperatures. Most of these transfer functions are trained on calibration sets of many lakes (calibration-in-space). Two tranfer function [@Larocque-Tobler2011; @Luoto2016] are trained on fluctuations in chironomid assemblages in one lake over many years (calibration-in-time). Varve chronologies were used to determine the age of each assemblage. Temperature data for each year are available from nearby weather stations. Both calibration-in-time transfer functions have low RMSEPs.    
+The following analyses concern only the `r nrow(chiron)` transfer functions calibrated against air temperatures. Most of these transfer functions are trained on calibration sets of many lakes (calibration-in-space). Two transfer function [@Larocque-Tobler2011; @Luoto2016] are trained on fluctuations in chironomid assemblages in one lake over many years (calibration-in-time). Varve chronologies were used to determine the age of each assemblage. Temperature data for each year are available from nearby weather stations. Both calibration-in-time transfer functions have low RMSEPs.    
 
 The range of RMSEPs for the air-temperature calibration-in-space models only slightly smaller than for the full set of models.  The coefficient of determination (r^2^) varies between `r min(chiron$r2jack)` and `r round(max(chiron$r2jack), 2)` and is uncorrelated with RMSEP (Pearson r = `r round(cor(chiron$'RMSEP (°C)', chiron$r2jack), 2)`, p `r format_p(cor.test(chiron$'RMSEP (°C)', chiron$r2jack)$p.value)`).
 
@@ -103,7 +141,7 @@ grid.arrange(g1, g2, ncol = 2)
 
 The r^2^ increases with temperature range because, even though RMSEP increases, RMSEP as a proportion of temperature range decreases. 
 
-But why does the RMSEP incease with gradient length? There are two possible explanations: 
+But why does the RMSEP increase with gradient length? There are two possible explanations: 
 
  1. With a larger temperature range, cross-validation predictions are less constrained - it is possible to be more wrong. If this is true, it might suggest that transfer functions with a small temperature range have artificially reduced uncertainties.
  2. Larger temperature ranges have a lower density of lakes per °C and therefore species optima are poorly constrained.
@@ -201,19 +239,19 @@ If some authors have strived harder than others to generate calibration sets wit
 
 Many papers do not discuss outlier removal. Of those that do, Brooks and Birks [@Brooks2001] removed two glacially fed lakes that were outliers in the transfer function, presumably because the water temperature was much colder than expected given the air temperature. Wu et al 2015 [@Wu2015] remove seven outliers because their absolute residuals were >2 SD away from the observed temperature. The deleted lakes mainly have anomalous pH, conductivity or depth. 
 
-Removing outliers will improve the transfer-function performance statistics. Wholesale removal, as sometimes practiced with testate-amoeba water-depth transfer functions [e.g., @Woodland1998 who remove 29 of 163 observations from one of their models], is probably unwise as there is no guarantee that the improvement in cross-validation performance statistics will be reflected in better predictions down-core.
+Removing outliers will improve the transfer-function performance statistics. Wholesale removal, as sometimes practised with testate-amoeba water-depth transfer functions [e.g., @Woodland1998 who remove 29 of 163 observations from one of their models], is probably unwise as there is no guarantee that the improvement in cross-validation performance statistics will be reflected in better predictions down-core.
 
 ## Chironomid count sums
 
-Transfer functions based on larger chironomid counts should expect better performance statistics. This performance boost has two components. The first is due to reconstructions from assemblages with low counts being imprecise whether the assemblages are fossil data or the modern data under cross-validation. This was studied by Heiri and Lotter [-@Heiri2001], Quinlan and Smol [-@Quinlan2001], and Larocque [-@Larocque2001a]. Heiri and Lotter [-@Heiri2001] simulate counts of different sizes by resampling with replacement some large chironomid counts and showed that the standard deviation of reconstructions derived from a counts of fifty head-capsules was about 40 % of the RMSEP. With 100 head-capsules the standard deviation decreased to about 20 % of the RMSEP, with relatively small improvements for counts of 200. With counts of less than fifty the error rose dramatically. Note that the magnitude of this error component is only directly relevant to reconstructions from fossil assemblages if the fossil count sums are equal to those in the  calibration set. If the fossil count sum are larger, the cross-validation RMSEP will be pesimistic, and _vice versa_.
+Transfer functions based on larger chironomid counts should expect better performance statistics. This performance boost has two components. The first is due to reconstructions from assemblages with low counts being imprecise whether the assemblages are fossil data or the modern data under cross-validation. This was studied by Heiri and Lotter [-@Heiri2001], Quinlan and Smol [-@Quinlan2001], and Larocque [-@Larocque2001a]. Heiri and Lotter [-@Heiri2001] simulate counts of different sizes by resampling with replacement some large chironomid counts and showed that the standard deviation of reconstructions derived from a counts of fifty head-capsules was about 40 % of the RMSEP. With 100 head-capsules the standard deviation decreased to about 20 % of the RMSEP, with relatively small improvements for counts of 200. With counts of less than fifty the error rose dramatically. Note that the magnitude of this error component is only directly relevant to reconstructions from fossil assemblages if the fossil count sums are equal to those in the  calibration set. If the fossil count sum are larger, the cross-validation RMSEP will be pessimistic, and _vice versa_.
 
-The second component is due to the species optima derived from noisy low-count assemblage data being imprecise, and hence reconstruction being imprecise. This was studied by Bennett et al [-@Bennett2016] who subsampled diatom calibration sets to smaller counts sums (and number of lakes), and then tested performance with an independent test set with the unaltered count sum. They found, for a 350 lake North American diatom-pH calibration set, that reducing the count sum from 300 valves to 25 increased the RMSEP by 10%.  
+The second component is due to the species optima derived from noisy low-count assemblage data being imprecise, and hence reconstruction being imprecise. This was studied by Bennett et al [-@Bennett2016] who sub-sampled diatom calibration sets to smaller counts sums (and number of lakes), and then tested performance with an independent test set with the unaltered count sum. They found, for a 350 lake North American diatom-pH calibration set, that reducing the count sum from 300 valves to 25 increased the RMSEP by 10%.  
 
 The combined impact of both error components has not been studied as far as I am aware, and the values from Heiri and Lotter [-@Heiri2001] and Bennett et al [-@Bennett2016] are not directly comparable, but it would appear that the loss of performance due to optima being poorly estimated with low count sums is less severe than that due to the counting uncertainties in the observations for which predictions are made under cross-validation. This is expected, at least if weighted averaging or similar methods are used, since the optima average information across multiple lakes, mitigating the counting noise, whereas the predictions are derived from a single observation.
 
-All the papers exploring the impact of count size on performance have noted that with increasing counts, the rate of improvement decreases, but none appear to explain the theoretical basis for this. Assemblage counts arise from a [multinomial distribution](https://en.wikipedia.org/wiki/Multinomial_distribution) (a generalisation of the binomial distribution to cope with many possible outcome (species)). With species _i_ ∈ {1, 2, ..., k} the expected count of each species is _np[i]_ where n is the count sum amd _p[i]_ is the probability of a head-capsule being from species _i_. The variance for each species is _np[i](1-p[i])_. The standard deviation on the count error for each species is then proportional to the square root of _n_. As a proportion of the total count, the standard deviation will be _$\frac{\sqrt{n}}{n}$_ or _$\frac{1}{\sqrt{n}}$_. This would suggest that the standard deviation in the reconstructions due to count size in the reconstructions should scale with _$\frac{1}{\sqrt{n}}$_, but the results from Heiri and Lotter [-@Heiri2001] above suggest that the standard deviation scales with _$\frac{1}{n}$_. I need to think about this some more and try some experiments.
+All the papers exploring the impact of count size on performance have noted that with increasing counts, the rate of improvement decreases, but none appear to explain the theoretical basis for this. Assemblage counts arise from a [multinomial distribution](https://en.wikipedia.org/wiki/Multinomial_distribution) (a generalisation of the binomial distribution to cope with many possible outcome (species)). With species _i_ ∈ {1, 2, ..., k} the expected count of each species is _np[i]_ where n is the count sum and _p[i]_ is the probability of a head-capsule being from species _i_. The variance for each species is _np[i](1-p[i])_. The standard deviation on the count error for each species is then proportional to the square root of _n_. As a proportion of the total count, the standard deviation will be _$\frac{\sqrt{n}}{n}$_ or _$\frac{1}{\sqrt{n}}$_. This would suggest that the standard deviation in the reconstructions due to count size in the reconstructions should scale with _$\frac{1}{\sqrt{n}}$_, but the results from Heiri and Lotter [-@Heiri2001] above suggest that the standard deviation scales with _$\frac{1}{n}$_. I need to think about this some more and try some experiments.
 
-I haven't extracted the minimumum (or typical which might be more meaningful) count sum for the different transfer functions, but it is typically greater than fifty head-capsules. Rashly assuming that the error from the two components is additive and that the results of Heiri and Lotter [-@Heiri2001] and Bennett et al [-@Bennett2016] are representative, it would suggest that a count size of fifty head-capsules would have RMSEP 60% higher than a large (~300) count. This moderate proportion of the overall range in transfer function performance.
+I haven't extracted the minimum (or typical which might be more meaningful) count sum for the different transfer functions, but it is typically greater than fifty head-capsules. Rashly assuming that the error from the two components is additive and that the results of Heiri and Lotter [-@Heiri2001] and Bennett et al [-@Bennett2016] are representative, it would suggest that a count size of fifty head-capsules would have RMSEP 60% higher than a large (~300) count. This moderate proportion of the overall range in transfer function performance.
 
 
 ## Mis-reported statistics
@@ -237,12 +275,51 @@ If I have missed any published transfer functions, or explanations as to why tra
 g1 + aes(x = `RMSEP as % of gradient`, y = r2jack) 
 ```
 
-## Table 1
 
-Chironomid-based transfer functions for air temperature (T). Methods include weighted-averaging with inverse deshrinking (WAinv), partial least-squares (PLS), weighted-averaging partial least-squares, weighted modern analogue technique, and Bayesian methods. Numbers in brackets after the model indicate the number of components/analogues used. Listed are the coefficient of determination (r^2^) between the predicted and observed values, the root-mean-squared-error of prediction (RMSEP), RMSEP as % of the gradient, and maximum bias. All statistics are based on leave-one-out cross validation, except where noted otherwise. Most values from Eggermont and Heiri [-@Eggermont2011].
 
+
+
+\blandscape
 ```{r}
-knitr::kable(select(chiron, -AirWater, -(year:midT)), digits = 2)
+table1 <- chiron %>% 
+  select(-(year:midT)) %>%
+  rename(`No lakes` = No_lakes, 
+         `No taxa` = No_taxa, 
+         `Gradient (°C)` = `Tgradient (°C)`, 
+         `Range (°C)` = `Range of gradient (°C)`, 
+         Model = `Best model`, 
+         `RMSEP %` = `RMSEP as % of gradient`,
+         Temperature = Parameter) %>% 
+  mutate(
+    Temperature = gsub("air", "", Temperature), 
+    Temperature = gsub(" ?T", "", Temperature),
+    Temperature = gsub("[Mm]ean|of the", "", Temperature),
+    Temperature = stringi::stri_trim(Temperature),
+    r2jack = if_else(Notes == "Bootstrap", paste0(r2jack, "*"), as.character(r2jack))
+    ) %>% 
+  select(-Notes)
+
+table1 %>% 
+  filter(AirWater == "air") %>% 
+  select(-AirWater) %>% pander::pander(caption = "Chironomid-based transfer functions for air temperature. Methods include weighted-averaging with inverse deshrinking (WAinv), partial least-squares (PLS), weighted-averaging partial least-squares, weighted modern analogue technique, and Bayesian methods. Numbers in brackets after the model indicate the number of components/analogues used. Listed are the coefficient of determination (r^2^) between the predicted and observed values, the root-mean-squared-error of prediction (RMSEP), RMSEP as % of the gradient, and maximum bias. All statistics are based on leave-one-out cross validation, except where noted otherwise. Most values from Eggermont and Heiri [-@Eggermont2011].", split.cells = 25, split.tables = 190, digits = 2)
+
+
+table1 %>% 
+  filter(AirWater == "water") %>% 
+  select(-AirWater) %>% 
+  pander::pander(caption = "Models calibrated against water temperature", split.cells = 25, split.tables = 180, digits = 2)
+
+table1 %>% 
+  filter(AirWater == "air/time") %>% 
+  select(-AirWater, -`No lakes`) %>% 
+  pander::pander(caption = "Calibration in time models ", split.cells = 25, split.tables = 190, digits = 2)
+
 ```
 
-## References
+\elandscape
+
+## Acknowledgements{-}
+
+This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie).
+
+## References{-}
