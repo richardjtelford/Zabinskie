@@ -175,14 +175,14 @@ The choice of calibration target, however, has a large impact on the correlation
 
 ```{r percent_variance, message = FALSE, results = "hide", fig.keep='none'}
 ```
-```{r plot_explained_variance, fig.cap = "By month, a) the percent of intertia in the Canadian-Polish calibration set explained in a cannonical correspondence analysis CCA constrained by temperature, b) transfer function leave-one-out cross-validation r^2^ calibrated against temperature, c) correlation between the reconstructed temperature from Lake Żabińskie and the instrumental temperature"}
-variance_plot 
+```{r plot_explained_variance, fig.cap = "By month, a) the percent of intertia in the Canadian-Polish calibration set explained in a cannonical correspondence analysis CCA constrained by temperature, b) transfer function leave-one-out cross-validation r^2^ calibrated against temperature, c) correlation between the reconstructed temperature from Lake Żabińskie and the instrumental temperature", fig.width = 90/25.4, fig.height = 130/25.4}
+variance_plot
 ```
 
 ```{r reconstruction_by_month}
 ```
 
-```{r plot_recon_by_month, fig.cap = "Reconstruction of temperature for different months at Lake Żabińskie"}
+```{r plot_recon_by_month, fig.cap = "Temperature reconstruction for different months at Lake Żabińskie", fig.width = 140/25.4, fig.height = 80/25.4}
 recon_by_month_plot
 ```
 
@@ -278,14 +278,14 @@ The surprisingly poor reconstruction diagnostics are not the only problematic as
 
 The two ordinations in Larocque-Tobler et al. [-@Larocque-Tobler2015] cannot be reproduced from the archived data (seven substantially different versions of the fossil data were archived before the current version). Larocque-Tobler et al. [-@Larocque-Tobler2015] Figure 2 is a principal component analysis of the calibration set. There are `r nrow(spp_all)` lakes in the calibration set (the paper reports 122) but Figure 2 shows only 103 lakes: 18 lakes have been omitted, including all `r sum(env_all > 23) %>% as.english()` lakes warmer than 23°C (Fig. 4a). The omission of these lakes makes the relationship between the chironomid assemblages and temperature appear to be stronger than it is. In the pre-publication versions of this figure, several lakes had been moved rather than omitted.
 
-```{r LTfigure2, fig.cap = "a) Attempt to replicate the principal component analysis shown in Larocque-Tobler et al. [-@Larocque-Tobler2015] Figure 2. Lakes enclosed by a red circle are missing from the published figure. Axis labels indicate the percent of variance in the calibration set explained (Larocque-Tobler et al. [-@Larocque-Tobler2015] report 22.3% and 17.5% for the first two axes). b) Attempt to replicate the redundancy analysis shown in Larocque-Tobler et al. [-@Larocque-Tobler2015] Supplementary Data Figure 1. The original figure has six more Canadian lakes in the lower right quadrant.", warning=FALSE}
+```{r LTfigure2, fig.cap = "a) Attempt to replicate the principal component analysis shown in Larocque-Tobler et al. [-@Larocque-Tobler2015] Figure 2. Lakes enclosed by a red circle are missing from the published figure. Axis labels indicate the percent of variance in the calibration set explained (Larocque-Tobler et al. [-@Larocque-Tobler2015] report 22.3% and 17.5% for the first two axes). b) Attempt to replicate the redundancy analysis shown in Larocque-Tobler et al. [-@Larocque-Tobler2015] Supplementary Data Figure 1. The original figure has six more Canadian lakes in the lower right quadrant.", warning=FALSE, fig.width = 190/25.4, fig.height = 110/25.4}
 th <- theme(legend.position = "bottom")
 cowplot::plot_grid(
   fig2 + th + 
     guides(colour = guide_legend(nrow=2,byrow=TRUE)) +
     guides(shape = guide_legend(nrow=2,byrow=TRUE)),
   sdf1 + th, 
-  nrow = 1, labels = c("a)", "b)"), align = "h")
+  nrow = 1, labels = c("a)", "b)"), align = "h", vjust = 2, hjust  = -4.4)
 ```
 
 Conversely, Supplementary Data Figure 1 in Larocque-Tobler et al. [-@Larocque-Tobler2015], a redundancy analysis of the calibration set constrained to temperature with the fossil data added passively, has more lakes than expected (Fig. 4b). There are `r sum(sites$source != "Poland")` Canadian lakes in the calibration set (the paper reports 72) but the figure shows 78. The extra Canadian lakes are mostly in the same quadrant as the Polish lakes and falsely suggest "a similarity between the assemblages in warmer lakes in Canada and those which cover the same temperature gradient in Poland" [@Larocque-Tobler2015].
@@ -335,7 +335,7 @@ for Lake Njulla, Lake 850, and Vuoskkujavri, respectively. No assemblage data ha
 
 The chironomid-based July temperature reconstruction from Lake Silvaplana for the period 1850--2001 CE is first presented in Larocque et al. [-@Larocque2009]. Subsequently, Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] and Larocque-Tobler et al. [-@LarocquTobler2010] published 420 and 1000 year long reconstructions which both include the 1850--2001 CE period. The three reconstructions for the last 150 years should be identical, or at least nearly so, however they are very different. Furthermore, archived reconstructions for the 150-year reconstruction [@larocque2008_data] and the 420-year reconstruction [@Larocque420] are different from their associated papers, giving five different reconstructions for this time interval. None of the papers include any explanation of these differences. The archived reconstructions for Larocque et al. [-@Larocque2009] and Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] can largely be reconciled by allowing a chronological offset that stretches the time series of up to `r max_diff` years (Figure 5) -- far more than the chronological uncertainty of the varve record. Remaining differences between these two archived reconstructions are nearly all integer differences.
 
-```{r silvaplana_recon_plot, fig.cap = "The 150-yr reconstruction (solid, red) and the overlapping portion of the 420-yr reconstruction (dashed, blue) from Silvaplana plotted against a) date, and b) stratigtaphic rank. In b) circles indicate integer differences, crosses show non-integer differences between reconstructions."}
+```{r silvaplana_recon_plot, fig.cap = "The 150-yr reconstruction (solid, red) and the overlapping portion of the 420-yr reconstruction (dashed, blue) from Silvaplana plotted against a) date, and b) stratigtaphic rank. In b) circles indicate integer differences, crosses show non-integer differences between reconstructions.", fig.width = 140/25.4, fig.height = 90/25.4}
 silvaplana_recons
 ```
 

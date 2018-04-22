@@ -7,7 +7,8 @@ clim15 <- sites %>%
   filter(!is.na(Aug))
 spp15 <- spp %>% filter(sites$Lake %in% clim15$Lake)
 
-perform_by_month15 <- clim15 %>% select(-(1:4), -summer, -country) %>% 
+perform_by_month15 <- clim15 %>% 
+  select(-(1:4), -summer, -country) %>% 
   gather(key = month, value = temperature) %>% 
   mutate(month = factor(month, levels = month.abb)) %>% 
   group_by(month) %>% 
@@ -26,7 +27,9 @@ explained_plot <- ggplot(perform_by_month15, aes(x = month, y = pc_explained)) +
   geom_point() + 
   geom_line(aes(group = 1)) +
   labs(x = "Month", y = "CCA inertia\nexplained %") +
-  scale_y_continuous(limits = c(0, NA))
+  scale_y_continuous(limits = c(0, NA), expand = c(0.02, 0)) +
+  scale_x_discrete(expand = c(0.02, 0.02)) + 
+  theme(axis.title.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)))
 
 perform_plot <- explained_plot + aes(y = r2_mod) + 
   labs(y = expression(atop(Transfer, `function`~r^2)))
@@ -34,7 +37,9 @@ perform_plot <- explained_plot + aes(y = r2_mod) +
 result_plot <- explained_plot + aes(y = r_pred) + 
   labs(y = "Reconstruction-\nInstrumental r") 
 
-th <- theme(axis.title.x = element_blank(), axis.text.x = element_blank(), axis.ticks.x = element_blank())
+th <- theme(axis.title.x = element_blank(), 
+            axis.text.x = element_blank(), 
+            axis.ticks.x = element_blank())
 variance_plot <- cowplot::plot_grid(explained_plot + th,  
                                     perform_plot + th, 
                                     result_plot, 
@@ -59,7 +64,8 @@ recon_by_month15 <- clim15 %>% select(-(1:4), -summer, -country) %>%
 recon_by_month_plot <- recon_by_month15 %>% 
   ggplot(aes(x = year, y = pred, colour = month, label = month)) + 
   geom_line() + 
-  labs(x = "Year CE", y = "Predicted temperature °C", colour = "") +
+  labs(x = "Year CE", y = "Reconstructed temperature °C", colour = "") +
   geom_dl(method = list(dl.trans(x = x - 0.05), "first.bumpup", cex = 0.8)) +
   theme(legend.position = "none") +
-  scale_color_brewer(type = "qual", palette = "Paired")
+  scale_color_brewer(type = "qual", palette = "Paired") +
+  scale_x_continuous(limits = c(1890, NA), expand = c(0.02, 0)) +     scale_y_continuous(expand = c(0.02, 0))
