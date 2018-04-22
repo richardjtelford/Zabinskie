@@ -153,7 +153,7 @@ Given that the exceptional performance shown in Table 1 is used to justify the d
 
 # Challenges for high-resolution reconstructions
 
-This section explores the challenges faced by sub-decadal resolution reconstructions, focusing on chironomid inferred-air temperature reconstructions. Other reconstructions based on assemblages of other microfossil assemblages, for example pollen or diatoms, will have a overlapping set of challenges [@Peglar1993]. Many of these challenges will also affect sedimentary geochemical proxies to some extent. 
+This section explores the challenges faced by sub-decadal resolution reconstructions, focusing on chironomid inferred-air temperature reconstructions. Other reconstructions based on assemblages of other microfossil assemblages, for example pollen or diatoms, will have an overlapping set of challenges [@Peglar1993]. Many of these challenges will also affect sedimentary geochemical proxies to some extent. 
 
 ## Ecological sensitivity 
 
@@ -188,7 +188,7 @@ recon_by_month_plot
 
 ```{r weather_climate, results = "hide", fig.keep='none'}
 ```
-```{r weather_climate_plot, fig.cap = "Correlation between August and June (blue line), and August and summer temperatures (red line) averaged over different length periods in the central England temperature series [@Parker1992]"}
+```{r weather_climate_plot, fig.cap = "Correlation between August and June (green), and August and summer temperatures (orange) averaged over different length periods in the central England temperature series [@Parker1992]. Smoother is a loess with span = 0.75.", fig.width = 90/25.4, fig.height=60/25.4}
 JuneAugustSummer_plot
 ```
 

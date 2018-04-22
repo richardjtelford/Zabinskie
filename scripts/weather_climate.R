@@ -42,15 +42,18 @@ wc_As <- map_df(1:50, weather_climate, month1 = "Aug", month2 = "summer")
 
 corPlot <- ggplot(wc_JA, aes(x = N, y = est)) +
   geom_point() +
-  geom_smooth(se = FALSE) +
-  scale_x_continuous(trans = "sqrt") +
+  geom_smooth(se = FALSE, size = .7) +
+  scale_x_continuous(trans = "sqrt", expand = c(0.02, 0)) +
+  scale_color_brewer(type = "qual", palette = "Dark2") +
   labs(x = "Number of years", y = "Correlation")
 
 
 JuneAugustSummer_plot <- corPlot %+% 
   (wc_As %>% mutate(months = "August-summer") %>%
-     bind_rows(wc_JA %>% mutate(months = "June-August"))) + 
-  aes(colour = months) +
-  labs(colour = "") + 
-  ylim(0, 1) +
-  theme(legend.position = c(.69, .23), legend.justification = c(0, 1), legend.title = element_blank())
+     bind_rows(wc_JA %>% mutate(months = "August-June"))) + 
+  aes(colour = months, linetype = months, shape = months, label = months) +
+  labs(colour = "", shape = "", linetype = "") + 
+  geom_dl(method = list(box.color = NA, "first.points", hjust = 0, vjust = 1, cex = 0.75)) +
+  scale_y_continuous(expand = c(0.01, 0), limits = c(0, 1)) + 
+  theme(legend.position = "none")
+#  theme(legend.position = c(.69, .23), legend.justification = c(0, 1), legend.title = element_blank(), legend.key.width = unit(1, 'cm'))
