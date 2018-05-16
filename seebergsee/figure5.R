@@ -1,16 +1,31 @@
 ## ---- figure_5
 
-seeb_mds <- metaMDS(sqrt(seeberg_pc), dist = "euclidean")
-seeb_mds <- metaMDS(seeberg_pc)
+seeb_mds <- metaMDS(sqrt(seeberg_pc), dist = "euclidean", trace = 0)
+#seeb_mds <- metaMDS(seeberg_pc)
 
-fortify(seeb_mds) %>% 
+sbs_nmds_fig <- fortify(seeb_mds) %>% 
   filter(Score == "sites") %>% 
   mutate(year = rev(sbs_digitised$year)) %>% 
   ggplot(aes(x = NMDS1, y = NMDS2)) + 
     geom_path() +
     geom_point(aes( colour = year > 1950)) +
     coord_equal()
-  
+
+#silvaplana
+#sil_mds <- metaMDS(sqrt(fos_holocene), dist = "euclidean")
+sil_mds <- metaMDS(fos_holocene, trace = 0)
+
+sil_nmds_fig <- fortify(sil_mds) %>% 
+  filter(Score == "sites") %>% 
+  mutate(year = holocene_year$YearAD) %>% 
+  mutate(year = as.numeric(year)) %>% 
+  mutate(period = cut(year, breaks = c(0, 1760, 1950, 3000), labels = c("< 1760", "1760-1950",  "> 1950"))) %>% 
+  ggplot(aes(x = NMDS1, y = NMDS2)) + 
+  geom_path() +
+  geom_point(aes( colour = period)) +
+  coord_equal()
+
+## ---- other ordinations
 decorana(sqrt(seeberg_pc))
 sbs_ca <- cca(sqrt(seeberg_pc))
 
@@ -22,25 +37,7 @@ fortify(sbs_ca) %>%
   geom_point(aes( colour = year > 1950)) +
   coord_equal()
 
-
-#silvaplana
-sil_mds <- metaMDS(sqrt(fos_holocene), dist = "euclidean")
-sil_mds <- sqrt(fos_holocene) %>% 
-  mutate(year = holocene_year$YearAD > 1950, year = as.numeric(year)) %>% 
-  metaMDS(dist = "euclidean")
-sil_mds <- fos_holocene %>% 
-  mutate(year = holocene_year$YearAD > 1950, year = as.numeric(year) * 1000) %>% 
-  metaMDS()
-sil_mds <- metaMDS(fos_holocene)
-
-fortify(sil_mds) %>% 
-  filter(Score == "sites") %>% 
-  mutate(year = holocene_year$YearAD) %>% 
-  ggplot(aes(x = NMDS1, y = NMDS2)) + 
-  geom_path() +
-  geom_point(aes( colour = year > 1950)) +
-  coord_equal()
-
+#
 fos_holocene %>% ggplot(aes(x = Microt, y = Cricoto)) + geom_point()#rogue sample
 
 decorana(sqrt(fos_holocene))
@@ -56,7 +53,6 @@ sil_ca %>%
   geom_path() +
   geom_point(aes( colour = year > 1950)) +
   coord_equal()
-
 
 
 ## ---- random_optima
