@@ -34,6 +34,18 @@ seeberg_chron %>%
   geom_line() + 
   scale_y_reverse()
 
+seeberg_chron2011 <- data_frame(depth = c(4, 16), years = 2005 - c(1970, 1920))
+
+used_chron <- sbs_digitised %>% 
+  mutate(years = 2005 - year) %>% 
+  arrange(years) %>% 
+  bind_cols(
+    seeberg_count %>% 
+      select(depth, merged_depth) %>% 
+      group_by(merged_depth) %>% 
+      summarise(depth = mean(depth))
+    )
+
 see_fig3 <- image_read("seebergsee/seebergsee_fig_3.png")
 
 see_chrono_plot <- seeberg_chron %>% 
@@ -42,12 +54,15 @@ see_chrono_plot <- seeberg_chron %>%
   annotation_custom(
     rasterGrob(as.raster(see_fig3), width=unit(1,"npc"), height=unit(1,"npc")),
     xmin = -12, xmax = 127, ymin = -25.5, ymax = 0.5) +
-  geom_point(size = 2, shape = 1) +
-  geom_line() +
+  geom_point(size = 2, shape = 1, colour = scales::muted("blue")) +
+  geom_line(colour = scales::muted("blue")) +
+  geom_point(data = seeberg_chron2011, col = scales::muted("red")) +
+  geom_line(colour = scales::muted("blue")) +
   scale_x_continuous(breaks = seq(0, 100, 20)) +
   scale_y_reverse(breaks = seq(0, 20, 5)) +
   theme_classic() +
-  theme(plot.margin = margin(t = 10, r = 10, b = 10, l = 10))
+  theme(plot.margin = margin(t = 10, r = 10, b = 10, l = 10)) +
+  labs(x = "Years", y = "Depth cm")
 
 makefig(see_chrono_plot )
 
