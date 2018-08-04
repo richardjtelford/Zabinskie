@@ -1,0 +1,59 @@
+---
+title: "Pollen from the garden of forking paths"
+author: "Richard J. Telford"
+date: "August 3, 2018"
+output:
+  html_document:
+    keep_md: yes 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+
+library("tidyverse")
+library("magrittr")
+library("leaps")
+
+knitr::read_chunk("simulations.R")
+```
+
+Most transfer functions for reconstructing past environmental changes are based on a calibration-in-space approach, with a modern calibration set of paired microfossil assemblages and environmental data. The alternative approach is calibration-in-time, with well-dated fossil assemblages and contemporaneous environmental data.
+
+I've [previously shown](https://quantpalaeo.wordpress.com/tag/calibration-in-time/) that the three chironomid calibration-in-time transfer functions all mis-report the performance statistics. All report the apparent performance as if it was the cross-validated performance. But what of the single calibration-in-time model developed for pollen assemblages that I am aware of (please let me know of other calibration-in-time models for microfossil assemblages)?
+
+Kamenik et al (2008) report a calibration-in-time model for the pollen stratigraphy from the mire Mauntschas in the SW Swiss Alps, dated with 29 <sup>14</sup>C dates and other chronological information. The paper reports that the r<sup>2</sup> between predicted and modelled April-November temperature is 0.44. In ideal circumstances this would represent a very respectable performance. However, I have a couple of concerns about the analysis in this paper.
+
+Firstly, the pollen and climate data are smoothed with a three-year triangular filter prior to any analysis. This will induce temporal autocorrelation into the data and thereby violate the assumptions of the statistical methods used.
+
+Secondly, a large number of choices are made on the route to the selected model. Choices include:
+
+* The climate variable reconstructed (mean temperature or precipitation over 1-12 months with a lag of 1-11 months - a total of 288 responses). May to August air temperature is the best predictor in an RDA, but April-November air temperature is reconstructed because it reduced the transfer function error.
+* The predictor variables (6 out of 11 pollen taxa are used in the final model)
+* The transformation of the pollen data (accumulation rate or percent, detrended or not)
+* The statistical model (ordinary  least squares regressions (OLSR), time series regressions (TSR), ridge regression  (RidgeR),  principal  components  regressions  (PCR) and  partial least  squares  regressions  (PLSR))
+
+The impact of these choices - forks in Andrew Gelman's [garden of forking paths](http://www.stat.columbia.edu/~gelman/research/unpublished/p_hacking.pdf) - will be to inflate the estimate of model performance.
+
+It is possible to explore the impact of some of these choices by simulation which can help gauge how impressed we should be with an r<sup>2</sup> of 0.44. To simplify the simulation, I'm only going to investigate the importance of the induced autocorrelation and the selection of pollen taxa.
+
+I simulated 49 years of climate data and pollen data with a Gaussian distribution 10,000 times for each case below (code on [github](https://github.com/richardjtelford/Zabinskie)).
+
+The upper panel in the figure below shows the distribution of leave-one-out cross-validation r<sup>2</sup> of OLS models fitted to  six simulated pollen spectra (data from two years are removed to make the data set comparable with the smoothed data in the next step). The reported r<sup>2</sup> is far above the 95<sup>th</sup> percentile of the distribution. 
+
+The middle panel shows the distribution of r<sup>2</sup> when the six pollen spectra and the climate variable are smoothed with a three-year triangular filter, as used by the authors. The 95<sup>th</sup> percentile of the distribution has moved towards the reported r<sup>2</sup>.
+
+In the lower panel, I show the distribution of the r<sup>2</sup> of the OSL when the best subset (1--11 variables) of smoothed pollen spectra is chosen by BIC. The 95<sup>th</sup> percentile of the distribution has moved beyond the reported r<sup>2</sup>. No claim to statistical significance can be supported.
+
+
+```{r run_pollen_simulations, echo=FALSE}
+```
+```{r plot_pollen_simulations, echo=FALSE}
+```
+
+Allowing for model selection, choice of data transformations, and selection of the climate variable, reconstruction would move the simulated r<sup>2</sup> even further to the right. 
+
+None of the choices made by the authors are bad. All can be defended, except perhaps the inclusion of autumn temperatures in their climate mean when most plants have flowered months earlier. The problem is that the authors have sought the path which yields the best performance. Pollen data from an another core from the same mire would be unlikely to give the same performance with the selected model. 
+
+As with the three chironomid calibration-in-time models, the Mauntschas Mire model cannot be relied upon. A critical difference though is that the performance of the chironomid models is mis-represented.
+
+
