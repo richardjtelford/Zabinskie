@@ -119,6 +119,43 @@ SHEET 66/1950 missing
 )
 
 
+#reported deleted taxa
+read.table(text = 
+"Lauterborniella, 1952
+Pagastiella, 1952 check
+Paracladopelma, 
+Polypedilum nubifer, 
+Pseudochironomus,
+Stenochironomus, 
+Xenochironomus, 
+Micropsectra bidentata, 
+Micropsectra radialis, 1902
+Stempellina, 
+Stempellinella, 
+Tanytarsus with spur, 
+Tanytarsus glabrescens, 1979 1978
+Tanytarsus special, 
+Chaetocladius, 
+Epoiocladius, 
+Georthocaldius, 
+Heterotanytarsus, 
+Hydrobaenus, 1905 1924
+Metriocnemus, 1905 1918 1910
+Paracricotopus, 
+Propsilocerus, 
+Pseudorthocladius, 1924
+Rheocricotopus,
+Diamesa, 1981
+Prodiamesa, 
+Guttipelopia, 
+Paramerina, 
+Thiennemanimya, 
+Zavrelymia, 1902 1905
+Parochlus, 1992 1981
+Tanytarsus chyniensis, 1899 1929"
+)
+
+
 countCheck %>% select(sampleNo, extra) %>% filter(extra != "")
 
 res <- data_frame(
