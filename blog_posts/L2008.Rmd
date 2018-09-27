@@ -1,0 +1,290 @@
+---
+title: "The Canadian data in Larocque-Tobler et al (2016)"
+author: "Richard J. Telford"
+date: '2016-04-26'
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+
+as.eng <- function(x, capitalise = FALSE){
+  e <- as.character(english::as.english(x))
+  if(capitalise){
+   gsub("(^)(.)", "\\1\\U\\2", e, perl = TRUE) 
+  }
+  e
+}
+```
+
+I've shown over several posts that the chironomid-inferred August air-temperature reconstructions from Lake Żabińskie (Larocque-Tobler et al 2016) are problematic in many regards. The calibration set used in LT15 included 48 Polish lakes and 73 Canadian lakes. The Canadian data were first discussed in Larocque et al (2006; L06) and Larocque (2008; L08) but the "taxonomy has been slightly modified". Since the data for these studies were archived as part of the LT15 archive, I want to test if I can reproduce their results.
+
+```{r importChunk, results = "hide", echo = FALSE}
+library("readxl")
+library("vegan")
+library("ggvegan")
+library("rioja")
+library("dplyr")
+
+fname <- "data/zabinskie2015cit.xls"
+spp <- as.data.frame(read_excel(fname, sheet = "Training species"))
+env <- read_excel(fname, sheet = "Training temperature")
+
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+
+env <- env$Temp
+
+country <- c(rep("Poland", 48), rep("Canada", 73))
+
+env <- env[country == "Canada"]
+spp <- spp[country == "Canada", ]
+spp <- spp[, colSums(spp) > 0]#remove empty taxa
+```
+
+## Count sizes
+
+```{r countSum}
+estCS <- 100/apply(spp, 1, function(x)min(x[x > 0]))
+#Lac G  South7          Lake 29           Lake12 
+pos(spp["Lac G", ])
+pos(spp["South7", ])
+```
+
+Both L08 and L06 report that all chironomid assemblages include at least fifty head capsules. Unfortunately only percent data are archived. However, making the assumption that the rarest species in an assemblage is represented by a single individual, it is possible to estimate the count sum. `r as.eng(sum(estCS<50), TRUE)` assemblages appear to have counts of fewer than fifty head capsules, with counts as low as `r round(min(estCS))` in `r names(which.min(estCS))`. 
+
+
+## Impossible percent
+
+I am used to percent data that sums to slightly more than 100% because of rounding errors. Two sample have from L08 have a higher percent sum than can be explained by rounding errors: Allagiap Tasinga at `r sum(spp["Allagiap Tasinga", ])` and Lac H at `r sum(spp["Lac H", ])`. The Lac H data are not simply untransformed counts, but if they are rescaled to 100%, the data become identical (within rounding error) to the Lac A data. Weird.
+
+```{r Lac_H, include = FALSE}
+pos <- function(x) {
+  if (is.null(nrow(x))) {
+    x[x > 0]
+  } else{
+    x[, colSums(x) > 0]
+  }
+}
+  
+spp1 <- spp/rowSums(spp) * 100
+pos(tail(spp1, 2))
+all.equal(spp1["Lac A", ], spp1["Lac H", ])
+```
+
+## Replicating an ordination
+
+L08 includes a correspondence analysis of the calibration set. L08 claim to have used Only "the taxa with at least 2% in 2 lakes", but the replication is much better is all taxa in at least 2 lakes (which is all the archived taxa) are used. 
+
+
+```{r ca, fig.cap="CA of the L08 data.", include = FALSE}
+keep <- colSums(spp >= 0) >= 2 
+mean(keep) #ie all
+ca <- cca(sqrt(spp[, keep]))
+
+fca <- fortify(ca, display = "sites", scaling = "species")#scaling = sites would make more sense, but is clearly not used in L08
+
+lab <- labs(x = "CA1", y = "CA2", colour = "Temperature °C")
+cols <- scale_colour_brewer(palette = "RdBu", direction = -1)
+
+breaks <- c(0, 10, 15, 20, 30)
+#temperature cuts to match version 2
+fca$temp <- cut(env, breaks = breaks, right = FALSE, labels = paste(breaks[-length(breaks)], breaks[-1], sep = " - "))
+
+g <- ggplot(fca, aes(Dim1, Dim2, colour = temp)) + 
+  geom_point(size = 2) + 
+  coord_equal() +lab + cols +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) 
+
+print(g)
+```
+
+The replication is good. The relatively small differences could be due to taxonomic revisions.
+
+Note that the ordination in L08 has been plotted with excel (or similar) rather than an ordination-aware program, as the axis scales are different. This makes the first axis look more important.
+
+## The eigenvalues
+```{r eigenvalues, include = FALSE}
+e <- eigenvals(ca)[1:2]/sum(eigenvals(ca)) * 100
+37.4/e[1]
+19.1/e[2]
+
+eigenvals(ca)[1]/cumsum(eigenvals(ca))
+```
+
+The ordination in L08 reports that the first and second axes explain 37.4 and 19.1% of the inertia in the chironomid data respectively. This is impressively high. In my replication of this ordination, the first and second axes explain `r paste(round(e, 1), collapse = " and ")`% of the inertia, a factor of `r round(37.4/e[1], 1)` higher. I cannot explain this difference. It is not because of minor differences in the data, that would give only a small change in the eigenvalues. I wondered if Dr Larocque had accidentally used the sum of the first _n_ eigenvalues rather than the total inertia: the first eigenvalue as a proportion of the first five  is `r round(eigenvals(ca)[1]/sum(eigenvals(ca)[1:5]) * 100, 1)`. However, getting five axes out of CANOCO 4.5 is apparently quite difficult.
+
+https://twitter.com/richardjtelford/status/819141789391224832
+https://twitter.com/ucfagls/status/819165977824739330
+
+L06 includes an redundancy analysis, but the environmental variables other than temperature have not been archived. The proportion of variance explained by the first two axes (38 and 22%) is high. 
+
+## Transfer function performance statistics
+
+L08 reports that a WAPLS-2 model has an RMSEP of 1.7°C and an r^2^ of 0.87. For the PLS model reported by L06 (number of components not specified), the RMSEP is 1.17°C and the r^2^ 0.67.
+
+```{r TF2008, include = FALSE}
+spp2 <- spp
+spp2["Lac H", ] <- spp2["Lac H", ]/sum(spp2["Lac H", ])
+
+mod <- crossval(WAPLS(sqrt(spp2), env))
+p08 <- performance(mod)$crossval
+performance(crossval(WAPLS((spp2), env)))$crossval#worse
+```
+
+
+```{r TF2006}
+k2006 <- grep("^Lake", rownames(spp), ignore.case = TRUE)#2006 study sites
+rownames(spp)[k2006]
+
+env2006 <- env[k2006]
+spp2006 <- spp[k2006, ]
+keep2006 <- colSums(spp2006 >0) > 2
+mean(keep2006)
+
+mod2006 <- WAPLS(spp2006[, keep2006], env2006, iswapls = FALSE)
+mod2006 <- crossval(mod2006)
+p06 <- performance(mod2006)
+```
+
+I cannot replicate the performance statistics for L08. My attempt gives an RMSEP of `r round(p08["Comp02", "RMSE"], 1)` and an r^2^ of `r round(p08["Comp02", "R2"], 1)`. I cannot replicate the crossvalidation results for L06 either. My replication has a similar RMSEP (`r round(p06["Comp02", "RMSE"], 1)`), but a worse r^2^ (`r round(p06["Comp02", "R2"], 1)`).
+
+```{r pub2006, include = FALSE}
+L2006 <- read.table("data/l2006.txt") %>%
+  filter(V1 != 13.0143)#duplicate 
+#one site is missing - probably overplotted
+names(L2006) <- c("Observed", "Residual")
+L2006 
+plot(L2006[, 1:2])
+abline(h = 0)
+dim(L2006)
+sqrt(mean(L2006$Residual^2))
+cor(L2006$Observed, rowSums(L2006))^2
+```
+
+When comparing my transfer function diagnostics plots for L08 with the published version, I noticed that while the archived temperature data span `r paste(range(env2006), collapse = " - ")`°C, the temperature range in L06 is `r paste(round(range(L2006$Observed), 1), collapse = " - ")`°C. It would appear that L08, and hence LT15, have used a different, unreported, source of temperature data.  
+
+The taxonomic adjustments seem to have lead to a worse performance: the apparent performance has not been reported in error.
+
+```{r obpredPlot}
+npls <- 2
+
+fortify.WAPLS <- function(mod, npls){
+  fmod <- data_frame(
+    sites = rownames(mod$y),
+    observed  = mod$x,
+    predicted = mod$predicted[, npls],
+    apparent = mod$fitted.values[, npls],
+    residuals  = mod$predicted[, npls] - mod$x,
+    apparentR = mod$fitted.values[, npls] - mod$x
+  )
+  fmod
+}
+
+
+fmod <- fortify.WAPLS(mod, 2)
+fmod$pub <- ifelse(grepl("^Lake", rownames(spp), ignore.case = TRUE), "L06", "L08")
+ 
+g1 <- ggplot(fmod, aes(x = observed, y = residuals, colour = pub)) + 
+  geom_hline(yintercept = 0, colour = "grey50", linetype = "dashed") + 
+  geom_point() + 
+  geom_smooth(aes(group = 1), show.legend = FALSE, se = FALSE) +
+  labs(
+         x = "Observed August air temperature °C",
+         y = "Residuals °C",
+         colour = "Publication"
+       )+
+  scale_y_continuous(breaks = seq(-10, 10, 2))
+
+
+g2 <- ggplot(fmod, aes(x = observed, y = predicted)) + 
+  geom_abline(intercept = 0, slope = 1, colour = "grey40") + 
+  geom_point() + 
+  geom_smooth(aes(group = 1), se = FALSE) + 
+  coord_equal()
+
+#print(g1)
+#g1 + aes(y = apparentR)# not apparent
+```
+
+
+```{r L2006_plots}
+f2006 <- fortify.WAPLS(mod2006, 1)
+
+g1 %+% f2006 + aes(colour = NULL)
+
+plot(mod2006, xval = TRUE)
+
+
+
+```
+
+
+
+
+
+```{r, eval = FALSE}
+library(raster)
+tave <- getData("worldclim", download = FALSE, path = "/home/gbsrt/Downloads/", var = "tmean", res = 2.5)
+tave2 <- crop(tave, extent(-80, -74, 46, 60))
+plot(tave2)
+extent()
+
+tave3 <- as.data.frame(tave2, xy = TRUE)
+tave3[, -(1:2)] <- tave3[, -(1:2)]/10
+cor(tave3[, c("tmean6", "tmean7", "tmean8", "tmean9")], use = "pair")
+
+library("GGally")
+ggpairs(tave3[, c("tmean6", "tmean7", "tmean8", "tmean9")]) 
+
+
+
+tave3 %>% dplyr::select(x, y, tmean6:tmean9) %>% tidyr::gather(key = month, value = temperature, -x, -y) %>% 
+ggplot(aes(x = x, y = y, fill = temperature)) + 
+  geom_raster() + 
+  coord_equal() + 
+  scale_fill_distiller(type = "div", palette = "RdBu") + 
+  scale_x_continuous(expand = c(0,0)) + 
+  scale_y_continuous(expand = c(0,0)) + facet_wrap(~month, nrow = 1)
+
+
+
+
+head(tave3)
+```
+
+```{r}
+### optima taxonomy
+  
+Tanytarsina <- c("Tanytarsus chinyensis", "Tanytarsus lugens", "Tanytarsus pallidicornis",  "Tanytarsus sp# C") #also sp B??  
+
+Micropsectra <- c("Micropsectra bidentata", "Micropsectra radialis", "Micropsectra insignilobus" ) 
+
+Heterotrissocladius <- c("H# grimshawi", "H# marcidus", "H# maeri", "H# subpilosus")
+
+#H
+H <- spp[, names(spp) %in% Heterotrissocladius]
+cbind(env, H, Heterotrissocladius = rowSums(H)) %>% tidyr::gather(key = species, value = percent, -env) %>%
+ggplot(aes(x = env, y = percent/100, colour = species)) + geom_point() + geom_smooth(method = "glm", formula = y ~ x + I(x^2), method.args = list(family = "quasibinomial")) + facet_wrap(~species)
+
+sapply(cbind(H, Heterotrissocladius = rowSums(H)), weighted.mean, x = env)
+
+Ta <- spp[, names(spp) %in% Tanytarsina]
+cbind(env, Ta, Tanytarsina = rowSums(Ta)) %>% tidyr::gather(key = species, value = percent, -env) %>%
+ggplot(aes(x = env, y = percent/100, colour = species)) + geom_point() + geom_smooth(method = "glm", formula = y ~ x + I(x^2), method.args = list(family = "quasibinomial")) + facet_wrap(~species)
+
+sapply(cbind(Ta, Tanytarsina = rowSums(Ta)), weighted.mean, x = env)
+
+M <- spp[, names(spp) %in% Micropsectra]
+cbind(env, M, Micropsectra = rowSums(M)) %>% tidyr::gather(key = species, value = percent, -env) %>%
+ggplot(aes(x = env, y = percent/100, colour = species)) + geom_point() + geom_smooth(method = "glm", formula = y ~ x + I(x^2), method.args = list(family = "quasibinomial")) + facet_wrap(~species)
+
+sapply(cbind(M, Micropsectra = rowSums(M)), weighted.mean, x = env)
+
+colSums(H > 0)
+Hill.N2(H)
+
+```

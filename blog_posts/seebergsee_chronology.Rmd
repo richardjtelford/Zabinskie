@@ -1,0 +1,70 @@
+---
+title: "The three chronologies from Seebergsee"
+author: "Richard J. Telford"
+date: "January 16, 2018"
+output:
+  html_document:
+    keep_md: yes 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(digits = 2)
+
+library("tidyverse")
+library("rioja")
+library("magick")
+library("grid")
+
+knitr::opts_knit$set(root.dir = "../")
+```
+```{r load_chunks}
+knitr::read_chunk("seebergsee/seebergsee_counts.R")
+knitr::read_chunk("silvaplana/scripts/silvaplana_plot_reconstructions.R")
+```
+
+```{r digitised_seebergsee_climate}
+sbs_digitised <- read.table("seebergsee/seebergsee_climate") %>% 
+  rename(year = V1, july = V2) %>% 
+  slice(-40)#bad click
+```
+```{r seebergsee_digitised, include = FALSE}
+```
+
+
+Accurate and precise chronologies are important for all comparisons of palaeoecological records. This is especially true for the validation of sub-decadal resolution reconstructions against instrumental data: a chronological error of only a year or two will seriously degrade the apparent agreement. For a sediment core spanning the last 100 years or so, varves (annual laminations) are probably the most accurate and precise dating method; not surprisingly, many of the papers presenting sub-decadal resolution reconstructions are from varved lakes.
+
+From reading the introduction of [Larocque-Tobler et al (2011)](https://www.sciencedirect.com/science/article/pii/S0277379111001090), one might think that they used a varve chronology.
+
+"If anoxic lakes are avoided for temperature reconstruction, it hampers the possibility of using chironomids for near-annual climate reconstruction obtained from many varved lakes. Here, we test if varved anoxic lakes can be used to accurately reconstruct mean July air temperature by studying the chironomid assemblages preserved in anoxic Seebergsee"
+
+But later we find that the upper 17cm (Larocque-Tobler et al 2011) or 22cm ([Larocque-Tobler et al (2012)](https://doi.org/10.1016/j.quascirev.2012.03.010)) of the 24 cm of core analysed in Larocque-Tobler et al (2011) have no visible varves. Instead, the chronology is based on ^210^Pb, supported by ^137^Cs, spherical carbonaceous particles (from the burning of fossil fuels) and the [last] appearance of _Cannabis_ pollen (ca. AD, 1900). 
+
+The chronology is show in Figure 3 of Larocque-Tobler et al (2011). It is also shown on the stratigraphic plots in both Larocque-Tobler et al (2011) and Larocque-Tobler et al (2012). Surprisingly, these three sources of chronological information do not agree.
+
+```{r overlay_fun}
+```
+
+```{r age_depth}
+```
+
+Larocque-Tobler et al (2011) Figure 3 overlain by the chronology from the chironomid stratigraphies Figure 4b in Larocque-Tobler et al (2011) (blue) and Figure 3 in Larocque-Tobler et al (2012) (red dots).
+
+The differences between the chronologies for the same core and far smaller than the up-to [42 year difference](https://quantpalaeo.wordpress.com/2017/08/28/reconstruction-number-5/) between archived reconstructions from Lake Silvaplana, but are still outside the confidence intervals of the model (I have no idea what interval the model's confidence intervals encompass). The discrepancies are large enough to ruin the correlation between even a perfect reconstruction and the instrumental data.
+
+The question of which of the three chronologies is used for the reconstructions in Larocque-Tobler et al (2011) arises. This can be established by digitising the reconstruction and linking it to the depth of samples in Figure 4. A complication presents itself: the depth of samples in 4a and 4b cannot be reconciled for all samples, for example, the sample at 22.5cm with 12 _Tanytarsus sp_ head capsules in Figure 4a is at 23cm in Figure 4b. The depths in Figure 4a match the description of the sampling in the text, so we should perhaps assume these are correct.  
+
+```{r used_chron}
+makefig(
+  see_chrono_plot + 
+    geom_line(data = used_chron, aes(y = merged_depth), colour = "green") +
+    geom_line(data = used_chron, aes(y = depth), colour = "orange")
+  ) 
+```
+Orange = 4a, green = 4b
+
+The chronology that is used matches (within the error inherent in digitising the data) the chronology shown on the stratigraphy (Figure 4b). 
+
+It appears that the wrong depths have been used with a chronology different to that shown by the published age-depth model. I have no explanation for these confidence-diminishing chronological discrepancies. If, despite the lack of cross-validation and the extremely implausible count data, the authors stand by their paper, they need to explain the discrepancies in the chronology and archive the raw data and code. 
+
+I have one more post to write about Larocque-Tobler et al (2011), a comparison of the instrumental temperature from the climate station with that in the paper.

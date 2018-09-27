@@ -1,0 +1,95 @@
+---
+title: "Counts at Seebergsee"
+author: "Richard J. Telford"
+date: "January 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = FALSE)
+options(digits = 0)
+
+library("tidyverse")
+library("rioja")
+library("xml2")
+library("readxl")
+
+as.english <- function(x){ # problem with new version of rmarkdown
+  as.character(english::as.english(x))
+  }
+as.English <- function(x){ #sentence case
+  stringi::stri_trans_totitle(as.character(as.english(x)), opts_brkiter = stringi::stri_opts_brkiter(type = "sentence"))
+  }
+
+knitr::opts_knit$set(root.dir = "../")
+
+Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
+
+```
+```{r load_chunks}
+knitr::read_chunk("seebergsee/seebergsee_counts.R")
+knitr::read_chunk("seebergsee/seeberg_climate.R")
+knitr::read_chunk("scripts/load_zabinskie_data.R")
+```
+
+In my [previous post](https://quantpalaeo.wordpress.com/2018/01/16/calibration-in-time-at-seebergsee/), I showed that the calibration-in-time reconstruction from Seebergsee by [Larocque-Tobler et al (2011)](https://www.sciencedirect.com/science/article/pii/S0277379111001090) had not been cross-validated, and that once it have been cross-validated, the performance was terrible.
+
+Now it is time to look a little closer at the chironomid counts from Seebergsee. The text reports that fossil samples contained between 0 and 60 chironomids, and that adjacent samples with fewer than 30 chironomids were merged.
+
+**FIGURE**
+
+Fig. 4. (a) Number of head capsules by taxon and TOTAL head capsule numbers in the 24-cm core. (b) Percentages of taxa in the merged samples (i.e. samples with less than 30 head capsules were merged) through time and CA scores of axes 1 and 2.
+
+```{r seebergsee_digitised}
+```
+
+By comparing figure 4a and 4b from Larocque-Tobler et al (2011), we can work out which samples have been merged, and hence what the count sums are. For example, the oldest sample in figure 4b has 66% _Tanytarsus_ sp and 33% _Conynoneura_; this must be the merger of the two oldest samples with chironomids in figure 4a. This merged sample has a count sum of only 12 chironomids, far below the thirty promised and far too small to expect a precise reconstruction. Overall, `r mean(seeberg_sums$sum4 < 30) * 100`% of the merged samples have count sums lower than 30.  Elsewhere, the [corrigendum](http://www.sciencedirect.com/science/article/pii/S0277379116300221) to Larocque-Tobler (2015) admitted that the counts sums in that paper were substantially lower than reported.
+
+```{r four}
+sum_occur <- seeberg_count %>% select(Chironomus.plumosus:Procladius) %>% gather() %>% filter(value > 0) %>% nrow()
+
+seeberg_prob = 0.25 ^ sum_occur
+```
+```{r load_Zabinskie_data}
+```
+
+
+Look again at figure 4a above. Notice that the lowest count for any species is four chironomid head capsules: there are no bars showing counts of only one or two chironomids. There are also no bars showing five or six chironomids either: all counts seem to be multiples of four. This is a rather curious distribution of counts. 
+
+Under very optimistic assumptions, the probability that a given count is divisible by four is 0.25. Hence, the probability that all `r sum_occur` counts are divisible by four is 10^`r log10(seeberg_prob) %>% round()`^. 
+
+```{r zab_counts}
+zab_n <- fos_counts %>% 
+  gather() %>% 
+  mutate(value = ceiling(value)) %>% 
+  filter(value > 0)
+
+ggplot(zab_n, aes(x = value)) + geom_bar()
+zab_n %>% count(value)
+
+zab_n4 <- zab_n %>% summarise(m = mean(value %% 4 == 0))
+
+1/26 ^ 108
+hamlet <- "To be, or not to be, that is the question:
+Whether 'tis nobler in the mind to suffer
+The slings and arrows of outrageous fortune,
+Or to take"
+nchar(gsub("\\W", "", hamlet))
+```
+
+More realistically, there will be many rare taxa with one or two head capsules. In the Lake `r Zabinskie` fossil chironomid count data from Larocque-Tobler et al (2015), only `r zab_n4  * 100`% of the counts are divisible by four (rounding half chironomids up), lowering the probability that all `r sum_occur` counts are divisible by four to 10^`r log10(zab_n4 ^ sum_occur) %>% round()`^. 
+
+These counts are improbable. Not as improbable as the proverbial [monkey typing Hamlet](https://en.wikipedia.org/wiki/Infinite_monkey_theorem), but if we set our simian thespian the shorter target of 
+
+To be, or not to be, that is the question:  
+Whether 'tis nobler in the mind to suffer  
+The slings and arrows of outrageous fortune,  
+Or to take  
+
+then, ignoring capitalisation, spacing and punctuation (just as I normally do - together with spelling), success is as improbable as the chironomid counts from Seebergsee. 
+
+But how else to explain these counts other than by blind chance?
+
+
+
+

@@ -1,0 +1,85 @@
+---
+title: "Untitled"
+author: "Richard J. Telford"
+date: "February 12, 2018"
+output:
+  html_document:
+    keep_md: yes 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(digits = 2)
+
+library("tidyverse")
+library("vegan")
+library("rioja")
+library("ggvegan")
+
+knitr::opts_knit$set(root.dir = "../")
+```
+```{r load_chunks}
+knitr::read_chunk("seebergsee/seebergsee_counts.R")
+knitr::read_chunk("seebergsee/seeberg_climate.R")
+knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
+knitr:::read_chunk("seebergsee/figure5.R")
+```
+
+```{r seebergsee_digitised}
+```
+
+```{r digitised_seebergsee_climate, include=FALSE}
+```
+
+```{r read_silvaplana_Holocene_fossil, include = FALSE}
+```
+
+To examine the millennium-long chironomid-inferred air temperature reconstruction from Seebergsee ([Larocque-Tobler et al 2012](https://www.sciencedirect.com/science/article/pii/S0277379112001230?via%3Dihub)) is, after having shown that the calibration-in-time reconstruction for the upper section of the core (Larocque-Tobler et al 2011#) has no skill, to flog the proverbial dead parrot.
+
+But there is one aspect I wish to examine: Figure 5, which shows ordinations of the millennium-long chironomid stratigraphies from Seebergsee and Lake Silvaplana.
+
+#figure 5
+
+Caption# Larocque-Tobler et al (2012) Fig. 5. Two dimensional non-metric multi-dimensional scaling in the fossil chironomid assemblages of Seebergsee and Lake Silvaplana. In both cores the samples after ca 1950 CE (black circles) have the highest chord distances with samples pre-1950 CE (white circles).
+
+Both ordinations show a pronounced shift in community composition at 1950, with all fossil samples from after this date distinct from those before. The ordinations are non-metric multidimensional scaling fitted and plotted using Primer (so the axes are scaled correctly).
+
+One might expect such the strong pattern shown in the ordinations to be clearly visible in the underlying community data: they are not.
+
+#seebergsee stratigraphies
+
+caption# Larocque-Tobler et al (2012) Fig. 3. "Changes in the chironomid taxa (in percentages). Only the taxa from more than two samples are presented." 
+
+If there is a switch in community composition in Seebergsee, it would appear to be at about 1970 CE, where there is a zone boundary, rather than 1950 CE. It is unclear from the paper whether the zones were defined using the "Zone program" (methods) or "based on the PCA scores of axis 1 and 2" (results).
+
+#Lake Silvaplana stratigraphy
+
+The millennium-long chironomid stratigraphy from Lake Silvaplana (Larocque-Tobler et al 2010) does not have a zone boundary at 1950 CE; the assemblage change at ~1770 CE appears more important.
+
+Both stratigraphies appear to have many more samples than shown in the ordination.
+
+Figure 5 from Larocque-Tobler et al (2012) is the only published ordination of the Seebergsee chironomid stratigraphy, but there are several ordinations of the Lake Silvaplana stratigraphy. None show any indications of a large community change at 1950. For example, here is a correspondence analysis of the last 150 years from Larocque et al (2009).
+
+#unconstrained ordination from Silvaplanasee 
+caption: Figure 4 from Larocque et al (2009) Correspondence analysis. The numbers in the graph are the years AD of the samples. The variance explained by each axis is in brackets. The axes are incorrectly scaled. 
+ 
+
+
+Since I have the data for at least the last century from both lakes, I can try to reproduce the Figure 5.
+
+```{r figure_5, warning=FALSE}
+```
+
+```{r, sbs_nmds_fig}
+print(sbs_nmds_fig)
+```
+
+The NMDS of the last 150 years at Seebergsee (Larocque-Tobler et al 2011) shows no distinct split at 1950 or any other time.
+
+```{r, sil_nmds_fig, warning=FALSE}
+print(sil_nmds_fig)
+```
+
+The NMDS of the > 400 year long chironomid stratigraphy from Lake Silvaplana (Larocque-Tobler et al 2009) shows a fairly distinct split into two groups. However, the split is at 1760 not 1950 (I had to use the Bray-Curtis distance as the chord distan  ce used Larocque-Tobler et al (2012) found the last sample in the data to be an extreme outlier).
+
+Neither ordination in Larocque-Tobler et al (2012) can be reproduced.

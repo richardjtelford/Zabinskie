@@ -1,0 +1,52 @@
+---
+title: "The tangled web of Silvaplana papers"
+author: "Richard J. Telford"
+date: "July 5, 2018"
+output:
+  html_document:
+    keep_md: yes 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(digits = 2)
+
+library("tidyverse")
+library("rioja")
+
+knitr::opts_knit$set(root.dir = "../")
+```
+
+I've not written much about the [Lake Silvaplana papers](https://quantpalaeo.wordpress.com/2017/08/19/the-lake-silvaplana-papers/) although they are as questionable as the [Seebergsee](https://quantpalaeo.wordpress.com/?s=Seebergsee) and [Zabinskie](https://quantpalaeo.wordpress.com/tag/larocque-tobler-et-al-2015/) papers.
+
+I have now digitised the 150-year stratigraphy, my request to the authors for the data having been ignored. Together with the archived 420-year stratigraphy I can now answer questions that I couldn't earlier.
+
+First question, how large were the count sums? The [150-year paper](https://link.springer.com/article/10.1007/s10933-008-9228-0) reports that 
+
+    The total number of head capsules is highly variable; between 15 and 125 head capsules were counted in samples of ca. 30 mg dry weight, the average being 30 head capsules per sample.
+
+
+//140 stratigraphy
+
+
+This is easily demonstrated to be false. The stratigraphic diagram shows the count sums in the third curve from the right. Over 20 samples (of 94) have a count sum to the left of the tick mark at 12.5 head capsules. Some of the samples appear to have counts as low as three (samples 33 & 34 are both ~66% _Cricotopus_ and ~33% one other species).
+
+The [420-year](http://journals.sagepub.com/doi/abs/10.1177/0959683609348253) paper makes even stronger claims:
+
+    Before sample no. 170 [~1775 CE], the minimum head capsule numbers was 50.
+
+Perhaps the authors counted some more chironomids after publishing the first paper, but the stratigraphic diagram shows that most of the samples above sample 170 have counts smaller than fifty: some appear to be below fifteen.
+
+All the papers report that samples with fewer than thirty head capsules were merged before the transfer function was applied. This presumably explains why the reconstruction in the 150-year paper has 69 values rather than one for each of the 94 levels in the stratigraphy. I assume the merged samples form (more or less) the upper 69 samples in the [archived assemblage data](https://www.ncdc.noaa.gov/paleo-search/study/8737) from the 420-year paper (the oldest assemblage in the 150-year stratigraphy is identical to the 69th in the 420-year paper, which represents 1850). 
+
+Even after merging, the samples appear to have some counts below 30. The youngest sample in the 420-year dataset has eight species all with exactly 10% and one with 20% of the assemblage. It is more likely that this assemblage has a count sum of ten than a count sum of at least thirty. The youngest sample in the 150-year stratigraphy has the same composition within the error of digitisation. The reported count sum for this sample is about ten. 
+
+Reliable reconstructions cannot be expected from such small samples.
+
+I cannot reproduce the calibration-in-space reconstructions derived from the 150-year or the 420-year stratigraphy as the calibration set has not been archived. Given that the chronological uncertainty is [estimated at 15%](http://journals.sagepub.com/doi/10.1177/0959683607073278), it is surprising that the reported correlation between the reconstruction and the instrumental record is so good. 
+
+I can, however, attempt to reproduce the calibration-in-time reconstruction shown in a [subsequent paper](https://www.sciencedirect.com/science/article/pii/S0031018210006735). This reconstruction has 82 levels. I don't know how the 94 levels were merged to make 82, so I'm going to use the 64 samples from the 420-year stratigraphy which fall into the instrumental period which starts in 1864 (five fall between 1864 and 1850). I also don't know exactly which years are supposed to be represented by each sample, so I am just going to use the reported year with data from [meteoSwiss](https://www.meteoswiss.admin.ch/home/climate/swiss-climate-in-detail/homogeneous-data-series-since-1864.html?station=sia).
+
+I'm not expecting the result to be exactly the same as the authors, but it should be similar. My 2-component WAPLS model on square-root transformed assemblage data has an apparent R^2^ between the measured and estimated temperature of 0.45. The leave-one-out cross-validated reconstruction has an R^2^ of 0.01. This is somewhat short of the reported R^2^ of 0.51 for the whole record (0.71 for the first 90 years). It would appear, as at [Seebergsee](https://quantpalaeo.wordpress.com/2018/01/16/calibration-in-time-at-seebergsee/), that the authors have not cross-validated their model. In both Silvaplana and Seebergsee, the cross-validated model has no skill, and the published millennium-long reconstruction cannot be relied upon. If my analysis is supported by a re-analysis of the full data used in the calibration-in-time paper, then this paper should be retracted. 
+
+

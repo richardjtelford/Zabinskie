@@ -1,0 +1,71 @@
+---
+title: "Instrumental data for Seebergsee"
+author: "Richard J. Telford"
+date: "January 16, 2018"
+output:
+  html_document:
+    keep_md: yes 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(digits = 2)
+
+library("tidyverse")
+library("rioja")
+library("magick")
+library("grid")
+
+knitr::opts_knit$set(root.dir = "../")
+```
+```{r load_chunks}
+knitr::read_chunk("seebergsee/seeberg_climate.R")
+```
+
+```{r seebergsee_climate, include = FALSE}
+```
+
+```{r location, include = FALSE}
+ CHD <- tibble( E =  7 + 8.4/60, N = 46 + 28.8 / 50)
+SBS <- tibble( E = 7 + 28/60, N = 46 + 37/60)
+fields::rdist.earth(as.matrix(CHD), as.matrix(SBS), miles = FALSE)
+
+```
+
+[Larocque-Tobler et al (2011)](https://www.sciencedirect.com/science/article/pii/S0277379111001090) compare their chironomid-inferred reconstructions of July air temperature with instrumental data from [Château-d'Oex](http://www.meteoswiss.admin.ch/product/output/climate-data/homogenous-monthly-data-processing/data/homog_mo_CHD.txt), a climate station with continuous temperature data from 1901. Château-d'Oex is located less than 30km from Seebergsee (Larocque-Tobler et al (2011) report 50km), and about 800m lower.
+
+Why am I examining the climate data where there is surely little to go wrong? Because to find all the problems in a paper, you need to examine everything, and understanding the problems in one paper can help suggest aspects of another paper to examine.
+
+The Château-d'Oex temperature series needs to be processed to make it comparable with the reconstruction.
+
+"Since samples having less than 30 head capsules were merged for temperature and VWHO reconstructions, the temporal resolution of each sample decreased to ca. 3–8 years. Thus, three- to eight-year running means in the instrumental data were used for comparison with the chironomid-inferred temperatures."
+
+So lets try that
+
+```{r overplot}
+```
+Larocque-Tobler et al (2011) Fig. 6. Temperature reconstruction using chironomid head capsules and the calibration-in-time approach (black line) compared with mean July instrumental data from the closest meteorological station (dotted line). Averages in the instrumental data followed the time represented in the merged sediment samples. Over-plotted with the instrumental data (black circles) and the 3 (red) and 8 (blue) year running means.
+
+I did not expect the three or eight year running means to be identical to the temperature series used by Larocque-Tobler et al (2011) but I would expect them to be somewhat similar. There is a period between about 1975 and 1985 where the three year running mean and the published series are nearly identical, but around 1915 the published series is far higher than either smooth, and between about 1925 and 1940 it is much lower.
+
+What could the cause of these discrepancies be?
+
+**Normalisation period** I calculated anomalies by subtracting the 1901-2005 mean temperature, and I believe the published series is treated in the same way as the mean anomaly is near zero. Use of a different normal period was used for calculating anomalies could not explain both the high temperatures near 1915 and the low temperatures 1925-1940.
+
+**Choice of month** Plotting months other than July, or the mean summer or annual temperature, does not give a better fit between the published series and the Château-d'Oex data.
+
+**Data homogonisation** Larocque-Tobler et al (2011) was submitted in September 2010. The Swiss Federal Office of Meteorology published the current version of the [homogenised climate data](http://www.meteoswiss.admin.ch/content/dam/meteoswiss/de/klima/klima-im-detail/doc/klima-vergleich-original-homogen.pdf) in December 2010. Larocque-Tobler et al (2011) are therefore probably using an earlier version of the temperature data (although they could have updated their analysis during revisions). I don't know what temperature data were available in 2010, but they were probably homogenised to some extent. Compared with the homogenised data, the original data show a warmer mean annual temperature 1920-1940, suggesting that different versions of the data are unlikely to be responsible for the discrepancies.
+
+**Data processsing** As I show in my manuscript, and show in a future blog-post, Larocque-Tobler et al (2015) incorrectly calculate the August air temperature at Lake Zabinskie when chironomid samples span several years. Rather than using the mean temperature of the period spanned by the chironomid samples, they use the temperature of the first year. I cannot see any evidence of the same data processing problem here.
+
+None of these potential explanations seem to explain the discrepancies between the published series and the downloadable data from Château-d'Oex. The published series are incorrect for an unknown reason, therefore the correlation between the calibration-in-space July air temperature reconstruction and the published series is meaningless. I have not calculated what the correlation would be with the correct series, but a visual comparison of the curves suggests it would be worse.
+
+```{r calib_in_space}
+```
+Figure 5a. Calibration-in-space reconstruction (solid line) and reported instrumental data (dotted line) over-plotted with the instrumental data (black circles) and the 3 (red) and 8 (blue) year running means.
+
+```{r digitise_cis, include = FALSE}
+```
+I've digitised the calibration-in-space reconstruction. The reported correlation between the calibration-in-space reconstruction and the instrumental data for the period up to 1980 is correct (r = 0.64); for the period up to 1960, the correlation is `r sbs_digitised %>% filter(round(year) <= 1960) %$% cor(july, cis)` rather than the reported r = 0.71. This strange error of reporting a much weaker correlation than the data show was also done at [Abisko (Larocque 2003)](https://quantpalaeo.wordpress.com/2017/10/09/abisko-2003/) and in Lake Zabinskie (Larocque-Tobler et al 2015). I don't know why the authors, who have argued that ["Chironomids = Temperature"](http://paleolim.org/ips2012/wp-content/uploads/2012/08/ips2012_book.pdf), are weakening the relationship between chironomids and temperature. It is as if the authors realise there is a limit to how good a chironomid-temperature reconstruction can plausibly be.
+
+Larocque-Tobler et al (2011) is a deeply problematic paper: the reported [count sums are so low](https://quantpalaeo.wordpress.com/2018/01/19/seebergsee-hamlet-and-the-monkey/) that precise reconstructions are unlikely, and the true counts sums are likely to be lower still; the various [versions of the chronology](https://quantpalaeo.wordpress.com/2018/01/22/the-three-chronologies-from-seebergsee/) is a mess; the [lack of cross-validation](https://quantpalaeo.wordpress.com/2018/01/16/calibration-in-time-at-seebergsee/) means that the performance of the calibration-in-time is spuriously good; and for an unknown reason, the published instrumental temperature series cannot be reconciled with the Château-d'Oex series. If the authors stand by their paper, they should archive the data and code needed to reproduce their results. If they do not, they should retract it and also Larocque-Tobler et al (2012).

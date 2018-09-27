@@ -1,0 +1,56 @@
+---
+title: "Untitled"
+author: "Richard J. Telford"
+date: "May 21, 2016"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+It is conventional to [write small integers](http://www.apvschicago.com/2011/05/numbers-spell-out-or-use-numerals.html) as words rather than figures in text, especially if they are at the start of the sentence. This caused me some grief with [rmarkdown](http://rmarkdown.rstudio.com/), which I have started using for presentations, papers and blog-posts: my code gave me figures, I wanted words. Then I found the `english` package.
+
+```{r}
+library("english")
+as.english(42)
+as.english(-1)
+```
+
+We need to be careful if we use this inline with 
+```{r, eval = FALSE}
+The Ultimate Answer to Life, The Universe and Everything is...`r as.english(42)`
+```
+as this will be converted back to a figure.
+
+> The Ultimate Answer to Life, The Universe and Everything is...`r as.english(42)`. 
+
+Wrapping the command in `as.character` will fix this
+
+```{r, eval = FALSE}
+`r as.character(as.english(2))` to the power of `as.character(as.english(276709))` to `as.character(as.english(1))` against
+```
+> `r as.character(as.english(2))` to the power of `r as.character(as.english(276709))` to `r as.character(as.english(1))` against
+
+It would be a cunning plan to make a function to run `as.character(as.english(x))` if it is needed repeatedly.
+
+Of course, sometimes we will want to start a sentence with a number and need the first letter capitalising. This can be done with regular expressions (otherwise known as magic).
+
+```{r, eval = FALSE}
+`r gsub("(^)(.)", "\\1\\U\\2", as.english(42), perl = TRUE)`
+```
+
+> `r gsub("(^)(.)", "\\1\\U\\2", as.english(42), perl = TRUE)` 
+
+As was hinted above by the conversion back to figures, objects made by `as.english` retain their numeric values, and so can be used in calculations 
+
+```{r}
+char.english <- function(x)as.character(as.english(x))
+num <- lapply(0:9, as.english)
+names(num) <- sapply(0:9, char.english)# set names
+attach(num) #make available
+
+six * nine
+```

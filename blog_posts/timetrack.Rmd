@@ -1,0 +1,81 @@
+---
+title: "timetrack bug"
+author: "Richard J. Telford"
+date: "November 1, 2016"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+```{r importChunk, results = "hide", echo = TRUE}
+library("readxl")
+
+fname <- "data/zabinskie2015cit.xls"
+excel_sheets(fname)
+spp <- as.data.frame(read_excel(fname, sheet = "Training species"))
+env <- as.data.frame(read_excel(fname, sheet = "Training temperature"))
+fos <- as.data.frame(read_excel(fname, sheet = "Chironomids Zabinsk percentages"))
+
+rownames(spp) <- spp[, 1]
+spp[, 1] <- NULL
+rownames(env) <- env[, 1]
+env <- env[, 2, drop = FALSE]
+
+#lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
+#spp <- spp[!rownames(spp) %in% lowCount, ]
+#env <- env[!rownames(env) %in% lowCount, , drop  = FALSE]
+env <- env$Temp
+
+chron <- fos[, 1]
+fos <- fos[, -c(1, ncol(fos))]
+```
+
+
+```{r}
+library(vegan)
+
+mod <- rda(sqrt(spp) ~ env)
+
+scaling <- "sites"
+```
+
+run timetrack directly
+```{r}
+tt <- analogue::timetrack(X = spp, passive = fos, env = env, method = "rda", transform = "sqrt", scaling = scaling)
+plot(tt)
+
+```
+
+prejoin the fossil and calibration data
+```{r}
+spp_fos2 <- analogue::join(spp, fos)
+spp2 <- spp_fos2$spp
+fos2 <- spp_fos2$fos
+
+tt2 <- analogue::timetrack(X = spp2, passive = fos2, env = env, method = "rda", transform = "sqrt", scaling = scaling)
+plot(tt2)
+
+```
+
+OK this is equivalent to 
+```{r}
+tto <- analogue::timetrack(X = spp, passive = fos, env = env, method = "rda", transform = "sqrt", scaling = scaling, join = "outer")
+plot(tto)
+```
+```{r}
+mad <- function(j){
+  m <- analogue::join(spp, fos, type = j)
+  tmp <- colSums(m$spp > 0) > 0
+  m$spp  <- m$spp[, tmp]
+  m$fos <- m$fos[, tmp]
+  m
+}
+
+o <- mad("outer")
+l <- mad("left")
+
+x<-rbind(o$fos[1,], l$fos[1,])
+x[,colSums(x)>0]

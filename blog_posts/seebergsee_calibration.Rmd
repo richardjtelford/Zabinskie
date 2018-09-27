@@ -1,0 +1,46 @@
+---
+title: "Calibration-in-time at Seebergsee"
+author: "Richard J. Telford"
+date: "January 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = FALSE)
+options(digits = 2)
+
+library("tidyverse")
+library("rioja")
+
+knitr::opts_knit$set(root.dir = "../")
+```
+```{r load_chunks}
+knitr::read_chunk("seebergsee/seebergsee_counts.R")
+knitr::read_chunk("seebergsee/seeberg_climate.R")
+```
+
+Most transfer functions for reconstruction palaeoenvironmental variables from microfossil assemblages use a modern calibration set of paired microfossil and environmental data from many sites. This is sometimes known as the calibration-in-space approach.  An alternative approach adopted by a few papers is to use paired microfossil and environmental data from different times at one site, the so-called calibration-in-time approach.
+
+In principle, there are advantages to a calibration-in-time approach: there is no need to collect an extensive modern calibration set; and the calibration set is tailored for the site being studied which might be especially useful if the site is unusual. Despite these advantages, I've always been worried that the recent microfossil assemblages used as the calibration set might be poor analogues for the older assemblages, especially there has been considerable environmental change. Having now completed my review of sub-decadal palaeoenvironmental reconstruction from microfossil assemblages, I think the demands of a near perfect chronology, simple taphonomy and a strong and simple relationship to the environmental variable reconstructed are very difficult to meet.
+
+How then to explain the good performance of the calibration-in-time reconstruction of July air temperature from chironomids from Seebergsee by [Larocque-Tobler et al (2011)](https://www.sciencedirect.com/science/article/pii/S0277379111001090)?
+
+Larocque-Tobler et al (2011) extract chironomid assemblages from a sediment core from Seebergsee and pair these with air temperature data from a climate station in the region for the period 1900--2005 CE. The calibration-in-time WAPLS transfer function is reported as having an bootstrap r^2^ of 0.56 and an RMSEP of 0.84 °C. According to their figure 6, the calibration for the full period 1900--2005 CE has a correlation of 0.73 with the instrumental temperature. This is approximately 0.56^0.5^: so far so good.
+
+No data are archived from Larocque-Tobler et al (2011), but there is not much to see as the Californian Zephyr trundles through Nebraska in the dark, so I digitised the fossil assemblages and climate data.
+
+```{r seebergsee_digitised}
+```
+```{r digitised_seebergsee_climate}
+```
+
+When I rerun the WAPLS-2 model I get a similar performance -- r^2^ = `r sbs_perf$object[2, 2]`, RMSE = `r sbs_perf$object[2, 1]` -- the niggle is that these are the apparent performance statistics, not the cross-validated statistics. The leave-one-out cross-validated r^2^ is only `r sbs_perf$crossval[2, 2]`.
+
+It appears that Larocque-Tobler et al (2011) are reporting the apparent performance statistics but claiming that they are the bootstrap cross-validated performance statistics. While this could just be a silly mistake (they appear to report the calibration-in-space model performance correctly), the utter lack of skill of the calibration-in-time model means that both Larocque-Tobler et al (2011) and [Larocque-Tobler et al (2012)](https://doi.org/10.1016/j.quascirev.2012.03.010), which uses the model to reconstruct air temperature from Seebergsee for the last 1000 years, are invalid.
+
+In a subsequent post, I'll take a closer look at the curious chironomid assemblage data from Seebergsee.
+
+
+
+
+

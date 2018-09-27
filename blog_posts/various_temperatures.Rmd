@@ -1,0 +1,115 @@
+---
+title: "Chironomids are cunning wee beasties"
+author: "Richard J. Telford"
+date: '2016-04-25'
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+options(digits = 2)
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE, autodep = TRUE, message = FALSE, warning = FALSE)
+```
+```{r, cache = FALSE}
+library("tidyverse")
+library("readxl")
+library("magrittr")
+library("xml2")
+
+knitr::read_chunk("scripts/regional_composite.R")
+knitr::read_chunk("scripts/load_zabinskie_data.R")
+```
+
+```{r load_Zabinskie_data}
+```
+
+```{r regional_composite}
+```
+
+
+```{r}
+#mean for multiple years/ single years
+composite_as_zab <- full_join(
+  fat_composite_as_zab_correct %>% select(year = recon_year, meanAug = Aug),
+  fat_composite_as_zab_published %>% select(year = recon_year, spotAug = Aug)
+) %>% 
+  full_join(instrumental_temperature %>% rename(Aug = old)) %>% 
+  mutate_at(.vars = vars(matches("Aug"), new), scale, scale = FALSE)
+
+```
+
+Since I had examined almost every aspect of the data from the remarkable  [Lake Żabińskie](https://quantpalaeo.wordpress.com/tag/larocque-tobler-et-al-2015/) chironomid-inferred August air temperature reconstruction, some time last summer I thought that I would, for completeness, have a quick look at the instrumental temperature data. I was not expecting to find any problems.
+
+In the original paper, the authors use a homogenised composite of data from 10 stations near Lake Żabińskie with "longer temporal series". 
+
+![](http://ars.els-cdn.com/content/image/1-s2.0-S0277379115000086-gr1.jpg)
+
+I haven't done anywhere near as thorough a job: I've simply downloaded some long GHCN series from the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere), and made a composite of their August temperatures after subtracting the 1951-1980 mean. I selected records from Warsaw, Vilnius, Kanaus, and Kalingrad. These are all farther away (up to ~230km) than the stations used by the authors, but given the large spatial scale of temperature anomalies, I don't think this is a major problem.
+
+For the period after 1939, where the chironomid-inferred August air temperature reconstruction has an annual resolution, my composite corresponds well with the authors' (Pearson correlation r = `r composite_as_zab %>% filter(year >= 1939) %$% cor(Aug, meanAug)`). I'm happy with that.
+
+
+```{r composite}
+#zabinskie with composite
+thin_zab <- composite_as_zab %>%
+  select(-new) %>% 
+  gather(key = version, value = temperature, -year) 
+
+thin_zab %>% 
+  filter(version != "spotAug") %>%   
+  mutate(version = recode(version, meanAug = "Mine", Aug = "Author's")) %>% 
+  ggplot(aes(x = year, y = temperature, colour = version))+ 
+  geom_path() + 
+  geom_point(size = 1) +
+  scale_x_continuous(expand = c(0.01, 0)) + 
+  geom_vline(xintercept = 1939, linetype = "dashed", colour = "grey") +
+  labs(x = "Year CE", y = "August Temperature anomaly °C", colour = "Composite")
+```
+
+Prior to 1939, the relationship between my composite and the authors' looks much worse. In this period, chironomids were insufficiently abundant for an annual resolution reconstruction, so chironomids from two to five years are aggregated for the reconstruction. From looking at the temperature series, it would appear that the authors have not aggregated their temperature data to match the resolution of the chironomid data, but have instead thinned the data by using the temperature of a selected nominal year. So, for example, the chironomid sample from 1896-1898 is compared with the temperature from 1896 rather than the mean for 1896-1898.
+
+In this next figure (showing just the pre-1939 data), my composite has been processed to match the resolution of the authors' by either thinning to take just the first year, or taking the mean over the relevant years.
+
+```{r single_mean}
+thin_zab %>% 
+  mutate(version = recode(version, meanAug = "Mine - mean", spotAug = "Mine - thinned", Aug = "Author's")) %>% 
+  filter(between(year, 1896, 1938)) %>% 
+  ggplot(aes(x = year, y = temperature, colour = version)) +
+  geom_path() +
+  geom_point(size = 1) + 
+  scale_x_continuous(expand = c(0.01, 0)) + 
+  labs(x = "Year CE", y = "August Temperature anomaly °C", colour = "Composite")
+```
+
+The pre-1939 correlation between the authors' composite and mine is much higher (r = `r composite_as_zab %>% filter(year < 1939) %$% cor(Aug, spotAug)`) if I thin the data than if I take the mean over the relevant interval (r = `r composite_as_zab %>% filter(year < 1939) %$% cor(Aug, meanAug)`).
+
+I wanted to confirm this finding with the authors' original instrumental data. These should have been archived as the paper was published with the condition that all data neccessary to reproduce the result would be made available. The authors refused to send me the instrumental data (though they did send some other data I requested). Fortunately, I realised that Sowieck on the map above is archived in GHCN as [Sovetsk](https://climexp.knmi.nl/gettemp.cgi?id=someone@somewhere&WMO=26600.1&STATION=SOVETSK&extraargs=), which allowed me to check my analysis. The authors later confirmed that their temperature series was miscalculated and I acquired their composite data.
+
+Mistakes happen; I don't want to make a big deal about miscalculated instrumental data. The relationship between the instrumental data and the chironomid reconstruction is more interesting. One might expect the correlation between the reconstruction and the instrumental record to be weak before 1939 because of the miscalculation.
+
+```{r temperature_correlation}
+all_correlation <- recon %>%
+  full_join(instrumental_temperature) %$% 
+  cor(temperature, old)
+
+post1939_correlation <- recon %>%
+  full_join(instrumental_temperature) %>% 
+  filter(year >= 1939) %$% 
+  cor(temperature, old)
+
+incorrect_correlation <- recon %>%
+  full_join(instrumental_temperature) %>% 
+  filter(year < 1939) %$% 
+  cor.test(temperature, old)
+
+correct_correlation <- recon %>% 
+  full_join(instrumental_temperature) %>% 
+  filter(year < 1939) %$% 
+  cor.test(temperature, new)
+```
+Not so. The pre-1939 correlation between the reconstruction and the incorrectly calculated temperature is high (r = `r incorrect_correlation$estimate`, p = `r incorrect_correlation$p.value %>% format(digits = 1, scientific = FALSE)`), comparable with the later data (r = `r post1939_correlation`), whereas the correlation with the correctly calculated temperature is much lower (r = `r correct_correlation$estimate`, p = `r correct_correlation$p.value`).
+
+Those chironomids are cunning wee beasties, able to give a reconstruction that correlates even with incorrectly calculated temperatures.
+
+Curiously, the correlation of the reconstruction with the original temperature series, `r all_correlation` (using the authors' own data), is higher than that reported in the paper (0.74) or the corrigendum (0.73).

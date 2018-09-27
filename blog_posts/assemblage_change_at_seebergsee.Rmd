@@ -1,0 +1,48 @@
+---
+title: "Untitled"
+author: "Richard J. Telford"
+date: "February 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Palaeoecology could, to a large extent, be defined as the study of changes in fossil assemblages: what we can learn from changes in foraminifera assemblages over the last interglacial cycle, palynological assemblages as Neolithic agriculture spread across Europe, or diatom assemblages in a core from a polluted lake.
+
+Changes in assemblage composition can be caused by many factors, for example environmental changes, succession, neutral species turnover, changes in taphonomic processes such as decay, and counting errors.
+
+But sometimes assemblage composition just changes in ways that cannot be so simply explained. Take for example the chironomid stratigraphy from Seebergsee as published in Larocque-Tobler et al (2011) and Larocque-Tobler et al (2012). 
+
+caption# Larocque-Tobler et al (2012) Fig. 3. "Changes in the chironomid taxa (in percentages). Only the taxa from more than two samples are presented." 
+
+caption# Larocque-Tobler et al (2011) Fig. 4. (a) Number of head capsules by taxon and TOTAL head capsule numbers in the 24-cm core of Seebergsee. The zones were established using the ZONE program. (b) Percentages of taxa in the merged samples (i.e. samples with less than 30 head capsules were merged) through time and CA scores of axes 1 and 2.
+
+There are several differences between these stratigraphic plots. For example, _Smittia_ and _Corynoneura arctica_ are shown as having no occurrences in the last 100 years whereas they previously had about eight occurrences each; _Microtendipes_, _Cricotopus_ and _Tanytarsus_ are omitted completely (the latter had 21 occurrences); and _Telopelopia_ has ~doubled in relative abundance to 40% in some fossil samples. Other taxa appear to have the same relative abundance in each paper (the resolution of the figure is is not great, making it difficult to be certain).
+
+One possible explanation for these differences is that the data are from two different cores, two different counts, which would represent a large amount of work. If the data are from two counts then the differences are large enough to change the reconstructions, potentially breaking the strong correlation with instrumental temperatures.
+
+The second paper cites the first for providing the age-depth model for the uppermost, unlaminated, section of core (the reconstructions appear to use the same chronology, even though the stratigraphies have different ones#), providing some evidence that both stratigraphies are from the same core. Both papers report that a "A [freeze corer](http://www.uwitec.at/html/type3.html) (Kulbe and Niederreiter, 2003) was used in 2005 to extract a 3 m sediment". This is impressively long for a freeze core. The core was divided into 5 x 53cm sections - perhaps the corer was 3m long rather and the sediment core somewhat shorter. The upper 2.5m are used in Larocque-Tobler et al (2012).
+
+However, the reported sub-sampling plans are different, suggesting two cores. Larocque-Tobler et al (2011) report that 
+
+"For the top 8 cm, a rotating saw was used to cut the frozen core at 0.2-cm intervals and 40 sub-samples were obtained. Since few chironomid head capsules (n = 8 to 67) were found in these samples, the core was subsequently sub-sampled using the same rotating saw at 0.5-cm intervals between 8 and 24 cm core depth for a total of 73 samples."
+
+Whereas the second paper reports that 
+
+"For the upper 36 cm, the core was subsampled at 0.2-cm increments using a rotating bench saw. As samples below 30 cm had less than 30 chironomids per sample, the rest of the core was subsampled at 1-cm increments."
+
+This makes no sense as the authors would have known about the low abundance of chironomids by the time they started processing the second core, if there were two (unless they processed both cores simultaneously). I think this description must be in error.
+
+The papers report that different microscopes were used. From the first paper:
+
+"The head capsules were then identified under a Motic B3 Professional microscope at 400–1000×."
+
+And the second
+
+"The head capsules were identified using a Leica light microscope at 400–1000×."
+
+The chironomid preparation text is similar in the two papers, so this looks like a deliberate change. Perhaps both microscopes were used, one for the first paper the other for the additional samples in the second paper and the text elides over this complexity. 
+
+I am inclined to reject the explanation that there were two cores counted, which leaves me with no explanation for the two versions of the assemblage data. At least there are only two#.
