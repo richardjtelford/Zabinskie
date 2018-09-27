@@ -37,6 +37,5 @@ vignettes/*.pdf
 *.xlsx
 *.xls
 #bib format
-*.csl
 packrat/lib*/
 packrat/src/

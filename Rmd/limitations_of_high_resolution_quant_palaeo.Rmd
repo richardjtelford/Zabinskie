@@ -20,8 +20,8 @@ output:
       number_sections: true
 documentclass: article
 classoption: a4paper
-csl: journal-of-paleolimnology.csl
-bibliography: chironomid.bib
+csl: extra/journal-of-paleolimnology.csl
+bibliography: extra/chironomid.bib
 ---
 
 ```{r setup, include=FALSE}
