@@ -29,31 +29,6 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TR
 
 options(digits = 2)
 
-library("tidyverse")
-library("readxl")
-library("sp")
-library("english")
-library("rioja")
-library("vegan")
-library("ggvegan")
-library("laketemps")
-library("assertthat")
-library("magrittr")
-library("directlabels")
-library("readr")
-library("palaeoSig")
-library("zoo")
-library("nlme")
-library("xml2")
-#"analogue", stringi also needed
-
-#helper functions
-as.english <- function(x){ # problem with new version of rmarkdown
-  as.character(english::as.english(x))
-  }
-as.English <- function(x){ #sentence case
-  stringi::stri_trans_totitle(as.character(as.english(x)), opts_brkiter = stringi::stri_opts_brkiter(type = "sentence"))
-  }
 
 #requires analogue, gridextra, assertthat, palaeoSig, rgdal
 
