@@ -32,7 +32,7 @@ options(digits = 2)
 
 #requires analogue, gridextra, assertthat, palaeoSig, rgdal
 
-knitr::read_chunk("scripts/pages2k.R")
+
 knitr::read_chunk("scripts/load_zabinskie_data.R")
 knitr::read_chunk("scripts/regional_composite.R")
 knitr::read_chunk("scripts/correlation_in_space.R")
@@ -81,10 +81,11 @@ Very high, even annual, resolution quantitative palaeoenvironmental reconstructi
 
 # Introduction
 
-```{r pages2k}
+```{r loadd_objects}
+loadd(pagesHi)
 ```
 
-Palaeoecologists, amongst others, value high-resolution palaeoecological data [@Perga2015; @Pages2013; @vonGunten2012]. Of the `r nrow(lakesHi)` very high resolution palaeolimnological time series in the PAGES2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of varves, which can be difficult to interpret [@Blass2007], while only `r sum(lakesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(lakesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(lakesHi$proxy == "BSi") == 1)` biogenic silica series. 
+Palaeoecologists, amongst others, value high-resolution palaeoecological data [@Perga2015; @Pages2013; @vonGunten2012]. Of the `r nrow(pagesHi)` very high resolution palaeolimnological time series in the PAGES2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of varves, which can be difficult to interpret [@Blass2007], while only `r sum(pagesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(pagesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(pagesHi$proxy == "BSi") == 1)` biogenic silica series. 
 
 The two chironomid records are part of a growing move towards sub-decadal resolution microfossil-based palaeoenvironmental reconstructions using transfer functions. As such records require large investments of time [@Green1983], it is important to understand the circumstances in which they are likely to yield good results. Evidence for the utility of these high, even annual, resolution reconstructions comes from comparisons of these reconstructions, typically from varved sediments, with instrumental records. All such validated sub-decadal microfossil-assemblage based reconstructions identified by a literature search are listed in Table 1. Lotter [-@Lotter1998] and Alefs and Müller [-@Alefs1999] reconstruct total phosphorus concentrations from annually-resolved, mainly planktic, lacustrine diatom assemblages. In all three lakes studied, the reconstructed nutrient concentration has a good correlation with the slowly varying monitoring data (Table 1). High-resolution chrysophyte stomatocyst stratigraphies have been used to reconstruct winter conditions as reflected by the date of spring mixing [@DeJong2011] and the duration of cold water [@HernandezAlmeida2015]. Since there are no long instrumental time series of these limnological variables, the reconstructions are correlated with winter air temperatures. Chrysophyte stomatocysts have also been used to reconstruct summer calcium concentrations [@HernandezAlmeida2015b], which might reflect summer mixing and so were correlated with summer wind speeds. High-resolution chironomid head capsules stratigraphies have been used to reconstruct summer air temperatures [@Larocque2009; @Larocque-Tobler2011; @LarocqueTobler2011b; @Larocque-Tobler2015; @Luoto2016; @Zhang2017] and summer water temperature [@Medeiros2012]. High-resolution pollen records have been used to reconstruct summer air temperature [@Kamenik2009]. Some of the correlations shown in Table 1 are surprisingly good given the ecological sensitivity of the proxy, taphonomic issues, and the inherent chronological uncertainty that occurs even in the best-dated palaeoecological records.
 

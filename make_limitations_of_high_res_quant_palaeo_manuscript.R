@@ -40,12 +40,37 @@ as.English <- function(x){ #sentence case
 
 
 #import scripts
-
+source("scripts/pages2k.R")
+# knitr::read_chunk("scripts/load_zabinskie_data.R")
+# knitr::read_chunk("scripts/regional_composite.R")
+# knitr::read_chunk("scripts/correlation_in_space.R")
+# knitr::read_chunk("scripts/weather_climate.R")
+# knitr::read_chunk("scripts/percent_variance_by_month.R")
+# knitr::read_chunk("scripts/age_uncertainty.R")
+# knitr::read_chunk("scripts/reconstruction_diagnostics.R")
+# knitr::read_chunk("scripts/regional_composite.R")
+# knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
+# knitr::read_chunk("scripts/air_water_correlation.R")
+# knitr::read_chunk("scripts/ordinations.R")
+# knitr::read_chunk("scripts/figure2_ordination.R")
+# knitr::read_chunk("scripts/effect_low_counts.R")
+# knitr::read_chunk("scripts/curiousCounts.R")
+# knitr::read_chunk("scripts/calibration_set_issues.R")
+# knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
+# knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
+# knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
+# knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
+# knitr::read_chunk("seebergsee/seebergsee_counts.R")
+# knitr::read_chunk("seebergsee/seeberg_climate.R")
+# knitr::read_chunk("zhang_et_al/zhang_et_al.R")
 
 
 
 #construct drake plan
 analyses <- drake_plan(
+  ## pages2k data
+  pagesHi = pages2k_load(),
+  
   
   #import & clean data
   
@@ -61,10 +86,12 @@ analyses <- drake_plan(
     new_bib = file_out("Rmd/extra/chironomid2.bib")),
   
   #knit manuscript
-  manuscript = rmarkdown::draft(
-    file = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"), 
-    template = "elsevier_article", 
-    package = "rticles"),
+  manuscript = target(
+    command = rmarkdown::draft(
+      file = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"),       template = "elsevier_article", 
+      package = "rticles"), 
+    trigger = trigger(change = biblio2)  
+    ),
   
   strings_in_dots = "literals"
 )
@@ -74,5 +101,6 @@ config <- drake_config(analyses)
 outdated(config)        # Which targets need to be (re)built?
 make(analyses)          # Build the right things.
 
-#voew dependency graph
+#show dependency graph
+vis_drake_graph(config)
 vis_drake_graph(config, targets_only = TRUE)
