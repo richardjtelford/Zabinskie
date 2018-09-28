@@ -1,7 +1,3 @@
-library("tidyverse")
-library("readxl")
-library("zoo")
-
 ## ---- zhang_fossil
 zhang <- read_excel("zhang_et_al/Zhang et al 2017_Climate of the Past_dataset.xlsx", sheet = "Key chironomid taxa of Tiancai", skip = 2)
 zhang
