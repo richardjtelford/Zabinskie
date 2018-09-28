@@ -16,7 +16,7 @@ library("sp")
 library("rioja")
 library("vegan")
 library("ggvegan")
-library("laketemps")
+
 library("palaeoSig")
 library("zoo")
 library("nlme")
@@ -25,7 +25,7 @@ library("broom")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 
-#analogue, stringi, rticles, english, bibtex also needed
+#analogue, stringi, rticles, english, bibtex, laketemps also needed
 
 
 #helper functions
@@ -50,7 +50,7 @@ source("scripts/weather_climate.R")
 # knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 # knitr::read_chunk("scripts/regional_composite.R")
 # knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
-# knitr::read_chunk("scripts/air_water_correlation.R")
+source("scripts/air_water_correlation.R")
 # knitr::read_chunk("scripts/ordinations.R")
 # knitr::read_chunk("scripts/figure2_ordination.R")
 # knitr::read_chunk("scripts/effect_low_counts.R")
@@ -81,7 +81,10 @@ analyses <- drake_plan(
   weather_clim_plot = weather_climate_plot(wc_AS = wc_AS, wc_JA = wc_JA),
   
   
-  #import & clean data
+  #lake-air temperature correlations - "scripts/air_water_correlation.R"
+  max_area = 2,
+  min_depth = 5,
+  lake_air_correlations = calculate_lake_air_correlations(max_area = max_area, min_depth = min_depth, min_latitude = 40, min_years = 10),
   
   #make plots
   

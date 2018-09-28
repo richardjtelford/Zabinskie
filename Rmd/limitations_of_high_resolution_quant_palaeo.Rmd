@@ -41,7 +41,6 @@ knitr::read_chunk("scripts/age_uncertainty.R")
 knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 knitr::read_chunk("scripts/regional_composite.R")
 knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
-knitr::read_chunk("scripts/air_water_correlation.R")
 knitr::read_chunk("scripts/ordinations.R")
 knitr::read_chunk("scripts/figure2_ordination.R")
 knitr::read_chunk("scripts/effect_low_counts.R")
@@ -82,6 +81,7 @@ Very high, even annual, resolution quantitative palaeoenvironmental reconstructi
 
 ```{r loadd_objects}
 loadd(pagesHi)
+loadd(lake_air_correlations)
 ```
 
 Palaeoecologists, amongst others, value high-resolution palaeoecological data [@Perga2015; @Pages2013; @vonGunten2012]. Of the `r nrow(pagesHi)` very high resolution palaeolimnological time series in the PAGES2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of varves, which can be difficult to interpret [@Blass2007], while only `r sum(pagesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(pagesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(pagesHi$proxy == "BSi") == 1)` biogenic silica series. 
@@ -166,10 +166,7 @@ recon_by_month_plot
 readd(weather_clim_plot)
 ```
 
-
-```{r calculate_lake_air_correlations}
-```
-Chironomids are probably more sensitive to water temperature than air temperature directly [@Eggermont2011], and transfer-function models reconstructing air temperature depend on the strong relationship between air and water temperature. Air temperature is the most important determinant of water temperature [@OReilly2015] but other factors such as wind speed and cloudiness also have an influence, so the inter-year correlation between air and water temperature is less than one. In Lake Zurich, this correlation is 0.67 in July [@Livingstone1998], varies between 0.59 and 0.76 for mean summer temperatures in eight Austrian lakes [@Livingstone2001], and is about 0.75 throughout the summer in the small Plußsee in northern Germany [@Rosner2012]. An analysis of summer lake and air temperatures compiled by Sharma et al. [-@Sharma2015] shows that for small (area < `r max_area`km^2^), deep (mean depth > `r min_depth`m), mid- to high-latitude lakes, the median correlation is `r median(correlations$correlation)` (n = `r nrow(correlations)`). This correlation is as good as should be expected when comparing a thermometer in the lake with the instrumental air temperature.
+Chironomids are probably more sensitive to water temperature than air temperature directly [@Eggermont2011], and transfer-function models reconstructing air temperature depend on the strong relationship between air and water temperature. Air temperature is the most important determinant of water temperature [@OReilly2015] but other factors such as wind speed and cloudiness also have an influence, so the inter-year correlation between air and water temperature is less than one. In Lake Zurich, this correlation is 0.67 in July [@Livingstone1998], varies between 0.59 and 0.76 for mean summer temperatures in eight Austrian lakes [@Livingstone2001], and is about 0.75 throughout the summer in the small Plußsee in northern Germany [@Rosner2012]. An analysis of summer lake and air temperatures compiled by Sharma et al. [-@Sharma2015] shows that for small (area < `r readd(max_area)`km^2^), deep (mean depth > `r readd(min_depth)`m), mid- to high-latitude lakes, the median correlation is `r median(lake_air_correlations$correlation)` (n = `r nrow(lake_air_correlations)`). This correlation is as good as should be expected when comparing a thermometer in the lake with the instrumental air temperature.
 
 While temperature undoubtedly has a strong effect on chironomid physiology, growth, and community structure, at least some of the apparent effect of temperature on chironomid assemblages in the calibration set is due to indirect effects of temperature [@Eggermont2011] acting through, for example, the relationship between temperature and productivity [@Velle2010] or dissolved organic carbon [@Larocque2001]. These indirect effects will tend to strengthen the relationship between chironomid assemblages and temperature in the calibration set, but cannot be expected to fully operate on a monthly basis. As such the cross-validation performance of the transfer function will tend to overestimate the model's predictive power on short time-scales.
 
