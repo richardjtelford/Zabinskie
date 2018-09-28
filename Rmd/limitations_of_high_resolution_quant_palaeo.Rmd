@@ -36,7 +36,6 @@ options(digits = 2)
 knitr::read_chunk("scripts/load_zabinskie_data.R")
 knitr::read_chunk("scripts/regional_composite.R")
 knitr::read_chunk("scripts/correlation_in_space.R")
-knitr::read_chunk("scripts/weather_climate.R")
 knitr::read_chunk("scripts/percent_variance_by_month.R")
 knitr::read_chunk("scripts/age_uncertainty.R")
 knitr::read_chunk("scripts/reconstruction_diagnostics.R")
@@ -163,10 +162,8 @@ variance_plot
 recon_by_month_plot
 ```
 
-```{r weather_climate, results = "hide", fig.keep='none'}
-```
 ```{r weather_climate_plot, fig.cap = "Correlation between August and June (green), and August and summer temperatures (orange) averaged over different length periods in the central England temperature series [@Parker1992]. Smoother is a loess with span = 0.75.", fig.width = 90/25.4, fig.height=60/25.4}
-JuneAugustSummer_plot
+readd(weather_climate_plot)
 ```
 
 

@@ -1,26 +1,21 @@
 ## ---- weather_climate
-
-#check file exists
-if(!file.exists("data/cetml1659on.dat")){
-  stop("Central England Temperature series missing. Download monthly mean data from http://www.metoffice.gov.uk/hadobs/hadcet/data/download.html")
+weather_climate_process <- function(x){
+  #process data
+  cet2 <- x %>% 
+    as.tibble() %>%
+    set_names(c("year", month.abb, "annual")) %>% 
+    #remove partial years
+    filter(!apply(cet == -99.9, 1, any)) %>% 
+    #calculate mean summer
+    mutate(summer = rowMeans(data_frame(Jun, Jul, Aug)))
+  
+  cet2
 }
-
-#import data
-cet <- read.table("data/cetml1659on.dat", skip = 7, header = FALSE) %>% as.tibble()
-names(cet) <- c("year", month.abb, "annual")
-
-#remove partial years
-cet <- cet %>% filter(!apply(cet == -99.9, 1, any))
-
-#calculate mean summer
-cet <- cet %>% mutate(summer = rowMeans(data_frame(Jun, Jul, Aug)))
-
-#plot monthly data
-plotJA <- . %>% select(year, Jun, Aug) %>% gather(key = month, value = temperature, -year) %>% ggplot(aes(x = year, y = temperature, colour = month))
-cet %>% plotJA +  geom_path() + geom_smooth()
+# #plot monthly data
+# plotJA <- . %>% select(year, Jun, Aug) %>% gather(key = month, value = temperature, -year) %>% ggplot(aes(x = year, y = temperature, colour = month))
+# cet %>% plotJA +  geom_path() + geom_smooth()
 
 #aggregate timeseries into non-overlaping periods of 1-50 years
-
 weather_climate <- function(N, month1 = "Jun", month2 = "Aug", dat = cet, cor = TRUE){
   dat <- dat %>% mutate(window = 0:(n() - 1) %/% N) %>% 
     group_by(window) %>%
@@ -34,26 +29,20 @@ weather_climate <- function(N, month1 = "Jun", month2 = "Aug", dat = cet, cor = 
   }
 }
 
-wc_JA <- map_df(1:50, weather_climate, month1 = "Jun", month2 = "Aug")
 
-wc_As <- map_df(1:50, weather_climate, month1 = "Aug", month2 = "summer")
-
-
-
-corPlot <- ggplot(wc_JA, aes(x = N, y = est)) +
-  geom_point() +
-  geom_smooth(se = FALSE, size = .7) +
-  scale_x_continuous(trans = "sqrt", expand = c(0.02, 0)) +
-  scale_color_brewer(type = "qual", palette = "Dark2") +
-  labs(x = "Number of years", y = "Correlation")
-
-
-JuneAugustSummer_plot <- corPlot %+% 
-  (wc_As %>% mutate(months = "August-summer") %>%
-     bind_rows(wc_JA %>% mutate(months = "August-June"))) + 
-  aes(colour = months, linetype = months, shape = months, label = months) +
-  labs(colour = "", shape = "", linetype = "") + 
-  geom_dl(method = list(box.color = NA, "first.points", hjust = 0, vjust = 1, cex = 0.75)) +
-  scale_y_continuous(expand = c(0.01, 0), limits = c(0, 1)) + 
-  theme(legend.position = "none")
-#  theme(legend.position = c(.69, .23), legend.justification = c(0, 1), legend.title = element_blank(), legend.key.width = unit(1, 'cm'))
+weather_climate_plot <- function(wc_AS, wc_JA){
+    JuneAugustSummer_plot <- bind_rows(`August-summer` = wc_AS,
+                                       `August-June` = wc_JA,
+                                       .id = "months") %>%
+    ggplot(aes(x = N, y = est, colour = months, linetype = months, shape = months, label = months)) +    
+      geom_point() +
+      geom_smooth(se = FALSE, size = .7) +
+      geom_dl(method = list(box.color = NA, "first.points", hjust = 0, vjust = 1, cex = 0.75))  +
+      scale_x_continuous(trans = "sqrt", expand = c(0.02, 0)) +
+      scale_y_continuous(expand = c(0.01, 0), limits = c(0, 1)) + 
+      scale_color_brewer(type = "qual", palette = "Dark2") +
+      labs(x = "Number of years", y = "Correlation")+
+      theme(legend.position = "none")
+    
+  JuneAugustSummer_plot
+}

@@ -44,7 +44,7 @@ source("scripts/pages2k.R")
 # knitr::read_chunk("scripts/load_zabinskie_data.R")
 # knitr::read_chunk("scripts/regional_composite.R")
 # knitr::read_chunk("scripts/correlation_in_space.R")
-# knitr::read_chunk("scripts/weather_climate.R")
+source("scripts/weather_climate.R")
 # knitr::read_chunk("scripts/percent_variance_by_month.R")
 # knitr::read_chunk("scripts/age_uncertainty.R")
 # knitr::read_chunk("scripts/reconstruction_diagnostics.R")
@@ -68,15 +68,25 @@ source("scripts/pages2k.R")
 
 #construct drake plan
 analyses <- drake_plan(
-  ## pages2k data
-  pagesHi = pages2k_load(),
+  
+  ## pages2k data - "scripts/pages2k.R"
+  pagesHi = pages2k_load(pages2k_data_file = file_in("data/sdata201788-s3.xlsx")),
+  
+  
+  #weather_climate - "scripts/weather_climate.R"
+  cet = read.table(file_in("data/cetml1659on.dat"), skip = 7, header = FALSE),
+  cet2  = weather_climate_process(cet), 
+  wc_JA = map_df(1:50, weather_climate, month1 = "Jun", month2 = "Aug", dat = cet2),
+  
+  wc_AS = map_df(1:50, weather_climate, month1 = "Aug", month2 = "summer", dat = cet2),
+  weather_climate_plot = weather_climate_plot(wc_As = wc_AS, wc_JA = wc_JA),
   
   
   #import & clean data
   
   #make plots
   
-  #get bibliography
+
 
   
   #add extra packages to bibliography

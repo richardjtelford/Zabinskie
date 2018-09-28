@@ -1,15 +1,20 @@
 # History files
 .Rhistory
 .Rapp.history
+
 # Session Data files
 .RData
+
 # Example code in package build process
 *-Ex.R
+
 # RStudio files
 .Rproj.user/
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
 .Rproj.user
@@ -19,6 +24,7 @@ vignettes/*.pdf
 *.md
 *.html
 *.pdf
+
 #figures
 *.jpg
 *.png
@@ -30,12 +36,20 @@ vignettes/*.pdf
 #rmarkdown cache
 *cache/
 *_files/
+
 #data
 *.bil
 *.hdr
 *.zip
 *.xlsx
 *.xls
+
 #bib format
 packrat/lib*/
 packrat/src/
+
+#drake
+.drake/
+
+#other
+etc/
