@@ -1,0 +1,556 @@
+---
+title: "How Many is Fifty?"
+subtitle: "Sanity checks for assemblage data"
+author: "Richard J. Telford"
+date: "May 28, 2018"
+output: 
+   ioslides_presentation:
+   mathjax: "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, eval = TRUE, cache = TRUE, cache.lazy = TRUE)
+knitr::opts_knit$set(root.dir = "../")
+```
+```{r load, cache = FALSE}
+library("tidyverse")
+library("countChecker")
+library("readxl")
+library("xml2")
+library("neotoma")
+
+th <- theme_bw(base_size = 16)
+
+knitr::read_chunk("zhang_et_al/zhang_et_al.R")
+knitr::read_chunk("scripts/load_zabinskie_data.R")
+```
+
+
+## How many is at least 50?
+
+### **A: 5**
+### **B: 19**
+### **C: 40**
+### **D: 49**
+### **E: 50**
+
+
+## How many chironomids do you need to count?
+
+**Effect of low count sums on quantitative environmental reconstructions: an example using subfossil chironomids.** Heiri & Lotter (2001)
+
+**Setting minimum head capsule abundance and taxa deletion criteria in chironomid-based inference models.** Quinlan & Smol (2001)
+
+**How many chironomid head capsules are enough? A statistical approach to determine sample size for palaeoclimatic reconstructions.** Larocque (2001)
+
+
+## How many chironomids do people say they count?
+
+_adjacent samples were pooled to produce a minimum head-capsule count of 50 specimens per sample_ Heiri and Lotter (2003)
+
+_Chironomids were enumerated from subsamples of sediment until >50 headcapsules were counted_ Lang et al (2017) 
+
+_A minimum of 50 head capsules were extracted from each sample_ Langdon et al (2008)
+
+_At least 50 head capsules were mounted._ Larocque-Tobler et al (2015)
+
+_Samples produc[ing] less than 50 head capsules were not included  in the subsequent analyses_ Zhang et al (2017)
+
+
+## How many are actually counted?
+
+**_Nullius in verba_**
+
+The reported count sum is testable.
+
+ - Trivial with archived count data
+ 
+ - More challenging with archived percent data
+
+## Rank-Abundance Curves  
+```{r rac, fig.width = 8, fig.height = 5}
+data("last_chance")
+
+last_chance <- last_chance0 %>% 
+  gather(key = species, value = percent, -age_calBP, -totcaps) %>%
+  filter(percent > 0) %>% 
+  mutate(
+    count = percent/100 * totcaps,
+    count = round(count, 1),#remove rounding errors
+    count = ceiling(count)
+    ) %>%
+  group_by(age_calBP) %>% 
+  arrange(desc(count)) %>% 
+  mutate(rank = 1:n()) 
+
+last_chance %>% 
+  mutate(single = count == 1) %>% 
+  ggplot(aes(x = rank, y = count, group = age_calBP, colour = single)) +
+  geom_point(show.legend = FALSE) +
+  geom_line(show.legend = FALSE) +
+  scale_y_log10() +
+  scale_x_log10() + 
+  scale_colour_manual(values = c("black", "red")) +
+  facet_wrap(~age_calBP) +
+  labs(x = "Rank", y = "Abundance") +
+  th +
+  theme(strip.background = element_blank(), strip.text = element_blank(), panel.spacing = unit(x = 3, units = "pt"))
+```  
+Last Chance Lake (Axford et al 2017)
+
+<div class="notes">
+```{r}
+last_chance %>% 
+  filter(count == 1) %>% 
+  count() %>% 
+  ungroup() %>% 
+  summarise(`median singletons` = median(n), mean_singleton  = mean(n)) %>% 
+  mutate(prob1 = round(1 - dpois(0, mean_singleton), 3))
+```
+
+## Estimating the count sum
+
+$\frac{count} {countSum} \times 100 = percent$ 
+
+$\frac{count}{percent} \times 100 = countSum$
+
+$\frac{1}{percent} \times 100 = countSum$
+
+Can estimate uncertainty due to rounding.
+
+## Estimated vs reported count sums at Last Chance Lake
+
+```{r, last_chance}
+#Estimate n and add reported n
+last_chance_est <- estimate_n(spp = select(last_chance0, -age_calBP, -totcaps), digits = 2) %>%
+  mutate(n = last_chance0$totcaps)
+
+#plot
+last_chance_est %>%  
+  ggplot(aes(x = n, y = est_n, ymax = est_max, ymin = est_min)) + 
+  geom_pointrange() + 
+  geom_abline(aes(slope = slope, intercept = 0, colour = as.factor(slope)), 
+              data = data_frame(slope = 1:2), 
+              show.legend = TRUE) +
+  labs(x = "Reported count sum", y = "Estimated count sum") + 
+  scale_colour_discrete(name = "Minimum\ncount", limits = c("2", "1"), labels = c("half", "whole")) +
+  th 
+```
+
+##  Estimated count sums at another lake
+
+```{r zhang_fossil, include = FALSE}
+```
+
+```{r zhang}
+zhang_est <- zhang_spp %>% estimate_n(digits = 5) 
+
+zhang_est %>% 
+  arrange(est_n) %>% 
+  mutate(n = 1:n()) %>%
+  ggplot(aes(x = n, y = est_n, ymin = est_min, ymax = est_max))  +
+  geom_hline(yintercept = 50, colour = scales::muted("red"), linetype = "dashed") +
+  geom_point() + 
+  geom_errorbar(width = 0) +
+  labs(x = "Rank", y = "Estimated count sum") +
+  ylim(0, NA) +
+  th
+  
+```
+<div class = "notes">
+```{r zhang_notes}
+zhang_est %>% 
+  summarise(min = min(est_n), n = sum(est_n < 50))
+
+zhang_est %>% 
+  filter(est_n < 50) %>% 
+  select(mn, est_n)
+```  
+</div>
+
+## Are estimated count sums correct? 
+
+- Are true count sums ~ 80?
+- Would expect many apparent half counts (and some quarter counts)
+```{r zhang_correct}
+bind_cols(zhang, zhang_est) %>% 
+  select(-`Sample code`, -`Year (AD)`, -est_min, -est_max) %>% 
+  filter(est_n < 50) %>% 
+  group_by(`Core Depth (cm)`) %>% 
+  gather(key = species, value = percent, -`Core Depth (cm)`, -mn, -est_n) %>% 
+  filter(percent > 0) %>% 
+  mutate(
+    multiple = percent/mn, multiple = round(multiple, 2),
+    facet = paste0(est_n, `Core Depth (cm)`)) %>% 
+  ggplot(aes(x = multiple, fill = as.factor(round(est_n, 1)))) + 
+  geom_vline(xintercept = 1:11, colour = "grey50", linetype = "dashed") +
+  geom_bar(width = 0.5) +
+  facet_wrap(~ facet) +
+  labs(fill = "Estimated\ncount sum", x = "Multiple of minimum percent", y = "Count") +
+  th +
+  theme(strip.background = element_blank(), strip.text = element_blank())
+  
+```
+
+## Lake Żabińskie
+
+
+_At least 50 head capsules were mounted._ Larocque et al (2015)
+
+_In Lake Żabińskie, the number of head capsules varied from 19 to 68.5 with 29 out of the 89 (33%) samples having abundances lower than 30_ Larocque-Tobler et al (2016) [Corrigendum]
+
+```{r load_Zabinskie_data, warning=FALSE, include = FALSE}
+```
+```{r zabinskie, fig.width = 6, fig.height = 4}
+zab_est <- fos %>% 
+  estimate_n(digits = 1) %>%
+  mutate(n = rowSums(fos_counts)) 
+
+zab_est %>% 
+  ggplot(aes(x = n, y = est_n, ymin = est_min, ymax = est_max)) +
+  geom_point() +
+  geom_pointrange() + 
+  geom_vline(xintercept = 50, colour = scales::muted("red"), linetype = "dashed") +
+  geom_hline(yintercept = 50, colour = scales::muted("red"), linetype = "dashed") +
+  geom_abline(aes(slope = slope, intercept = 0, colour = as.factor(slope)), 
+              data = data_frame(slope = 1:2), 
+              show.legend = TRUE) +
+  labs(x = "Reported count sum", y = "Estimated count sum") + 
+  scale_colour_discrete(name = "Minimum\ncount", limits = c("2", "1"), labels = c("half", "whole")) +
+  th
+```
+
+```{r zabinskie_notes}
+zab_est %>% 
+  arrange(est_n) %>% 
+  head()
+
+zab_est %>% 
+  bind_cols(fos) %>%
+  mutate(id = 1:n()) %>% 
+  select(-est_min, -est_max) %>% 
+  filter(est_n < 11.2) %>% 
+  gather(key = species, value = percent, -id, -mn, -est_n, -n) %>% 
+  filter(percent > 0) %>% 
+  mutate(multiple = percent/mn) %>% 
+  group_by(id) %>% 
+  arrange(id, percent)
+```
+
+## Diatoms too
+
+_The diatom counts included 400–500 valves per sample and at least 100 valves in 4  diatom-poor samples._
+
+```{r lama, warning=FALSE}
+lama <- read_delim("GRIM/Lake_Lama_surface-diatoms.tab", delim = "\t", skip = 216)
+
+lama_est <- lama %>% 
+  select(-(Event:`Depth [m]`)) %>% 
+  filter(rowSums(.) > 0) %>% 
+  estimate_n(digits = 2)  %>% 
+  arrange(est_n) %>% 
+  mutate(n = 1:n()) 
+
+lama_est %>%
+  ggplot(aes(x = n, y = est_n, ymin = est_min, ymax = est_max))  +
+  geom_hline(yintercept = c(100, 400), colour = scales::muted("red"), linetype = "dashed") +
+  geom_point() + 
+  geom_errorbar(width = 0) +
+  labs(x = "Rank", y = "Estimated count sum") +
+  ylim(0, NA) +
+  th
+```
+
+<div class = "notes">
+```{r lama_extra}
+lama_est %>% filter(est_n < 400)
+
+lama %>% 
+  select(-(Latitude:`Depth [m]`)) %>% 
+  gather(key = species, value = pc, -Event) %>%
+  filter(pc > 0) %>% 
+  group_by(Event) %>% 
+  mutate(min = min(pc), est = pc/min) %>% 
+  filter(min > 2) %>% 
+  arrange(Event, pc) %>% 
+  print(n = 100)
+```
+</div>
+
+## And pollen
+
+```{r load_pollen}
+#browse(3132)
+pol3132 <- get_download(3132)
+count3132 <- counts(pol3132) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("depth") %>% 
+  gather(key = sp, value = count, -depth) %>% 
+  filter(count > 0) %>% 
+  mutate(sp = sub("X\\d*\\.", "", sp)) %>% 
+  left_join(pol3132[[1]]$taxon.list %>% 
+              mutate(taxon.name = make.names(taxon.name)), 
+            by = c("sp" = "taxon.name"))
+```
+```{r pollen_process}
+
+p2 <- count3132 %>% summarise(d2 = mean(count %% 2 == 0),
+                        p2 = round(d2 * 100, 1))
+
+```
+
+_Two hundred grain counts ... were made for each level_
+
+`r p2$p2`% of counts are divisible by two
+
+```{r pollen_plots}
+# count3132 %>% 
+#   group_by(depth) %>%
+#   summarise(sum = sum(count)) %>% 
+#   count(sum)
+  
+
+count3132 %>%  
+  ggplot(aes(x = count)) + 
+  geom_bar() +
+  labs(x = "Count", y = "Frequency") +
+  
+  th
+#count3132 %>% group_by(depth) %>% summarise(m = min(count))
+count3132 %>% group_by(depth) %>% summarise(d4 = mean(count %% 4 == 0)) %>% arrange(desc(d4))
+
+#count3132 %>% filter (depth == 59098)
+
+#count3132_taxa %>% filter(count %% 2 != 0)
+```
+
+## Explanations
+
+ * Occasionally samples will lack singletons  
+    + Very low diversity  
+    + Very low count sums
+
+ * Enthusiastic exclusion of rare taxa
+ 
+ * Low taxonomic resolution
+
+ * Misreporting
+ 
+ How large a count sum should be assummed if it is not reported?
+
+# Sanity Checks
+
+## Impossible percent rule 100
+
+Percent should sum to 100 %
+
+```{r aurelie}
+Aurelie0 <- read_excel("GRIM/chironomids/jqs3022-sup-0001-supptab-s1.xlsx") %>% 
+  rename(Age = `Age (cal a BP)`, count_sum = `Number of head capsules`)
+
+
+A_n <- Aurelie0 %>% 
+  select(-Age, -count_sum) %>% 
+  estimate_n(digits = 3) %>% 
+  bind_cols(
+    Aurelie0 %>% 
+      mutate(sum_percent = rowSums((.) %>% select(-Age, -count_sum))) %>% 
+      select(Age, count_sum, sum_percent)
+  )
+
+A_n %>% 
+  ggplot(aes(x = Age, y = sum_percent)) + 
+  geom_point() +
+  labs(x = "Age yr BP", y = "Sum percent", caption = "A different lake") +
+  th
+```
+
+## Impossible percent rule 100
+
+- Exclusion of unknown taxa
+- Rounding
+- Miscalculation
+
+```{r rounding, fig.height=4}
+set.seed(42)
+rerun(1000, {
+  x <- runif(30)
+  x2 <- x / sum(x) * 100
+  1:3 %>% map(round, x = x2) %>% map(sum) %>% unlist()
+}) %>%
+  map(t) %>%
+  map_df(as.data.frame) %>%
+  gather(key = digits, value = sum) %>%
+  mutate(digits = substring(digits, 2, 2)) %>%
+  mutate(delta = abs(sum - 100)) %>%
+  ggplot(aes(x = digits, y = sum)) +
+  geom_boxplot(fill = RColorBrewer::brewer.pal(3, "Set1")[2]) +
+  labs(x = "Number of decimal places", y = "Percent sum") +
+  th
+```
+
+<div class = "notes">
+1000 simulations
+30 taxa
+rounded to different precisions
+<\div>
+##Impossible percent integer rule
+ 
+ * Assume rarest taxa represented by one individual
+ * all percent should be integer multiples of lowest percent value
+ 
+ * Discrepancies need to be checked carefully
+
+## Integer rule example{.smaller}
+
+```{r non_integer}
+spp %>% filter(sites$Lake == "Allagiap Tasinga") %>% 
+  gather(key = Taxon, value = Percent) %>% 
+  filter(Percent > 0) %>%
+  arrange(Percent) %>% 
+  mutate(Estimated = Percent / min(Percent),
+         Estimated = round(Estimated, 2)) %>% 
+  slice(-c(4:5, 7:9)) %>% #too many taxa to fit on page
+  knitr::kable()
+  I
+```
+
+## No (near) duplicate assemblages
+
+Near duplicate assemblages should be rare
+
+Counting errors
+
+```{r count_error}
+size <- 50
+prob <- 20/100
+nrep <- 10000
+set.seed(95)
+data_frame(x = rbinom(n = nrep, size = size, prob = prob)) %>% 
+  count(x) %>% 
+  mutate(n = n/nrep) %>% 
+  ggplot(aes(x = x, y = n)) +
+  geom_col() +
+  geom_vline(xintercept = prob * size, colour = scales::muted("red"), linetype = "dashed") +
+  labs(x = "Count", y = "Density") +
+  annotate("text", label = paste0("Count sum = ", size, "\n Abundance = ", prob * 100, "%"), x = 17, y = .12) +
+  th
+```
+Counting error with `r size` microfossils, true abundance = `r prob * 100`%
+
+## Duplicates from Lake Żabińskie v1{.smaller}
+```{r zabinskie1_duplicates}
+read_excel("data/Zabinskie chiro 1886AD.xlsx") %>% 
+  gather(key = Taxon, value = Percent, -Chron) %>% 
+  filter(Percent > 0) %>% 
+  group_by(Chron) %>% 
+  filter(sd(Percent) == 0, Percent < 12, Chron != 1982) %>% 
+  spread(key = Chron, value = Percent) %>% 
+  knitr::kable()
+```
+
+## Identifying possible duplicates
+
+Find most similar pair of samples
+```{r poss_dup1}
+#dat <- counts(pol3132) %>% as.data.frame()
+dat <- fos_counts 
+d <- dat %>% 
+  vegan::decostand(method = "total") %>% 
+  vegan::vegdist(method = "bray")
+
+d %>% as.vector() %>%
+  as_data_frame() %>% 
+  ggplot(aes(x = value)) + 
+  geom_histogram(aes(y = ..density..)) +
+  labs(x = "Bray-Curtis distance", y = "Density") + 
+  th
+```
+
+##
+```{r poss_dup2}
+#min(d)
+
+d2 <- as.matrix(d)
+diag(d2) <- Inf
+min_d <- (d2 == min(d)) %>% which(arr.ind = TRUE, useNames = TRUE)
+
+min_d_counts <- dat %>% 
+  rowid_to_column() %>% 
+  gather(key = sp, value = count, -rowid) %>% 
+  filter(rowid %in% min_d[, 1], 
+         count > 0) 
+
+min_d_counts1 <- min_d_counts %>% 
+  left_join(chron %>% rowid_to_column()) %>% 
+  select(-rowid) %>% 
+  group_by(year) %>% 
+  rename(Taxon = sp) 
+
+min_d_counts1 %>%
+  mutate(
+    count = count / sum(count) * 100,
+    count = round(count, 1)) %>% 
+  ungroup() %>% 
+  mutate(year = paste(year, "%")) %>%
+  spread(key = year, value = count, fill = 0) %>%
+  bind_cols(
+    min_d_counts1 %>%
+      ungroup() %>% 
+      mutate(year = paste(year, "count")) %>%
+      spread(key = year, value = count, fill = 0) %>% 
+      select(-Taxon)
+  ) %>%
+  knitr::kable()
+  
+```
+
+##
+
+- Assume samples drawn from same population 
+- Draw many replicate samples from population
+- Find Bray-Curtis distance between replicates
+- Compare with observed distance
+```{r poss_dup3}
+mean_abun <- min_d_counts %>% 
+  group_by(rowid) %>% 
+  mutate(prop = count/sum(count)) %>% 
+  group_by(sp) %>% 
+  summarise(m = mean(prop)) 
+
+mx_count <- min_d_counts %>% 
+  group_by(rowid) %>% 
+  summarise(sum = sum(count))
+
+set.seed(50)
+random_count <- rmultinom(n = 1000, size = max(mx_count$sum), prob = mean_abun$m) %>%
+  t() 
+random_dist <- (random_count / max(mx_count$sum)) %>% 
+  vegan::vegdist(method = "bray")
+
+random_dist %>% 
+  as.vector() %>% 
+  as_data_frame() %>% 
+  ggplot(aes(x = value)) + 
+  geom_histogram(aes(y = ..density..), bins = 60) + 
+  geom_vline(xintercept = min(d), colour = scales::muted("red"), linetype = "dashed") +
+  labs(x = "Bray-Curtis distance", y = "Density") + 
+  th
+
+#mean(random_dist <= min(d))
+
+```
+
+## Conclusions and ways forward
+
+- Methods to flag dubious data are being developed
+- Mistakes, errors and other problems will be discovered
+
+- Many mistakes may have little effect
+
+- Honestly describe count sizes
+- Take care with calculations 
+
+- Archive full **count** data
+- Archive code
+

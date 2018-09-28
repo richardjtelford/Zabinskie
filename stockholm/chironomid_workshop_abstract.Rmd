@@ -1,0 +1,25 @@
+---
+title: "How many is 50?"
+author: "Richard J. Telford"
+date: "May 28, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+A common sentence in papers presenting chironomid assemblage data  from fossil cores or modern calibration sets is "At least 50 chironomid head-capsules were counted." This is a testable assertion, even when data are archived as percentages. 
+
+Following the typical rank-abundance curve, the rarest taxon in an assemblage will usually be represented by a single individual. Given a count of 50, the rarest taxon would then have a relative abundance of 2%. A minimum relative abundance of >2% suggests, but does not prove, that the count sum was less than 50. The count sum can be estimated from the minimum percent. If several samples from a core appear to have a count sum <50, one needs to ask if the count sums are as described.
+
+A second problem that can be detected in archived data is impossible percent values. All the percent in a sample should be an integer multiple of the lowest percent (except in rare cases when the rarest taxon is present with two or more head capsules). If this is not the case, it suggests that the either the percentages were miscalculated or that the data have been altered after the percentages were calculated. 
+
+Both count sums that appear to be substantially less than promised and impossible percent values are common in archived chironomid and other microfossil data. Some recommendations:
+
+1. Count data rather than percent data should be archived.
+2. Accurately describe the counts sums "Typically at least 50 (minimum 46) chironomid head-capsules were counted."
+3. Do all taxonomic merges and other data manipulations on the count data rather than the percent data.
+4. Use a script to make the transformation from the raw count data to the final percent data reproducible.
+
+All these techniques can be extended to cope with half head capsules. 
