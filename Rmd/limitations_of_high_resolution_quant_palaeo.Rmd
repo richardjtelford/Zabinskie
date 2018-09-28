@@ -1,9 +1,16 @@
 ---
 title: "Review and test of reproducibility of sub-decadal resolution palaeoenvironmental reconstructions from microfossil assemblages"
-author: |
-  | Richard J. Telford 
-  | Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen, Norway
-  | email: richard.telford@uib.no
+author:
+  - name: Richard J. Telford
+    email: richard.telford@uib.no
+    affiliation: University of Bergen
+    footnote: Corresponding Author
+address:
+  - code: University of Bergen
+    address: Department of Biology, University of Bergen, Postboks 7803, N-5020 Bergen, Norway
+abstract: |
+  Very high, even annual, resolution quantitative palaeoenvironmental reconstructions have been generated from microfossil assemblage data using transfer functions. Evidence of the utility of some of these reconstructions is given by the high correlations between the reconstructions and instrumental records. I show that several ecological and taphonomic issues can become more problematic at very high resolution than at lower resolution and these problems do not affect all proxy-environment cases equally. I conclude by demonstrating that the exceptionally good performance of several published reconstructions is probably not reproducible.
+journal: "Quaternary Science Reviews"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
    - \usepackage{lineno}
@@ -11,11 +18,8 @@ header-includes:
    - \usepackage{pdflscape}
    - \newcommand{\blandscape}{\begin{landscape}}
    - \newcommand{\elandscape}{\end{landscape}}   
-#output:
-#  word_document: default
-#  html_document: default
 output:
-  pdf_document:
+  rticles::elsevier_article:
       latex_engine: xelatex
       number_sections: true
 documentclass: article
@@ -24,14 +28,11 @@ csl: extra/journal-of-paleolimnology.csl
 bibliography: extra/chironomid.bib
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TRUE, cache.lazy=TRUE)
 
 options(digits = 2)
-
-
-#requires analogue, gridextra, assertthat, palaeoSig, rgdal
-
 
 knitr::read_chunk("scripts/load_zabinskie_data.R")
 knitr::read_chunk("scripts/regional_composite.R")
@@ -303,7 +304,7 @@ The chironomid counts from Lake `r Zabinskie` are unusual. Typically the rarest 
 ```
 The calibration set also has problems. Lac A and Lac H have identical assemblages`r stopifnot(A_equal_H)`, except that the percentages in Lac H have been multiplied by `r min_lac_H %>% format(digits = 3)` such that they sum to `r rowSums_lac_AH[2]`%. The warmest Canadian lake is reported to have a mean August temperature of `r max(env)`°C which is warmer than anywhere in Quebec and adjacent areas [@Fick2017].
 
-### Abisko lakes [@Larocque2003]
+### Abisko lakes
 
 ```{r reported_correlations}
 ```
