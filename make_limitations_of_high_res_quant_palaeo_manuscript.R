@@ -25,8 +25,7 @@ library("broom")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 
-#analogue, stringi, rticles, english, bibtex, laketemps also needed
-
+#analogue, stringi, rticles, english, bibtex, laketemps, rgdal also required 
 
 #helper functions
 as.english <- function(x){ # problem with new version of rmarkdown
@@ -99,9 +98,8 @@ analyses <- drake_plan(
   
   #knit manuscript
   manuscript = target(
-    command = rmarkdown::draft(
-      file = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"),       template = "elsevier_article", 
-      package = "rticles"), 
+    command = rmarkdown::render(
+      input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"), knit_root_dir = "../",       output_dir = "./output"), 
     trigger = trigger(change = biblio2)  
     ),
   
