@@ -1,15 +1,15 @@
 #import package
-library("drake")
+library("drake")#
 
-library("tidyverse")
+library("tidyverse")#
 library("magrittr")
 
 library("readr")
-library("readxl")
+library("readxl")#
 library("xml2")
 
 library("gridExtra")
-library("directlabels")
+library("directlabels")#
 library("assertthat")
 
 library("sp")
@@ -25,7 +25,7 @@ library("broom")
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
 
-#analogue, stringi, rticles, english also needed
+#analogue, stringi, rticles, english, bibtex also needed
 
 
 #helper functions
@@ -77,9 +77,8 @@ analyses <- drake_plan(
   cet = read.table(file_in("data/cetml1659on.dat"), skip = 7, header = FALSE),
   cet2  = weather_climate_process(cet), 
   wc_JA = map_df(1:50, weather_climate, month1 = "Jun", month2 = "Aug", dat = cet2),
-  
   wc_AS = map_df(1:50, weather_climate, month1 = "Aug", month2 = "summer", dat = cet2),
-  weather_climate_plot = weather_climate_plot(wc_As = wc_AS, wc_JA = wc_JA),
+  weather_clim_plot = weather_climate_plot(wc_AS = wc_AS, wc_JA = wc_JA),
   
   
   #import & clean data

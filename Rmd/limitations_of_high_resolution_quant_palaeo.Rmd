@@ -163,7 +163,7 @@ recon_by_month_plot
 ```
 
 ```{r weather_climate_plot, fig.cap = "Correlation between August and June (green), and August and summer temperatures (orange) averaged over different length periods in the central England temperature series [@Parker1992]. Smoother is a loess with span = 0.75.", fig.width = 90/25.4, fig.height=60/25.4}
-readd(weather_climate_plot)
+readd(weather_clim_plot)
 ```
 
 
