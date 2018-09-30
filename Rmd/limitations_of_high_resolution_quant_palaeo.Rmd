@@ -43,7 +43,6 @@ knitr::read_chunk("scripts/regional_composite.R")
 knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
 knitr::read_chunk("scripts/effect_low_counts.R")
 knitr::read_chunk("scripts/curiousCounts.R")
-knitr::read_chunk("scripts/calibration_set_issues.R")
 knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
@@ -253,9 +252,8 @@ Given the high correlations between chironomid-inferred temperatures and air tem
 
 ```{r reconstruction_diagnostics}
 ```
-```{r randomTF}
-```
-One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, the `r Zabinskie` paper reports that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in the `r Zabinskie` paper with the archived data [@LT15_data], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor (> 90% of calibration-set squared residual distances) or very poor fit (> 95%), and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r rtf$sig`). This lack of significance is reflected in the relatively weak correlation (r = 0.36) between principal component axis 1 of the fossil data and August air temperature reported in the `r Zabinskie` paper.
+
+One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, the `r Zabinskie` paper reports that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in the `r Zabinskie` paper with the archived data [@LT15_data], `r sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])` of the `r nrow(fos)` fossil samples have bad analogues. Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows several samples to have a poor (> 90% of calibration-set squared residual distances) or very poor fit (> 95%), and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r readd(rtf)$sig %>% insist(. > 0.1)`). This lack of significance is reflected in the relatively weak correlation (r = 0.36) between principal component axis 1 of the fossil data and August air temperature reported in the `r Zabinskie` paper.
 
 Since both the assemblage and instrumental temperature data are available, more direct tests can be applied than the reconstruction diagnostics used above. A canonical correspondence analysis fitted to the fossil assemblage data with August temperature as the sole predictor explains `r readd(pc_explained)`% of the variance in the assemblage data. This is statistically significant (p = `r readd(anova_fos) %>% format.pval()`) but the ratio of the constrained eigenvalue to the first unconstrained eigenvalue is far below one ($\lambda_1/\lambda_2$ = `r readd(L1L2)`) suggesting that August temperature is not the most important axis of variability in the assemblage data and hence precise reconstructions cannot be expected [@Juggins2013]. 
 
@@ -276,13 +274,9 @@ Conversely, Supplementary Data Figure 1 in the `r Zabinskie` paper, a redundancy
 ```
 The `r Zabinskie` paper reports that the count sums in both the fossil and modern data sets were at least 50 chironomid head capsules. In a corrigendum, Larocque-Tobler et al. [-@Larocque-Tobler2016] subsequently acknowledged that many samples had lower count sums: `r as.english(length(readd(lowCount)))` of the `r sum(sites_all$source == "Poland")` Polish lakes were removed from the calibration set and the minimum count sum for the fossil data reported as `r min(rowSums(fos_counts))`. `r as.English(round(mean(rowSums(fos_counts) < 50) * 100))` percent of fossil samples have a count sum less that that initially reported. It is well known [@Heiri2001; @Larocque2001a; @Quinlan2001] that low count sums are associated with increased uncertainty in reconstructions. The magnitude of the increase in uncertainty depends on the interaction between species diversity and the differences in optima between taxa. Here, I estimate the uncertainty due to low counts by finding the standard deviation of the transfer function predictions for the `r n_distinct(spp100$Lake)` lakes in the calibration set which appear to have large count sums (> 100 chironomids) when resampled to count sums spanning the range observed in the fossil data. For each fossil sample from Lake `r Zabinskie`, I estimate the reconstruction uncertainty from the mean of these standard deviations. The expected uncertainty in the reconstruction given the count sums is `r mean(est_error$mean) %>% format(digits = 3)`°C. This is slightly larger than the observed standard deviation of the residuals, `r fos_sd`°C, which is due to all sources of error. 
 
-```{r curiousCounts}
-```
-The chironomid counts from Lake `r Zabinskie` are unusual. Typically the rarest species in any assemblage is represented by a single individual. In the Lake `r Zabinskie` counts, `r round(mean(min_count$min_count > 1) * 100)`% of samples have a minimum abundance greater than one. In one sample, all taxa occur at least `r max(min_count$min_count) %>% as.english()` times, in another, all counts are multiples of four. 
+The chironomid counts from Lake `r Zabinskie` are unusual. Typically the rarest species in any assemblage is represented by a single individual. In the Lake `r Zabinskie` counts, `r round(mean(readd(min_count)$min_count > 1) * 100)`% of samples have a minimum abundance greater than one. In one sample, all taxa occur at least `r max(readd(min_count)$min_count) %>% insist(. > 4) %>%  as.english()` times, in another, all counts are multiples of four. 
 
-```{r Lac_AH}
-```
-The calibration set also has problems. Lac A and Lac H have identical assemblages`r stopifnot(A_equal_H)`, except that the percentages in Lac H have been multiplied by `r min_lac_H %>% format(digits = 3)` such that they sum to `r rowSums_lac_AH[2]`%. The warmest Canadian lake is reported to have a mean August temperature of `r max(readd(env))`°C which is warmer than anywhere in Quebec and adjacent areas [@Fick2017].
+The calibration set also has problems. Lac A and Lac H have identical assemblages, except that the percentages in Lac H have been multiplied by `r readd(lac_AH)$min_lac_H %>% format(digits = 3)` such that they sum to `r readd(lac_AH)$sum_lac_H`%. The warmest Canadian lake is reported to have a mean August temperature of `r max(readd(env))`°C which is warmer than anywhere in Quebec and adjacent areas [@Fick2017].
 
 ### Abisko lakes
 

@@ -55,7 +55,7 @@ source("scripts/load_zabinskie_data.R")
 source("scripts/figure2_ordination.R")
 # knitr::read_chunk("scripts/effect_low_counts.R")
 # knitr::read_chunk("scripts/curiousCounts.R")
-# knitr::read_chunk("scripts/calibration_set_issues.R")
+source("scripts/calibration_set_issues.R")
 
 # knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 
@@ -146,6 +146,12 @@ analyses <- drake_plan(
   #ordination composite
   ordination_composite = zabinskie_ordination_composite(fig2, sdf1),
   
+  #reconstruction diagnostics
+  
+  
+  rtf = randomTF(sqrt(as.data.frame(spp)), env, fos, n = 999, fun = WAPLS, col = 2),
+  
+  
   #reconstruction-instrumental correlations
   inst_recon  = recon %>% full_join(instrumental_temperature),
   all_correlation = inst_recon %$% cor(temperature, old),
@@ -155,7 +161,14 @@ analyses <- drake_plan(
   correct_correlation = inst_recon %>% 
     filter(year < 1939) %$% 
     cor(temperature, new),
-
+  
+  #curious counts 
+  min_count = chron %>% 
+    mutate(min_count = apply(fos_counts, 1, function(r) min(r[r>0]))),
+  #lac_AH -  "scripts/calibration_set_issues.R"
+  lac_AH = zabinskie_lac_AH(spp, sites),
+  
+  
   
   #add extra packages to bibliography
   biblio2 = package_citations(
