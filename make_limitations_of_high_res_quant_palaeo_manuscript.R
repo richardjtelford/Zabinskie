@@ -51,7 +51,7 @@ source("scripts/weather_climate.R")
 # knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
 source("scripts/air_water_correlation.R")
 # knitr::read_chunk("scripts/ordinations.R")
-# knitr::read_chunk("scripts/figure2_ordination.R")
+source("scripts/figure2_ordination.R")
 # knitr::read_chunk("scripts/effect_low_counts.R")
 # knitr::read_chunk("scripts/curiousCounts.R")
 # knitr::read_chunk("scripts/calibration_set_issues.R")
@@ -125,7 +125,16 @@ analyses <- drake_plan(
   #instrumental data
   instrumental_temperature = zabiniskie_instrumental(file_in("data/chart1.xml")), 
   
-  #make plots
+  
+  
+  
+  
+  # replicating_figure_2 - "scripts/figure2_ordination.R"
+  fig2 = zabinskie_figure2(spp_all, env_all),
+  # supplementary_data_fig_1 - "scripts/figure2_ordination.R"
+  sdf1 = zabinskie_sup_data_fig1(spp_all, env_all, fos),
+  #ordination composite
+  ordination_composite = zabinskie_ordination_composite(fig2, sdf1),
   
 
 

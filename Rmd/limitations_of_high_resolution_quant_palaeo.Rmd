@@ -34,7 +34,6 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TR
 
 options(digits = 2)
 
-knitr::read_chunk("scripts/load_zabinskie_data.R")
 knitr::read_chunk("scripts/regional_composite.R")
 knitr::read_chunk("scripts/correlation_in_space.R")
 knitr::read_chunk("scripts/percent_variance_by_month.R")
@@ -43,7 +42,6 @@ knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 knitr::read_chunk("scripts/regional_composite.R")
 knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
 knitr::read_chunk("scripts/ordinations.R")
-knitr::read_chunk("scripts/figure2_ordination.R")
 knitr::read_chunk("scripts/effect_low_counts.R")
 knitr::read_chunk("scripts/curiousCounts.R")
 knitr::read_chunk("scripts/calibration_set_issues.R")
@@ -56,9 +54,6 @@ knitr::read_chunk("seebergsee/seeberg_climate.R")
 knitr::read_chunk("zhang_et_al/zhang_et_al.R")
 
 Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
-```
-
-```{r load_Zabinskie_data, include = FALSE}
 ```
 
 # Highlights{-}
@@ -81,12 +76,11 @@ Very high, even annual, resolution quantitative palaeoenvironmental reconstructi
 # Introduction
 
 ```{r loadd_objects, cache=FALSE}
-loadd(pagesHi)
-loadd(lake_air_correlations)
+#general objects
+loadd(pagesHi, lake_air_correlations)
 
-
-loadd(recon)
-loadd(instrumental_temperature)
+#zabinskie objects
+loadd(recon, instrumental_temperature)
 ```
 
 Palaeoecologists, amongst others, value high-resolution palaeoecological data [@Perga2015; @Pages2013; @vonGunten2012]. Of the `r nrow(pagesHi)` very high resolution palaeolimnological time series in the PAGES2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of varves, which can be difficult to interpret [@Blass2007], while only `r sum(pagesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(pagesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(pagesHi$proxy == "BSi") == 1)` biogenic silica series. 
@@ -282,13 +276,7 @@ The surprisingly poor reconstruction diagnostics are not the only problematic as
 The two ordinations in the `r Zabinskie` paper cannot be reproduced from the archived data (seven substantially different versions of the fossil data were archived before the current version). Figure 2 in the `r Zabinskie` paper is a principal component analysis of the calibration set. There are `r nrow(spp_all)` lakes in the calibration set (the paper reports 122) but Figure 2 shows only 103 lakes: 18 lakes have been omitted, including all `r sum(env_all > 23) %>% as.english()` lakes warmer than 23°C (Fig. 4a). The omission of these lakes makes the relationship between the chironomid assemblages and temperature appear to be stronger than it is. In the pre-publication versions of this figure, several lakes had been moved rather than omitted.
 
 ```{r LTfigure2, fig.cap = "a) Attempt to replicate the principal component analysis shown in Figure 2 from the the `r Zabinskie` paper. Lakes enclosed by a red circle are missing from the published figure. Axis labels indicate the percent of variance in the calibration set explained (the `r Zabinskie` paper reports 22.3% and 17.5% for the first two axes). b) Attempt to replicate the redundancy analysis shown in Supplementary Data Figure 1 from the `r Zabinskie` paper. The original figure has six more Canadian lakes in the lower right quadrant.", warning=FALSE, fig.width = 190/25.4, fig.height = 110/25.4}
-th <- theme(legend.position = "bottom")
-cowplot::plot_grid(
-  fig2 + th + 
-    guides(colour = guide_legend(nrow=2,byrow=TRUE)) +
-    guides(shape = guide_legend(nrow=2,byrow=TRUE)),
-  sdf1 + th, 
-  nrow = 1, labels = c("a)", "b)"), align = "h", vjust = 2, hjust  = -4.4)
+readd(ordination_composite)
 ```
 
 Conversely, Supplementary Data Figure 1 in the `r Zabinskie` paper, a redundancy analysis of the calibration set constrained to temperature with the fossil data added passively, has more lakes than expected (Fig. 4b). There are `r sum(sites$source != "Poland")` Canadian lakes in the calibration set (the paper reports 72) but the figure shows 78. The extra Canadian lakes are mostly in the same quadrant as the Polish lakes and falsely suggest "a similarity between the assemblages in warmer lakes in Canada and those which cover the same temperature gradient in Poland" [@Larocque-Tobler2015].
