@@ -34,15 +34,10 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TR
 
 options(digits = 2)
 
-knitr::read_chunk("scripts/regional_composite.R")
-knitr::read_chunk("scripts/correlation_in_space.R")
 knitr::read_chunk("scripts/percent_variance_by_month.R")
 knitr::read_chunk("scripts/age_uncertainty.R")
 knitr::read_chunk("scripts/reconstruction_diagnostics.R")
-knitr::read_chunk("scripts/regional_composite.R")
-knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
 knitr::read_chunk("scripts/effect_low_counts.R")
-knitr::read_chunk("scripts/curiousCounts.R")
 knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
@@ -54,6 +49,14 @@ knitr::read_chunk("zhang_et_al/zhang_et_al.R")
 Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
 ```
 
+```{r loadd_objects, cache=FALSE}
+#general objects
+loadd(pagesHi, lake_air_correlations)
+
+#zabinskie objects
+loadd(sites_all, spp_all, fos, fos_counts, recon, climate, fat_composite, instrumental_temperature)
+```
+
 # Highlights{-}
 
  - Microfossil assemblage-based palaeoenvironmental reconstructions with sub-decadal resolution that are validated against instrumental records are reviewed.
@@ -63,23 +66,9 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
   - Serious problems with most of the sub-decadal chironomid-temperature reconstructions are discussed.
   - Chrysophyte-based reconstructions are difficult to evaluate due to a dearth of archived data.
 
-# Abstract{-}
-
-Very high, even annual, resolution quantitative palaeoenvironmental reconstructions have been generated from microfossil assemblage data using transfer functions. Evidence of the utility of some of these reconstructions is given by the high correlations between the reconstructions and instrumental records. I show that several ecological and taphonomic issues can become more problematic at very high resolution than at lower resolution and these problems do not affect all proxy-environment cases equally. I conclude by demonstrating that the exceptionally good performance of several published reconstructions is probably not reproducible.
-
 **Keywords:** Microfossils; Quantitative palaeoenvironmental reconstructions; Transfer functions; Reproducibility; Anthropocene; Palaeoclimatology; Palaeolimnology; Global; Data treatment, data analysis
 
-
-
 # Introduction
-
-```{r loadd_objects, cache=FALSE}
-#general objects
-loadd(pagesHi, lake_air_correlations)
-
-#zabinskie objects
-loadd(sites_all, spp_all, fos, fos_counts, recon, instrumental_temperature)
-```
 
 Palaeoecologists, amongst others, value high-resolution palaeoecological data [@Perga2015; @Pages2013; @vonGunten2012]. Of the `r nrow(pagesHi)` very high resolution palaeolimnological time series in the PAGES2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of varves, which can be difficult to interpret [@Blass2007], while only `r sum(pagesHi$proxy %in% c("chironomid", "BSi")) %>% as.english()` series are of biological proxies: `r sum(pagesHi$proxy %in% c("chironomid")) %>% as.english()` chironomid-inferred temperature series and a `r stopifnot(sum(pagesHi$proxy == "BSi") == 1)` biogenic silica series. 
 
@@ -135,8 +124,6 @@ Larocque-Tobler et al. [-@Larocque-Tobler2015] reconstruct August air temperatur
 
 Lags can also be expected for sub-decadal pollen-climate reconstructions: van der Knapp et al. [-@vanderKnaap2010] used annual pollen trap data to show that the pollen accumulation rate for many taxa tend to depend on the conditions of the previous summer.
 
-```{r correlation_in_space, results = "hide", fig.keep='none'}
-```
 ```{r regional_composite, results = "hide", fig.keep='none'}
 ```
 

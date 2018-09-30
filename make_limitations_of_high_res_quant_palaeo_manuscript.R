@@ -44,25 +44,23 @@ source("scripts/weather_climate.R")
 source("scripts/air_water_correlation.R")
 
 source("scripts/load_zabinskie_data.R")
-# knitr::read_chunk("scripts/regional_composite.R")
-# knitr::read_chunk("scripts/correlation_in_space.R")
+source("scripts/regional_composite.R")
+source("scripts/correlation_in_space.R")
 # knitr::read_chunk("scripts/percent_variance_by_month.R")
 # knitr::read_chunk("scripts/age_uncertainty.R")
 # knitr::read_chunk("scripts/reconstruction_diagnostics.R")
-# knitr::read_chunk("scripts/regional_composite.R")
 # knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
 
 source("scripts/figure2_ordination.R")
 # knitr::read_chunk("scripts/effect_low_counts.R")
-# knitr::read_chunk("scripts/curiousCounts.R")
 source("scripts/calibration_set_issues.R")
 
 # knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 
 # knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
 # knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
-# knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
 
+# knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
 # knitr::read_chunk("seebergsee/seebergsee_counts.R")
 # knitr::read_chunk("seebergsee/seeberg_climate.R")
 
@@ -129,6 +127,16 @@ analyses <- drake_plan(
   recon = zabinskie_reconstruction(zabinskie_excel_file),
   #instrumental data
   instrumental_temperature = zabiniskie_instrumental(file_in("data/chart1.xml")), 
+  
+  #calibration set climate
+  climate  = zabinskie_calibration_climate(zabinskie_excel_file, sites),
+
+  #climate time series - "scripts/regional_composite.R"
+  fat_composite = zabinskie_regional_composite(),
+  fat_composite_as_zab_published = fat_composite %>% 
+    ungroup() %>% 
+    inner_join(recon %>% mutate(recon_year = year)) %>% 
+    arrange(desc(recon_year)),
   
   #ordinations
   cca_fos = cca(X = sqrt(fos), Y = instrumental_temperature$old),
