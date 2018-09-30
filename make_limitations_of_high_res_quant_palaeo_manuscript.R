@@ -6,7 +6,7 @@ library("magrittr")
 
 library("readr")
 library("readxl")#
-library("xml2")
+library("xml2")#
 
 library("gridExtra")
 library("directlabels")#
@@ -40,7 +40,7 @@ as.English <- function(x){ #sentence case
 
 #import scripts
 source("scripts/pages2k.R")
-# knitr::read_chunk("scripts/load_zabinskie_data.R")
+source("scripts/load_zabinskie_data.R")
 # knitr::read_chunk("scripts/regional_composite.R")
 # knitr::read_chunk("scripts/correlation_in_space.R")
 source("scripts/weather_climate.R")
@@ -67,8 +67,8 @@ source("scripts/air_water_correlation.R")
 
 #construct drake plan
 analyses <- drake_plan(
-  
-  ## pages2k data - "scripts/pages2k.R"
+  #### General code
+  # pages2k data - "scripts/pages2k.R"
   pagesHi = pages2k_load(pages2k_data_file = file_in("data/sdata201788-s3.xlsx")),
   
   
@@ -84,6 +84,46 @@ analyses <- drake_plan(
   max_area = 2,
   min_depth = 5,
   lake_air_correlations = calculate_lake_air_correlations(max_area = max_area, min_depth = min_depth, min_latitude = 40, min_years = 10),
+  
+  #### Zabinskie
+  #load data - "scripts/load_zabinskie_data.R"
+  zabinskie_excel_file = "data/zabinskie2015cit.xls",
+  #modern spp
+  spp_all0 = read_excel(zabinskie_excel_file, sheet = "Training species"),
+  #modern environment
+  env_all0 = read_excel(zabinskie_excel_file, sheet = "Training temperature"),
+  #check siteIDs match
+  check_z1 = assertthat::assert_that(assertthat::are_equal(spp_all0$X__1, env_all0$Name)),
+  #sites with low counts
+  lowCount = c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB"),
+  #environment without low count sites
+  env0 = env_all0 %>% filter(!Name %in% lowCount),
+  #species without low count sites or absent taxa
+  spp = spp_all0 %>% 
+    filter(!X__1 %in% lowCount) %>% 
+    select(-X__1) %>% 
+    select_if(~(sum(.) > 0)),# remove taxa only in low count sites - cannot find evidence of stricter inclusion criteria
+  
+  #species at all sites without site names
+  spp_all = spp_all0 %>% select(-X__1),
+  
+  #make env a vector to simplify later code
+  env = env0$Temp,
+  env_all = env_all0$Temp,
+  
+  #sites & countries
+  sites = zabinskie_sites(env0),
+  sites_all = zabinskie_all_sites(env_all0, lowCount),
+  #fossil percent
+  fos = zabinskie_fossil_percent(zabinskie_excel_file),
+  #chronology
+  chron = zabinskie_chronology(zabinskie_excel_file),
+  #fossil counts
+  fos_counts = zabinskie_fossil_counts(zabinskie_excel_file),
+  #reconstruction
+  recon = zabinskie_reconstruction(zabinskie_excel_file),
+  #instrumental data
+  instrumental_temperature = zabiniskie_instrumental(file_in("data/chart1.xml")), 
   
   #make plots
   

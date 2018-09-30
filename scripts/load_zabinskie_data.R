@@ -4,84 +4,99 @@ library("dplyr")
 
 ## ---- load_Zabinskie_data
 
-fname <- "data/zabinskie2015cit.xls"
-
-#modern spp
-spp_all <- read_excel(fname, sheet = "Training species")
-
-#modern environment
-env_all <- read_excel(fname, sheet = "Training temperature")
-
-#check siteIDs match
-assertthat::assert_that(assertthat::are_equal(spp_all$X__1, env_all$Name))
+# fname <- "data/zabinskie2015cit.xls"
+# 
+# #modern spp
+# spp_all <- read_excel(fname, sheet = "Training species")
+# 
+# #modern environment
+# env_all <- read_excel(fname, sheet = "Training temperature")
+# 
+# #check siteIDs match
+# assertthat::assert_that(assertthat::are_equal(spp_all$X__1, env_all$Name))
 
 
 #remove low count sites from modern data
-lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
-env <- env_all %>% filter(!Name %in% lowCount) 
-spp <- spp_all %>% filter(!X__1 %in% lowCount) %>% select(-X__1)
+#lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
+#env <- env_all %>% filter(!Name %in% lowCount) 
+# spp <- spp_all %>% filter(!X__1 %in% lowCount) %>% select(-X__1)
+# 
+# spp_all <- spp_all %>% select(-X__1)
+# 
+# # remove rare species from calibration set
+# spp <- spp[, colSums(spp > 0) > 0]# remove taxa only in low count sites - cannot find evidence of stricter inclusion criteria
 
-spp_all <- spp_all %>% select(-X__1)
+zabinskie_sites <- function(env0){
+  sites <- env0 %>% select(Lake = Name) %>% 
+    mutate(source = c(rep("Poland", 39), rep("L2008", 13), rep("L06", 52), rep("L2008", 8))) %>% 
+    mutate(Lake  = case_when(
+      Lake == "Lake 29" ~  "Lake29", 
+      Lake == "lake25" ~ "Lake25",
+      TRUE ~ Lake))
+  sites
+}
 
-# remove rare species from calibration set
-spp <- spp[, colSums(spp > 0) > 0]# remove taxa only in low count sites - cannot find evidence of stricter inclusion criteria
-
-sites <- env %>% select(Lake = Name) %>% 
-  mutate(source = c(rep("Poland", 39), rep("L2008", 13), rep("L06", 52), rep("L2008", 8))) %>% 
-  mutate(Lake  = case_when(
-    Lake == "Lake 29" ~  "Lake29", 
-    Lake == "lake25" ~ "Lake25",
-    TRUE ~ Lake))
-
-sites_all <- env_all %>% select(Lake = Name) %>% 
+zabinskie_all_sites <- function(env_all0, lowCount){
+  sites_all <- env_all0 %>% select(Lake = Name) %>% 
   mutate(source = c(rep("Poland", 39 + length(lowCount)), rep("L2008", 13), rep("L06", 52), rep("L2008", 8))) %>% 
   mutate(Lake  = case_when(
     Lake == "Lake 29" ~  "Lake29", 
     Lake == "lake25" ~ "Lake25",
     TRUE ~ Lake))
+  sites_all
+}
 
-#make env a vector to simplify later code
-env <- env$Temp
-env_all <- env_all$Temp
+# #make env a vector to simplify later code
+# env <- env$Temp
+# env_all <- env_all$Temp
 
 
 
 
 #fossil spp
-fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages") %>%
-  rename(year = X__1) 
+zabinskie_fossil_percent <- function(zabinskie_excel_file){
+  fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages") %>%
+    rename(year = X__1) 
+  fos <- fos %>% select(-year, -`Nb head capsules`)
+  fos
+}
 
-chron <- fos %>% select(year)
-chron <- chron %>% mutate(year = if_else(year == 1927, 1925, year)) #harmonise  chronology for stratigraphic data with reconstruction and instrumental data
-
-fos <- fos %>% select(-year, -`Nb head capsules`)
+#chronology
+zabinskie_chronology <- function(zabinskie_excel_file){
+  chron <- read_excel(zabinskie_excel_file, sheet = "Chironomids Zabinsk percentages") %>% select(year = X__1) %>% 
+     mutate(year = if_else(year == 1927, 1925, year)) #harmonise  chronology for stratigraphic data with reconstruction and instrumental data
+  chron
+}
 
 #fossil_counts
-fos_counts <- read_excel(fname, sheet = "Chironomids Zabinskie counts") %>% 
-  select(-X__1, -Total) %>% 
-  mutate_all(round, digits = 1)#remove spurious digits
+zabinskie_fossil_counts  <- function(zabinskie_excel_file){
+  fos_counts <- read_excel(zabinskie_excel_file, sheet = "Chironomids Zabinskie counts") %>% 
+    select(-X__1, -Total) %>% 
+    mutate_all(round, digits = 1)#remove spurious digits
+  fos_counts 
+}
 
 #reconstruction
-recon <- read_excel(fname, sheet = "Reconstruction ") %>% 
-  rename(year = `Dates AD`, temperature = `Chironomid-inferred mean August temperature`)
-
-
-# #instrumental - digitised
-# instrumental <- read.table("data/instrumental.txt") %>% 
-#   select(year = V1, Aug = V2) %>% 
-#   mutate(year = round(year))
+zabinskie_reconstruction <- function(zabinskie_excel_file){
+  recon <- read_excel(zabinskie_excel_file, sheet = "Reconstruction ") %>% 
+    rename(year = `Dates AD`, temperature = `Chironomid-inferred mean August temperature`)
+  recon
+}
 
 
 # instrumental from xml
-temperature_chart <- read_xml("data/chart1.xml")
-
-bad_format <- temperature_chart %>% 
-  xml_find_all("//c:numCache") %>% 
-  xml_find_all("//c:v") %>% 
-  xml_double()
-
-bad_format <- bad_format[!is.na(bad_format)]
-instrumental_temperature <- bad_format %>% matrix(ncol = 4) %>%
-  as_data_frame() %>% 
-  select(year = V1, old = V2, new = V4)
-
+zabiniskie_instrumental <- function(instrumental_file = "data/chart1.xml"){
+  temperature_chart <- read_xml(instrumental_file)
+  
+  bad_format <- temperature_chart %>% 
+    xml_find_all("//c:numCache") %>% 
+    xml_find_all("//c:v") %>% 
+    xml_double()
+  
+  bad_format <- bad_format[!is.na(bad_format)]
+  instrumental_temperature <- bad_format %>% matrix(ncol = 4) %>%
+    as_data_frame() %>% 
+    select(year = V1, old = V2, new = V4)
+  
+  instrumental_temperature
+}
