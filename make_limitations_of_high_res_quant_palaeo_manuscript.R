@@ -40,27 +40,32 @@ as.English <- function(x){ #sentence case
 
 #import scripts
 source("scripts/pages2k.R")
+source("scripts/weather_climate.R")
+source("scripts/air_water_correlation.R")
+
 source("scripts/load_zabinskie_data.R")
 # knitr::read_chunk("scripts/regional_composite.R")
 # knitr::read_chunk("scripts/correlation_in_space.R")
-source("scripts/weather_climate.R")
 # knitr::read_chunk("scripts/percent_variance_by_month.R")
 # knitr::read_chunk("scripts/age_uncertainty.R")
 # knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 # knitr::read_chunk("scripts/regional_composite.R")
 # knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
-source("scripts/air_water_correlation.R")
-# knitr::read_chunk("scripts/ordinations.R")
+
 source("scripts/figure2_ordination.R")
 # knitr::read_chunk("scripts/effect_low_counts.R")
 # knitr::read_chunk("scripts/curiousCounts.R")
 # knitr::read_chunk("scripts/calibration_set_issues.R")
+
 # knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
+
 # knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
 # knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
 # knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
+
 # knitr::read_chunk("seebergsee/seebergsee_counts.R")
 # knitr::read_chunk("seebergsee/seeberg_climate.R")
+
 # knitr::read_chunk("zhang_et_al/zhang_et_al.R")
 
 
@@ -125,6 +130,11 @@ analyses <- drake_plan(
   #instrumental data
   instrumental_temperature = zabiniskie_instrumental(file_in("data/chart1.xml")), 
   
+  #ordinations
+  cca_fos = cca(X = sqrt(fos), Y = instrumental_temperature$old),
+  pc_explained = eigenvals(cca_fos)[1]/sum(eigenvals(cca_fos)) * 100,
+  L1L2 = eigenvals(cca_fos)[1]/eigenvals(cca_fos)[2],
+  anova_fos = anova(cca_fos)$Pr[1],
   
   
   
@@ -136,7 +146,15 @@ analyses <- drake_plan(
   #ordination composite
   ordination_composite = zabinskie_ordination_composite(fig2, sdf1),
   
-
+  #reconstruction-instrumental correlations
+  inst_recon  = recon %>% full_join(instrumental_temperature),
+  all_correlation = inst_recon %$% cor(temperature, old),
+  incorrect_correlation = inst_recon %>%
+    filter(year < 1939) %$% 
+    cor(temperature, old),
+  correct_correlation = inst_recon %>% 
+    filter(year < 1939) %$% 
+    cor(temperature, new),
 
   
   #add extra packages to bibliography
