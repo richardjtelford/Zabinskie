@@ -48,9 +48,7 @@ source("scripts/regional_composite.R")
 source("scripts/correlation_in_space.R")
 source("scripts/percent_variance_by_month.R")
 # knitr::read_chunk("scripts/age_uncertainty.R")
-# knitr::read_chunk("scripts/reconstruction_diagnostics.R")
-# knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
-
+source("scripts/reconstruction_diagnostics.R")
 source("scripts/figure2_ordination.R")
 # knitr::read_chunk("scripts/effect_low_counts.R")
 source("scripts/calibration_set_issues.R")
@@ -145,6 +143,8 @@ analyses <- drake_plan(
   recon_by_month = zabinskie_reconstruction_by_month(climate, spp, chron), 
   recon_by_month_plot = zabinskie_plot_reconstruction_by_month(recon_by_month),
   
+  #age uncertainty
+  
   
   #ordinations
   cca_fos = cca(X = sqrt(fos), Y = instrumental_temperature$old),
@@ -163,8 +163,8 @@ analyses <- drake_plan(
   ordination_composite = zabinskie_ordination_composite(fig2, sdf1),
   
   #reconstruction diagnostics
-  
-  
+  dist_to_analogues = zabinskie_distance_to_nearest_neighbour(spp, env, fos, chron),
+  residual_len = zabinskie_residual_length(spp, env, fos, chron),
   rtf = randomTF(sqrt(as.data.frame(spp)), env, fos, n = 999, fun = WAPLS, col = 2),
   
   
