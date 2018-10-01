@@ -124,26 +124,16 @@ Larocque-Tobler et al. [-@Larocque-Tobler2015] reconstruct August air temperatur
 
 Lags can also be expected for sub-decadal pollen-climate reconstructions: van der Knapp et al. [-@vanderKnaap2010] used annual pollen trap data to show that the pollen accumulation rate for many taxa tend to depend on the conditions of the previous summer.
 
-```{r regional_composite, results = "hide", fig.keep='none'}
-```
-
-
 With a few exceptions [@Kamenik2009; @Larocque-Tobler2011; @LarocqueTobler2011b; @Luoto2016], transfer-function models for quantitative palaeoclimate reconstructions are calibrated on a spatial calibration set of sites with paired microfossil and climatological normals that span a wide climatic range [@Birks2010]. Over a spatial calibration set, the correlation between air temperature in different months can be expected to be high - places with cool summers tend to have cold winters. For example, in the Polish-Canadian chironomid calibration set, the Pearson correlation between June and August mean air temperatures [@Fick2017] is `r cor(climate$Jun, climate$Aug, use = "pair")`, and the correlation between August and mean summer (JJA) air temperatures is `r cor(climate$summer, climate$Aug, use = "pair")`. Hence, it makes little difference if we calibrate the model against June, August or mean summer temperatures, as the model performance statistics will be very similar (Fig 1a-b) and the reconstructions will all have a similar shape (Fig. 2). Any of these months can be reconstructed, provided the assumption that the relationship between monthly temperatures is invariant across time [@Juggins2013]. It makes sense to try to reconstruct temperature for the most ecologically important time of year, but the calibration set may give little information on when this is.
 
 The choice of calibration target, however, has a large impact on the correlation between the reconstruction and the instrumental data: a good correlation can only be expected for the portion of the year that the organisms are sensitive to. Surprisingly, despite the presumed sensitivity of chironomids to summer temperatures, the air-temperature reconstruction from the Lake `r Zabinskie` chironomid stratigraphy is high only in August (Fig. 1c). The correlation between June and August air temperature in a composite of climate stations in the Lake `r Zabinskie` region (similar to the composite used in Larocque-Tobler et al. [-@Larocque-Tobler2015]) in the period 1896-2010, is only `r cor(fat_composite$Aug, fat_composite$Jun)`. The correlation between mean summer air temperature and August air temperature in the same composite is `r cor(fat_composite$Aug, fat_composite$summer)`. This is as good a correlation as can be expected for predicting August temperature from mean summer data collected with a thermometer. This problem is time-scale dependent: if temperature is averaged over several years, as would be typical for a low- to medium-resolution palaeoecological analysis, the correlation between June and August temperatures, or August and the whole summer, increases because radiative forcing or long-term internal variability such as the Atlantic Multidecadal Oscillation [@Schlesinger1994] tends to warm the whole season and weather-related variability is suppressed (Fig. 3). 
 
-
-```{r percent_variance, message = FALSE, results = "hide", fig.keep='none'}
-```
 ```{r plot_explained_variance, fig.cap = "By month, a) the percent of intertia in the Canadian-Polish calibration set explained in a cannonical correspondence analysis CCA constrained by temperature, b) transfer function leave-one-out cross-validation r^2^ calibrated against temperature, c) correlation between the reconstructed temperature from Lake Żabińskie and the instrumental temperature", fig.width = 90/25.4, fig.height = 130/25.4}
-variance_plot
-```
-
-```{r reconstruction_by_month}
+readd(perform_by_month_plot)
 ```
 
 ```{r plot_recon_by_month, fig.cap = "Temperature reconstruction for different months at Lake Żabińskie", fig.width = 140/25.4, fig.height = 80/25.4}
-recon_by_month_plot
+readd(recon_by_month_plot)
 ```
 
 ```{r weather_climate_plot, fig.cap = "Correlation between August and June (green), and August and summer temperatures (orange) averaged over different length periods in the central England temperature series [@Parker1992]. Smoother is a loess with span = 0.75.", fig.width = 90/25.4, fig.height=60/25.4}

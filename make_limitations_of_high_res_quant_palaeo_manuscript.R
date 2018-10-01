@@ -46,7 +46,7 @@ source("scripts/air_water_correlation.R")
 source("scripts/load_zabinskie_data.R")
 source("scripts/regional_composite.R")
 source("scripts/correlation_in_space.R")
-# knitr::read_chunk("scripts/percent_variance_by_month.R")
+source("scripts/percent_variance_by_month.R")
 # knitr::read_chunk("scripts/age_uncertainty.R")
 # knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 # knitr::read_chunk("scripts/zabinskie_temperature_composite.R")
@@ -138,6 +138,14 @@ analyses <- drake_plan(
     inner_join(recon %>% mutate(recon_year = year)) %>% 
     arrange(desc(recon_year)),
   
+  #performance_by_month "scripts/percent_variance_by_month.R"
+  perform_by_month = zabinskie_perform_by_month(climate, spp, fat_composite_as_zab_published),
+  perform_by_month_plot = zabinskie_plot_perform_by_month(perform_by_month),
+  #reconstruction_by_month "scripts/percent_variance_by_month.R"
+  recon_by_month = zabinskie_reconstruction_by_month(climate, spp, chron), 
+  recon_by_month_plot = zabinskie_plot_reconstruction_by_month(recon_by_month),
+  
+  
   #ordinations
   cca_fos = cca(X = sqrt(fos), Y = instrumental_temperature$old),
   pc_explained = eigenvals(cca_fos)[1]/sum(eigenvals(cca_fos)) * 100,
@@ -187,7 +195,7 @@ analyses <- drake_plan(
   #knit manuscript
   manuscript = target(
     command = rmarkdown::render(
-      input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"), knit_root_dir = "../",       output_dir = "./output"), 
+      input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"), knit_root_dir = "../", output_dir = "./output"), 
     trigger = trigger(change = biblio2)  
     ),
   
