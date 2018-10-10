@@ -70,11 +70,11 @@ source("scripts/zabinskie/calibration_set_issues.R")
 analyses <- drake_plan(
   #### General code
   # pages2k data - "scripts/pages2k.R"
-  pagesHi = pages2k_load(pages2k_data_file = file_in("data/sdata201788-s3.xlsx")),
+  pagesHi = pages2k_load(pages2k_data_file = file_in("data/general/sdata201788-s3.xlsx")),
   
   
   #weather_climate - "scripts/weather_climate.R"
-  cet = read.table(file_in("data/cetml1659on.dat"), skip = 7, header = FALSE),
+  cet = read.table(file_in("data/general/cetml1659on.dat"), skip = 7, header = FALSE),
   cet2  = weather_climate_process(cet), 
   wc_JA = map_df(1:50, weather_climate, month1 = "Jun", month2 = "Aug", dat = cet2),
   wc_AS = map_df(1:50, weather_climate, month1 = "Aug", month2 = "summer", dat = cet2),
@@ -88,7 +88,7 @@ analyses <- drake_plan(
   
   #### Zabinskie
   #load data - "scripts/load_zabinskie_data.R"
-  zabinskie_excel_file = "data/zabinskie2015cit.xls",
+  zabinskie_excel_file = "data/zabinskie/zabinskie2015cit.xls",
   #modern spp
   spp_all0 = read_excel(zabinskie_excel_file, sheet = "Training species"),
   #modern environment
@@ -124,7 +124,7 @@ analyses <- drake_plan(
   #reconstruction
   recon = zabinskie_reconstruction(zabinskie_excel_file),
   #instrumental data
-  instrumental_temperature = zabiniskie_instrumental(file_in("data/chart1.xml")), 
+  instrumental_temperature = zabiniskie_instrumental(file_in("data/zabinskie/chart1.xml")), 
   
   #calibration set climate
   climate  = zabinskie_calibration_climate(zabinskie_excel_file, sites),

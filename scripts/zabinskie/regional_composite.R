@@ -7,10 +7,10 @@ zabinskie_regional_composite <- function(){
   }
   
   #station data
-  kanuas <- read_station("data/Kaunas_26629.dat")
-  warsaw <- read_station("data/warsaw_12375.dat")
-  vilnius <- read_station("data/vilnius26730.dat")
-  kalingrad<- read_station("data/kalingrad26702.dat")
+  kanuas <- read_station("data/zabinskie/station_climate/Kaunas_26629.dat")
+  warsaw <- read_station("data/zabinskie/station_climate/warsaw_12375.dat")
+  vilnius <- read_station("data/zabinskie/station_climate/vilnius26730.dat")
+  kalingrad<- read_station("data/zabinskie/station_climate/kalingrad26702.dat")
   
   ##
   allStations <- bind_rows(

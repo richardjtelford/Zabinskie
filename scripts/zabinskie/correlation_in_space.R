@@ -60,7 +60,7 @@ zabinskie_calibration_climate <- function(zabinskie_excel_file, sites){
   #   geom_point()
   
   #canada06
-  canada06 <- read_csv("data/CCIN12504_20151119_JOPL-D-14-00075_location-version3-2015.csv") %>% 
+  canada06 <- read_csv("data/zabinskie/CCIN12504_20151119_JOPL-D-14-00075_location-version3-2015.csv") %>% 
     filter(AUTHOR == "Larocque") %>%
     mutate(NAME = paste0("Lake", substring(NAME, 3, 4))) %>% 
     select(Lake = NAME, lat = LAT, long = LONG)
