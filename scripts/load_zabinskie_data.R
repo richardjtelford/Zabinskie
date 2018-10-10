@@ -1,7 +1,3 @@
-#load libraries
-library("readxl")
-library("dplyr")
-
 ## ---- load_Zabinskie_data
 
 # fname <- "data/zabinskie2015cit.xls"
@@ -55,7 +51,7 @@ zabinskie_all_sites <- function(env_all0, lowCount){
 
 #fossil spp
 zabinskie_fossil_percent <- function(zabinskie_excel_file){
-  fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages") %>%
+  fos <- read_excel(zabinskie_excel_file, sheet = "Chironomids Zabinsk percentages") %>%
     rename(year = X__1) 
   fos <- fos %>% select(-year, -`Nb head capsules`)
   fos
