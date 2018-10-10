@@ -35,7 +35,6 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TR
 options(digits = 2)
 
 knitr::read_chunk("scripts/age_uncertainty.R")
-knitr::read_chunk("scripts/reconstruction_diagnostics.R")
 knitr::read_chunk("scripts/effect_low_counts.R")
 knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
@@ -76,28 +75,28 @@ The two chironomid records are part of a growing move towards sub-decadal resolu
 \blandscape
 
 ```{r table1}
-studies <- read.table(header = TRUE, sep = ";", quote = "\'", text = 
-"Study;Proxy;Variable;Location;Resolution;Instrumental Correlation
-Lotter [-@Lotter1998];Diatoms;Total phosphorus;Baldegersee, Switzerland;Annual;\"compares well\"*
-Alefs and Müller [-@Alefs1999];Diatoms;Total phosphorus;Ammersee, Germany;Annual;0.91* 
-  ;  ;  ;Starnberger See, Germany;Annual;0.77*
+studies <- read.table(header = TRUE, check.names = FALSE, sep = ";", quote = "\'", text = 
+"Study;Proxy;Variable;Site;Resolution;Instrumental correlation
+Lotter [-@Lotter1998];Diatoms;Total phosphorus;Baldegersee;Annual;\"compares well\"*
+Alefs and Müller [-@Alefs1999];Diatoms;Total phosphorus;Ammersee;Annual;0.91* 
+  ;  ;  ;Starnberger See;Annual;0.77*
 
-De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana, Switzerland; Annual (3 year smooth);–0.58 vs Oct.--May air T*
-Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentration;Lake Żabińskie, Poland;Annual (3 year smooth);0.5 vs May--Oct. zonal wind speed*
-Hernández-Almeida et al. [-@HernandezAlmeida2015];Chrysophytes;Number consecutive days with water < 4°C;Lake Żabińskie, Poland;Annual (3 year smooth);0.35 vs Jan.--March air T*
+De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana; Annual (3 year smooth);–0.58 vs Oct.--May air T*
+Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentration;Lake Żabińskie;Annual (3 year smooth);0.5 vs May--Oct. zonal wind speed*
+Hernández-Almeida et al. [-@HernandezAlmeida2015];Chrysophytes;No. consecutive days with water < 4°C;Lake Żabińskie;Annual (3 year smooth);0.35 vs Jan.--March air T*
 
-Larocque and Hall [-@Larocque2003];Chironomids;July air-T;Lake Njulla, Sweden;2--7 years;0.39
+Larocque and Hall [-@Larocque2003];Chironomids;July air-T;Lake Njulla;2--7 years;0.39
    ;  ;  ;Lake 850;2--6 years;0.365
   ;  ;  ;Alanen Laanijavri;1--5 years;0.35
   ;  ;  ;Vuoskkujavri;1--6 years;0.37
-Larocque et al. [-@Larocque2009], Larocque-Tobler et al. [-@Larocque-Tobler2011];Chironomids;July air-T;Lake Silvaplana, Switzerland;Near annual;0.65/0.53*
-Larocque-Tobler et al. [-@LarocqueTobler2011b];Chironomids;July air-T;Seebergsee, Switzerland;3--8 years;0.64/0.73
-'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-T;Lake Żabińskie, Poland;Mostly annual;0.76*
-Medeiros et al. [-@Medeiros2012];Chironomids;Mid-summer water T;Baker Lake, Canada;1--8 years;\"corresponded well\" vs annual air T
-Luoto and Ojala [-@Luoto2016];Chironomids;July air-T;Nurmijärvi, Finland;1--11 years;0.38/0.51*
-Zhang et al. [-@Zhang2017];Chironomids;July air-T;Tiancai Lake, China;1--4 years;0.45
-Lang et al. [-@Lang2017];Chironomids;July air-T;Speke Hall Lake, UK; ~8 years;0.62
-Kamenik et al. [-@Kamenik2009];Pollen;April-November air T;Mauntschas Mire, Switzerland;1--5 years; --/0.66", stringsAsFactors = FALSE )
+Larocque et al. [-@Larocque2009], Larocque-Tobler et al. [-@Larocque-Tobler2011];Chironomids;July air-T;Lake Silvaplana;Near annual;0.65/0.53*
+Larocque-Tobler et al. [-@LarocqueTobler2011b];Chironomids;July air-T;Seebergsee;3--8 years;0.64/0.73
+'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-T;Lake Żabińskie;Mostly annual;0.76*
+Medeiros et al. [-@Medeiros2012];Chironomids;Mid-summer water T;Baker Lake;1--8 years;\"corresponded well\" vs annual air T
+Luoto and Ojala [-@Luoto2016];Chironomids;July air-T;Nurmijärvi;1--11 years;0.38/0.51*
+Zhang et al. [-@Zhang2017];Chironomids;July air-T;Tiancai Lake;1--4 years;0.45
+Lang et al. [-@Lang2017];Chironomids;July air-T;Speke Hall Lake; ~8 years;0.62
+Kamenik et al. [-@Kamenik2009];Pollen;April-November air T;Mauntschas Mire;1--5 years; --/0.66", stringsAsFactors = FALSE )
 
 pander::pander(studies, caption = "Location, proxy, resolution, and correlation with the instrumental record of the validated reconstructions derived from the microfossil stratigraphies. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model.", split.cells = 30, split.tables = 170)
 ```
@@ -343,7 +342,7 @@ D) Luoto et al. (2016) == 31
 **Total** = C + D == 170 
 ```
 
-### Tiancai Lake [@Zhang2017]
+### Tiancai Lake
 
 ```{r zhang_recon, include=FALSE}
 ```

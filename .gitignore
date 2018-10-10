@@ -25,6 +25,12 @@ vignettes/*.pdf
 *.html
 *.pdf
 
+#strange file made by rticles
+*.spl
+
+#backup bibliography
+*.bak
+
 #figures
 *.jpg
 *.png
