@@ -39,19 +39,19 @@ as.English <- function(x){ #sentence case
 
 
 #import scripts
-source("scripts/pages2k.R")
-source("scripts/weather_climate.R")
-source("scripts/air_water_correlation.R")
+source("scripts/general/pages2k.R")
+source("scripts/general/weather_climate.R")
+source("scripts/general/air_water_correlation.R")
 
-source("scripts/load_zabinskie_data.R")
-source("scripts/regional_composite.R")
-source("scripts/correlation_in_space.R")
-source("scripts/percent_variance_by_month.R")
-# knitr::read_chunk("scripts/age_uncertainty.R")
-source("scripts/reconstruction_diagnostics.R")
-source("scripts/figure2_ordination.R")
-# knitr::read_chunk("scripts/effect_low_counts.R")
-source("scripts/calibration_set_issues.R")
+source("scripts/zabinskie/load_zabinskie_data.R")
+source("scripts/zabinskie/regional_composite.R")
+source("scripts/zabinskie/correlation_in_space.R")
+source("scripts/zabinskie/percent_variance_by_month.R")
+# knitr::read_chunk("scripts/zabinskie/age_uncertainty.R")
+source("scripts/zabinskie/reconstruction_diagnostics.R")
+source("scripts/zabinskie/figure2_ordination.R")
+# knitr::read_chunk("scripts/zabinskie/effect_low_counts.R")
+source("scripts/zabinskie/calibration_set_issues.R")
 
 # knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 
