@@ -25,6 +25,8 @@ library("broom")
 
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
+#devtools::install_github("richardjtelford/countChecker")
+library("countChecker")
 
 #analogue, stringi, rticles, english, bibtex, laketemps, rgdal also required 
 
@@ -51,7 +53,7 @@ source("scripts/zabinskie/percent_variance_by_month.R")
 source("scripts/zabinskie/age_uncertainty.R")
 source("scripts/zabinskie/reconstruction_diagnostics.R")
 source("scripts/zabinskie/figure2_ordination.R")
-# knitr::read_chunk("scripts/zabinskie/effect_low_counts.R")
+source("scripts/zabinskie/effect_low_counts.R")
 source("scripts/zabinskie/calibration_set_issues.R")
 
 # knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
@@ -179,6 +181,11 @@ analyses <- drake_plan(
   correct_correlation = inst_recon %>% 
     filter(year < 1939) %$% 
     cor(temperature, new),
+  
+  #effect low counts
+  fos_resid_sd = fos_residuals_sd(recon, instrumental_temperature),
+  estimated_countsum = estimate_n(spp, digits = 2),
+  est_count_error = count_error(spp, env, sites, estimated_countsum, fos_counts),
   
   #curious counts 
   min_count = chron %>% 
