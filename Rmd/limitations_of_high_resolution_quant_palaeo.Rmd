@@ -242,7 +242,7 @@ The `r Zabinskie` paper reports that the count sums in both the fossil and moder
 
 The chironomid counts from Lake `r Zabinskie` are unusual. Typically the rarest species in any assemblage is represented by a single individual. In the Lake `r Zabinskie` counts, `r round(mean(readd(min_count)$min_count > 1) * 100)`% of samples have a minimum abundance greater than one. In one sample, all taxa occur at least `r max(readd(min_count)$min_count) %>% insist(. > 4) %>%  as.english()` times, in another, all counts are multiples of four `r  stopifnot(all(fos_counts[6, ] %% 4 == 0))`. 
 
-The calibration set also has problems. Lac A and Lac H have identical assemblages, except that the percentages in Lac H have been multiplied by `r readd(lac_AH)$min_lac_H %>% format(digits = 3)` such that they sum to `r readd(lac_AH)$sum_lac_H`%. Errors in the August temperatures of some of the Canadian lakes of up to 6.5°C were corrected by Bajolle et al. [@Bajolle2018].
+The calibration set also has problems. Lac A and Lac H have identical assemblages, except that the percentages in Lac H have been multiplied by `r readd(lac_AH)$min_lac_H %>% format(digits = 3)` such that they sum to `r readd(lac_AH)$sum_lac_H`%. Errors of up to 6.5°C in the August temperatures of some of the Canadian lakes were corrected by Bajolle et al. [-@Bajolle2018].
 
 ### Abisko lakes
 
@@ -390,23 +390,13 @@ The number and severity of errors in the papers reviewed highlights the importan
 
 # Methods
 
-```{r versions}
-
-get_version <- function(package){
-  installed.packages() %>% 
-    as_data_frame() %>% 
-    filter(Package == package) %$% 
-    paste(Package, "version", Version)
-}
-```
-
-All analyses were done in `r gsub("(.*) \\(.*", "\\1", R.version.string)` [@R2017]. Ordinations were fitted with `r get_version("vegan")` [@vegan2017] with square-root transformed assemblage data. Transfer functions were fitted with `r get_version("rioja")` [@rioja2017] using square-root transformed species data. Some diagnostics were performed using `r get_version("analogue")` [@analogue2016]. The reconstruction significance test was run with randomTF from `r get_version("palaeoSig")` [@palaeoSig2015] with 999 trials for the null distribution.
+All analyses were done in `r getRversion()` [@R]. Ordinations were fitted with vegan version `r packageVersion("vegan")` [@vegan] with square-root transformed assemblage data. Transfer functions were fitted with rioja version `r packageVersion("rioja")` [@rioja] using square-root transformed species data. Some diagnostics were performed using analogue version `r packageVersion("analogue")` [@analogue1]. The reconstruction significance test was run with randomTF from palaeoSig version `r packageVersion("palaeoSig")` [@palaeoSig] with 999 trials for the null distribution.
 
 Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as their locations have not all been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN series [@Lawrimore2011] extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series.
  
 
 ## Acknowledgements{-}
 
-I thank all my colleagues in Bergen and elsewhere who have given the help, advice, and encouragement needed to write this manuscript. I thank Dr Gavin Simpson and three anonymous reviewers for their constructive comments. This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). Code to replicate all the analyses shown above is archived at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie).
+I thank all my colleagues in Bergen and elsewhere who have given the help, advice, and encouragement needed to write this manuscript. I thank Dr Gavin Simpson and three anonymous reviewers for their constructive comments. This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). Code to reproduce all the analyses shown above is archived at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie).
 
 ## References{-}
