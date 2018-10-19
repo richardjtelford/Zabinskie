@@ -1,4 +1,4 @@
-#import package
+#import packages
 library("drake")#
 
 library("tidyverse")#
@@ -15,6 +15,7 @@ library("assertthat")
 library("sp")
 library("rioja")
 library("vegan")
+#devtools::install_github("gavinsimpson/ggvegan")
 library("ggvegan")
 
 library("palaeoSig")
@@ -47,7 +48,7 @@ source("scripts/zabinskie/load_zabinskie_data.R")
 source("scripts/zabinskie/regional_composite.R")
 source("scripts/zabinskie/correlation_in_space.R")
 source("scripts/zabinskie/percent_variance_by_month.R")
-# knitr::read_chunk("scripts/zabinskie/age_uncertainty.R")
+source("scripts/zabinskie/age_uncertainty.R")
 source("scripts/zabinskie/reconstruction_diagnostics.R")
 source("scripts/zabinskie/figure2_ordination.R")
 # knitr::read_chunk("scripts/zabinskie/effect_low_counts.R")
@@ -144,7 +145,8 @@ analyses <- drake_plan(
   recon_by_month_plot = zabinskie_plot_reconstruction_by_month(recon_by_month),
   
   #age uncertainty
-  
+  age_sim_data = prep_sim(),
+  age_sim = run_simulation(age_sim_data, recon = recon, nrep = 1000),
   
   #ordinations
   cca_fos = cca(X = sqrt(fos), Y = instrumental_temperature$old),

@@ -34,8 +34,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TR
 
 options(digits = 2)
 
-knitr::read_chunk("scripts/age_uncertainty.R")
-knitr::read_chunk("scripts/effect_low_counts.R")
+#knitr::read_chunk("scripts/effect_low_counts.R")
 knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
 knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
@@ -52,7 +51,7 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 loadd(pagesHi, lake_air_correlations)
 
 #zabinskie objects
-loadd(sites_all, spp_all, fos, fos_counts, recon, climate, fat_composite, instrumental_temperature)
+loadd(sites_all, spp_all, fos, fos_counts, recon, climate, fat_composite, instrumental_temperature, age_sim)
 ```
 
 # Highlights{-}
@@ -171,7 +170,7 @@ The chronologies supporting the sub-decadal resolution reconstructions listed in
 ```{r chron_no_extra_error}
 ```
 
-The impact of chronological uncertainty on the validation of an ~annual resolution reconstruction can be illustrated with Lake `r Zabinskie`. The varve-based chronology for Lake `r Zabinskie` is supported by ^14^C dates, a ^137^Cs profile, and a microtephra [@Bonk2015a]. The counting uncertainty on the chronology is low: there are two possible extra varves in the mid-1960s and five possible missing varves between 1926 and 1899 CE. The impact of this uncertainty can be explored with a Monte Carlo procedure. Assuming that the probability of making a wrong decision at each uncertain varve is 1/3 and zero otherwise, the probability that the chronology is entirely correct is `r mean(simulation$mismatch == 0)`. If the reconstruction was perfect, chronological error is expected to reduce the correlation from 1 to `r mean(simulation$ag_correlation)`. This reduction is relatively small because most of the uncertainty occurs in the lower half of the record, so any error affects fewer years. Furthermore, because chironomid concentrations were low, samples before 1939 span two to `r max(-diff(recon$year)) %>% as.english()` years which reduces both the number of samples and their sensitivity to a single year's error. The expected correlation in the pre-1939 section of the record for a perfect reconstruction is `r mean(simulation$pre39_correlation)`. This is lower than the reported correlation between the reconstruction and the instrumental record (`r left_join(instrumental_temperature, recon) %>% filter(year < 1939) %$% cor(old, temperature)`) for this period.
+The impact of chronological uncertainty on the validation of an ~annual resolution reconstruction can be illustrated with Lake `r Zabinskie`. The varve-based chronology for Lake `r Zabinskie` is supported by ^14^C dates, a ^137^Cs profile, and a microtephra [@Bonk2015a]. The counting uncertainty on the chronology is low: there are two possible extra varves in the mid-1960s and five possible missing varves between 1926 and 1899 CE. The impact of this uncertainty can be explored with a Monte Carlo procedure. Assuming that the probability of making a wrong decision at each uncertain varve is 1/3 and zero otherwise, the probability that the chronology is entirely correct is `r mean(age_sim$mismatch == 0)`. If the reconstruction was perfect, chronological error is expected to reduce the correlation from 1 to `r mean(age_sim$ag_correlation)`. This reduction is relatively small because most of the uncertainty occurs in the lower half of the record, so any error affects fewer years. Furthermore, because chironomid concentrations were low, samples before 1939 span two to `r max(-diff(recon$year)) %>% as.english()` years which reduces both the number of samples and their sensitivity to a single year's error. The expected correlation in the pre-1939 section of the record for a perfect reconstruction is `r mean(age_sim$pre39_correlation)`. This is lower than the reported correlation between the reconstruction and the instrumental record (`r left_join(instrumental_temperature, recon) %>% filter(year < 1939) %$% cor(old, temperature)`) for this period.
 
 There are some possible solutions to chronological uncertainty. Von Gunten et al. [-@vonGunten2012] recommend smoothing the proxy data to allow for chronological errors. The three-year running-mean used by de Jong and Kamenik [-@DeJong2011] to smooth their annually resolved chrysophyte data will reduce the impact of a one year dating error, and slightly reduce the impact of a two year error, however the loss of independence between consecutive years complicates the calculation of the significance of the correlation between the reconstruction and the instrumental data [@vonGunten2012]. Since the smoothed data have fewer degrees of freedom, they will have less statistical power if the chronology is correct. Smoothing annual resolution will generally have more statistical power than sampling the microfossil data at a lower resolution, but at the cost of having more samples to process and count. Either smoothing or sampling at a lower than annual resolution are valid strategies when the sediments are not laminated and single years cannot be precisely sampled.
 
