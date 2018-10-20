@@ -30,6 +30,7 @@ vignettes/*.pdf
 
 #backup bibliography
 *.bak
+*2.bib
 
 #figures
 *.jpg
@@ -61,6 +62,7 @@ packrat/src/
 etc/*
 !etc/**/
 !etc/zabinskie_countsheets/*.R
+letters/
 
 #output
 output/
