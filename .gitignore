@@ -21,7 +21,7 @@ vignettes/*.pdf
 
 #output
 *.docx
-*.md
+#*.md
 *.html
 *.pdf
 
@@ -35,7 +35,7 @@ vignettes/*.pdf
 *.jpg
 *.png
 *.gif
-!silvaplana/images/*.png
+!data/silvaplana/images/*.png
 #temp files
 *~
 *#
@@ -47,8 +47,8 @@ vignettes/*.pdf
 *.bil
 *.hdr
 *.zip
-*.xlsx
-*.xls
+#*.xlsx
+#*.xls
 
 #bib format
 packrat/lib*/
@@ -58,7 +58,9 @@ packrat/src/
 .drake/
 
 #other
-etc/
+etc/*
+!etc/**/
+!etc/zabinskie_countsheets/*.R
 
 #output
 output/

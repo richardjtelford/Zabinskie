@@ -1,5 +1,5 @@
 ## ---- zhang_fossil
-zhang <- read_excel("zhang_et_al/Zhang et al 2017_Climate of the Past_dataset.xlsx", sheet = "Key chironomid taxa of Tiancai", skip = 2)
+zhang <- read_excel("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx", sheet = "Key chironomid taxa of Tiancai", skip = 2)
 zhang
 zhang_meta <- zhang[, 1:3]
 zhang_spp <- zhang[, -(1:3)]
@@ -14,9 +14,9 @@ ggplot(zhang_meta, aes(x = `Year (AD)`, y = rowSums(zhang_spp))) +
   geom_point()
 
 ## ---- zhang_recon
-recon_zhang <- read_excel("zhang_et_al/Zhang et al 2017_Climate of the Past_dataset.xlsx", sheet = "Tiancai chironomid-inferred MJT", skip = 2)
+recon_zhang <- read_excel("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx", sheet = "Tiancai chironomid-inferred MJT", skip = 2)
 
-met_zhang <- read_excel("zhang_et_al/Zhang et al 2017_Climate of the Past_dataset.xlsx", sheet = "Lijiang station data", skip = 1)
+met_zhang <- read_excel("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx", sheet = "Lijiang station data", skip = 1)
 
 ggplot(recon_zhang, aes(x = `Year (AD)`, y = scale(`Mean July temperature (°C)`, scale = FALSE))) + 
   geom_line() +

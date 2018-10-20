@@ -70,7 +70,8 @@ combinations <- plyr::llply(1:12, function(wid){
   zoo::rollapply(1:12, width = wid,  FUN = I) %>% 
     as.matrix() %>% 
     plyr::alply(1, function(mo)c(6:12, 1:5)[mo])
-}) %>% do.call(what = "c")
+}) %>% 
+  do.call(what = "c")
 
 winters <- sapply(combinations, function(com){
   silva_met2 %>% 
@@ -82,6 +83,10 @@ winters <- sapply(combinations, function(com){
 colnames(winters) <- sapply(combinations, function(com){
     paste0(".", paste(com, collapse = "."))
   })
+
+
+ggplot(data_frame(year = unique(silva_met2$Year), oct_may = winters[, ".10.11.12.1.2.3.4.5"], smo105 = rollmean(oct_may, k = 3, fill = NA)), aes(x = year, y = smo105)) + geom_line() + 
+geom_line(data = data_frame(year = unique(silva_met2$Year), april = winters[, ".4"], smo4 = rollmean(april, k = 3, fill = NA)), aes(x = year, y = smo4), colour = "red")
 
 
 cor(winters) %>% 
@@ -124,7 +129,7 @@ ice_cors %>% arrange(v) %>% mutate(n = 1:n(), april = grepl(4, months)) %>%
 
 
 which.min(ice_cors$v)
-
+cor(winters[, c(".4", ".10.11.12.1.2.3.4.5")])
 
 # create the initial x variable
 x1 <- rnorm(100, 15, 5)

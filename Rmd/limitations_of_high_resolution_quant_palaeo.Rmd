@@ -340,7 +340,7 @@ D) Luoto et al. (2016) == 31
 
 Zhang et al. [-@Zhang2017] report that they correlate their July air temperature reconstruction with a three-year moving average of the instrumental data [@Zhang2017_data]. However, the instrumental time series has been mis-processed. Rather than using a three-year moving average, the authors take the July air temperature of every third year and interpolate. The significant correlation between the reconstruction and the interpolated triennial data can only be a Type 1 error, unless it is believed that chironomids are only sensitive to July temperature every third year and that they can predict the temperature up to two years ahead. With a three-year moving average, the correlation is weak (r = `r zhang_smo_cor$estimate`) and not statistically significant (p = `r zhang_smo_cor$p.value`).
 
-### Speke Hall Lake [@Lang2017]
+### Speke Hall Lake
 
 The polluted, eutrophic Speke Hall Lake [@Lang2017] is a curious choice of site on which to apply the Norwegian chironomid calibration set [@Brooks2001], conflicting with the usual guidance that sites should be within the environmental space covered by the calibration set to minimise non-analogue problems. The reported correlation between the reconstruction and instrumental data, based on sixteen samples, is statistically significant at the p < 0.05 level, but given the lack of correction for temporal autocorrelation, the inverse correlation between July temperature and most of the heavy metals measured, and the poor goodness-of-fit of several fossil samples to the calibration set, it is more likely that the correlation is due to chance than that the reconstruction has any real skill. 
 
@@ -394,7 +394,6 @@ All analyses were done in `r getRversion()` [@R]. Ordinations were fitted with v
 
 Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as their locations have not all been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN series [@Lawrimore2011] extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series.
  
-
 ## Acknowledgements{-}
 
 I thank all my colleagues in Bergen and elsewhere who have given the help, advice, and encouragement needed to write this manuscript. I thank Dr Gavin Simpson and three anonymous reviewers for their constructive comments. This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). Code to reproduce all the analyses shown above is archived at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie).

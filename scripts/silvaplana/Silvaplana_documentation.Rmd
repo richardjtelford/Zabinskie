@@ -3,8 +3,8 @@ title: "Evaluation of the Lake Silvaplana chironomid papers"
 author: "Richard J. Telford"
 date: "August 19, 2017"
 output: html_document
-csl: ../journal-of-paleolimnology.csl
-bibliography: ../chironomid.bib
+csl: ../Rmd/extra/journal-of-paleolimnology.csl
+bibliography: ../Rmd/extra/chironomid.bib
 ---
 ```{r setup, message = FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, cache = TRUE, cache.lazy=TRUE)

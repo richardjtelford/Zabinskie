@@ -1,4 +1,3 @@
-library(zoo)
 ## ---- reported_correlations
 
 r_p <- function(r, n, alternative = c("two.sided", "less", "greater")) {
