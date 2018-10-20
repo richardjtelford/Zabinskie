@@ -14,7 +14,7 @@ packrat::restore()
 
 The file "make_limitations_of_high_res_quant_palaeo_manuscript.R" contains the `drake` plan that will run all analyses and render the manuscript as a PDF. 
 
-Some data will need to be downloaded from public archives. The code will report when data are missing.
+Some data will need to be downloaded from public archives. The code will report when data are missing, where they can be downloaded from, where the files should be placed.
 
 
 ##Additional requirements
