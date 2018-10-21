@@ -56,7 +56,7 @@ source("scripts/zabinskie/figure2_ordination.R")
 source("scripts/zabinskie/effect_low_counts.R")
 source("scripts/zabinskie/calibration_set_issues.R")
 
-# knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
+source("scripts/abisko/abisko_short_2003.R")
 
 # knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
 # knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
@@ -194,6 +194,11 @@ analyses <- drake_plan(
   lac_AH = zabinskie_lac_AH(spp, sites),
   
   ###Abisko
+  abisko_short = abisko_reported(),
+  abisko_similar_cor = abisko_similar_correlations(abisko_short),
+  abisko_all_lakes = abisko_digitised(),
+  abisko_cor = abisko_correlations(abisko_all_lakes),
+  abisko_checked = abisko_check(abisko_short, abisko_cor),
   
   
   ###Silvaplana

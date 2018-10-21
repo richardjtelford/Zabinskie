@@ -34,12 +34,11 @@ knitr::opts_chunk$set(echo = FALSE)
 
 options(digits = 2)
 
-knitr::read_chunk("abisko/scripts/abisko_short_2003.R")
-knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
-knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
-knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
-knitr::read_chunk("seebergsee/seebergsee_counts.R")
-knitr::read_chunk("seebergsee/seeberg_climate.R")
+knitr::read_chunk("scripts/silvaplana/silvaplana_load.R")
+knitr::read_chunk("scripts/silvaplana/silvaplana_plots.R")
+knitr::read_chunk("scripts/seebergsee/seebergsee_occur.R")
+knitr::read_chunk("scripts/seebergsee/seebergsee_counts.R")
+knitr::read_chunk("scripts/seebergsee/seeberg_climate.R")
 
 Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
 ```
@@ -50,6 +49,10 @@ loadd(pagesHi, lake_air_correlations)
 
 #zabinskie objects
 loadd(sites_all, spp_all, fos, fos_counts, recon, climate, fat_composite, instrumental_temperature, age_sim)
+
+#abisko objects
+loadd(abisko_cor)
+
 ```
 
 # Highlights{-}
@@ -218,7 +221,7 @@ While sub-decadal resolution reconstructions from microfossil assemblages can on
 
 Given the high correlations between chironomid-inferred temperatures and air temperature shown in Table 1 despite the severe problems such high-resolution reconstructions face, it is necessary to examine each of the reconstructions in detail to try to determine the reasons for these apparently good performances. Below, I show there are multiple problems with several of these reconstructions or their validation.
 
-### Lake `r Zabinskie` [@Larocque-Tobler2015]
+### Lake `r Zabinskie`
 
 ```{r reconstruction_diagnostics}
 ```
@@ -245,21 +248,12 @@ The calibration set also has problems. Lac A and Lac H have identical assemblage
 
 ### Abisko lakes
 
-```{r reported_correlations}
-```
-```{r digitised, include=FALSE}
-```
-```{r all_lakes_plot, include = FALSE}
-```
-```{r similar_correlations}
-```
+Larocque and Hall [-@Larocque2003] report reconstructions of July air temperature for four lakes in northern Sweden. The correlations of the reconstructions with instrumental data, all between `r min(readd(abisko_short)$r)` and `r max(readd(abisko_short)$r)`, are surprisingly similar. Using a simulation analogous to that used by Simonsohn [-@Simonsohn2013], the probability of obtaining a standard deviation of the correlations as low as that observed is `r readd(abisko_similar_cor) %>% format(digits = 3)`.
 
-Larocque and Hall [-@Larocque2003] report reconstructions of July air temperature for four lakes in northern Sweden. The correlations of the reconstructions with instrumental data, all between `r min(abisko_short$r)` and `r max(abisko_short$r)`, are surprisingly similar. Using a simulation analogous to that used by Simonsohn [-@Simonsohn2013], the probability of obtaining a standard deviation of the correlations as low as that observed is `r p_low_cor %>% format(digits = 3)`.
-
-Of the four correlations, only one matches the correlation of data digitised from the authors' figure 4 -- Alanen Laanijavri. For the other lakes, the correlations are 
-`r all_lakes %>% filter(lake == "Njulla") %$% cor(instrumental, reconstruction)`,
-`r all_lakes %>% filter(lake == "Lake850") %$% cor(instrumental, reconstruction)`, and
-`r all_lakes %>% filter(lake == "Vuoskkujavri") %$% cor(instrumental, reconstruction)`
+Of the four correlations, only one matches the correlation of data digitised from the authors' figure 4 -- Alanen Laanijavri `r stopifnot(readd(abisko_checked))`. For the other lakes, the correlations are 
+`r abisko_cor %>% filter(lake == "Njulla") %>% pull(r)`,
+`r abisko_cor %>% filter(lake == "Lake850") %>% pull(r)`, and
+`r abisko_cor %>% filter(lake == "Vuoskkujavri")  %>% pull(r)`
 for Lake Njulla, Lake 850, and Vuoskkujavri, respectively. No assemblage data have been archived, so the reconstructions cannot be verified, but there are some discrepancies between the published stratigraphies and the reconstructions. Lake 850 lacks an assemblage for 1999 CE but has a reconstruction. Similarly, Lake Njulla has a reconstruction but no assemblage for 1923 CE and the converse for 1949 CE.
 
 ### Lake Silvaplana [@Larocque2009]
@@ -319,7 +313,7 @@ Larocque-Tobler et al. [-@LarocqueTobler2012] use the calibration-in-time model 
 
 The main features of the reconstruction of mid-summer water temperature from Barker Lake can be replicated from the raw data (Andrew Scott, Personal Communication). Baker Lake is a relatively favourable study system: changes in the short ice-free period of this arctic lake due to climate change will have ecologial consequences; and the lake experienced a large, year-round warming trend over the studied interval. However, the smooth chironomid stratigraphy indicates mixing by bioturbation which has removed high-frequecy variability but preserved the multi-decadal warming trend. The strong autocorrelation induced by this mixing would complicate testing the statistical significance of the correlation between the reconstruction and instrumental data.  
 
-### Nurmijärvi [@Luoto2016]
+### Nurmijärvi
 
 No data have been archived for Luoto and Ojala [-@Luoto2016] so it is not possible to determine if the calibration-in-time and calibration-in-space reconstructions of July air temperature in this paper are reproducible. However, the calibration-in-time model is reported as having a leave-one-out r^2^ of 0.64, whereas the reconstruction has a correlation with instrumental temperature of only 0.51 (i.e. r^2^ = `r 0.51^2`): these two performance statistics should be identical. The paper report that there is a 4--8 year lag (perhaps caused by the ecological and taphonomic processes described above) in the chironomid response to temperature, which would seem to preclude the development of a good calibration-in-time model. 
 
@@ -333,9 +327,6 @@ D) Luoto et al. (2016) == 31
 ```
 
 ### Tiancai Lake
-
-```{r zhang_recon, include=FALSE}
-```
 
 Zhang et al. [-@Zhang2017] report that they correlate their July air temperature reconstruction with a three-year moving average of the instrumental data [@Zhang2017_data]. However, the instrumental time series has been mis-processed. Rather than using a three-year moving average, the authors take the July air temperature of every third year and interpolate. The significant correlation between the reconstruction and the interpolated triennial data can only be a Type 1 error, unless it is believed that chironomids are only sensitive to July temperature every third year and that they can predict the temperature up to two years ahead. With a three-year moving average, the correlation is weak (r = `r readd(zhang_cor)$correct_cor$estimate %>% insist(. < 0.3)`) and not statistically significant (p = `r readd(zhang_cor)$correct_cor$p.value %>% insist(. > 0.05)`).
 
