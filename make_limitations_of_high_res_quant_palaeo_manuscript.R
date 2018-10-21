@@ -65,7 +65,7 @@ source("scripts/zabinskie/calibration_set_issues.R")
 # knitr::read_chunk("seebergsee/seebergsee_counts.R")
 # knitr::read_chunk("seebergsee/seeberg_climate.R")
 
-# knitr::read_chunk("zhang_et_al/zhang_et_al.R")
+source("scripts/zhang_et_al_2017/zhang_et_al.R")
 
 
 
@@ -193,8 +193,29 @@ analyses <- drake_plan(
   #lac_AH -  "scripts/calibration_set_issues.R"
   lac_AH = zabinskie_lac_AH(spp, sites),
   
+  ###Abisko
   
   
+  ###Silvaplana
+  
+  
+  ###Seebergsee
+  
+  
+  ###Baker
+  
+  
+  ###Luoto
+  
+  
+  ###Zhang
+  zhang_data = zhang_import(file_in("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx")),
+  zhang_cor = zhang_calc_cor(zhang_data),
+  
+  ###Speke Hall Lake
+  
+  
+  ##prepare ms
   #add extra packages to bibliography
   biblio2 = package_citations(
     packages = c("vegan", "rioja", "analogue", "palaeoSig"), 

@@ -25,7 +25,7 @@ output:
 documentclass: article
 classoption: a4paper
 csl: extra/journal-of-paleolimnology.csl
-bibliography: extra/chironomid.bib
+bibliography: extra/chironomid2.bib
 ---
 
 
@@ -40,7 +40,6 @@ knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
 knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
 knitr::read_chunk("seebergsee/seebergsee_counts.R")
 knitr::read_chunk("seebergsee/seeberg_climate.R")
-knitr::read_chunk("zhang_et_al/zhang_et_al.R")
 
 Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
 ```
@@ -338,7 +337,7 @@ D) Luoto et al. (2016) == 31
 ```{r zhang_recon, include=FALSE}
 ```
 
-Zhang et al. [-@Zhang2017] report that they correlate their July air temperature reconstruction with a three-year moving average of the instrumental data [@Zhang2017_data]. However, the instrumental time series has been mis-processed. Rather than using a three-year moving average, the authors take the July air temperature of every third year and interpolate. The significant correlation between the reconstruction and the interpolated triennial data can only be a Type 1 error, unless it is believed that chironomids are only sensitive to July temperature every third year and that they can predict the temperature up to two years ahead. With a three-year moving average, the correlation is weak (r = `r zhang_smo_cor$estimate`) and not statistically significant (p = `r zhang_smo_cor$p.value`).
+Zhang et al. [-@Zhang2017] report that they correlate their July air temperature reconstruction with a three-year moving average of the instrumental data [@Zhang2017_data]. However, the instrumental time series has been mis-processed. Rather than using a three-year moving average, the authors take the July air temperature of every third year and interpolate. The significant correlation between the reconstruction and the interpolated triennial data can only be a Type 1 error, unless it is believed that chironomids are only sensitive to July temperature every third year and that they can predict the temperature up to two years ahead. With a three-year moving average, the correlation is weak (r = `r readd(zhang_cor)$correct_cor$estimate %>% insist(. < 0.3)`) and not statistically significant (p = `r readd(zhang_cor)$correct_cor$p.value %>% insist(. > 0.05)`).
 
 ### Speke Hall Lake
 
