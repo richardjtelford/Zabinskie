@@ -58,12 +58,10 @@ source("scripts/zabinskie/calibration_set_issues.R")
 
 source("scripts/abisko/abisko_short_2003.R")
 
-# knitr::read_chunk("silvaplana/scripts/silvaplana_load.R")
-# knitr::read_chunk("silvaplana/scripts/silvaplana_plots.R")
+#source("scripts/silvaplana/silvaplana_load.R")
+#source("scripts/silvaplana/silvaplana_plots.R")
 
-# knitr::read_chunk("silvaplana/scripts/seebergsee_occur.R")
-# knitr::read_chunk("seebergsee/seebergsee_counts.R")
-# knitr::read_chunk("seebergsee/seeberg_climate.R")
+source("scripts/seebergsee/seebergsee_counts.R")
 
 source("scripts/zhang_et_al_2017/zhang_et_al.R")
 
@@ -204,7 +202,25 @@ analyses <- drake_plan(
   ###Silvaplana
   
   
+  
+  
+  
   ###Seebergsee
+  seeberg_count = seeberg_read_counts(file_in("data/seebergsee/seebergsee_counts.csv")),
+  seeberg_merged = seeberg_merge_counts(seeberg_count),
+  seeberg_pc = seeberg_calc_percent(seeberg_merged),
+  seeberg_sums = seeberg_calc_countsums(seeberg_count),
+  seeberg_n = seeberg_calc_noccur(seeberg_count),
+ 
+  seeberg_climate = seeberg_load_climate(file_in("data/seebergsee/homog_mo_CHD.txt")),
+  seeberg_digitised_climate = seeberg_load_digitised_climate(file_in("data/seebergsee/seebergsee_climate")),
+  
+  seeberg_cit_mod = WAPLS(sqrt(seeberg_pc), seeberg_digitised_climate$july) %>% crossval(),
+  seeberg_cit_perf = seeberg_cit_mod %>% performance(),
+  seeberg_nrep = 1000, 
+  seeberg_random_perform = seeberg_calc_random_perform(seeberg_pc, seeberg_nrep),
+  seeberg_ca = cca(sqrt(seeberg_pc)),
+
   
   
   ###Baker

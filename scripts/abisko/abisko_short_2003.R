@@ -116,7 +116,7 @@ abisko_all_Lakes_plot <- function(abisko_all_lakes){
 }
 ## ---- all_lakes_corelation
 abisko_correlations <- function(abisko_all_lakes){ 
-  all_lakes %>% 
+  abisko_all_lakes %>% 
     do(data_frame(r = cor(.$reconstruction, .$instrumental)))
 }
 

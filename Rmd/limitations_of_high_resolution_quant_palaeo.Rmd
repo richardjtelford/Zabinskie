@@ -34,12 +34,6 @@ knitr::opts_chunk$set(echo = FALSE)
 
 options(digits = 2)
 
-knitr::read_chunk("scripts/silvaplana/silvaplana_load.R")
-knitr::read_chunk("scripts/silvaplana/silvaplana_plots.R")
-knitr::read_chunk("scripts/seebergsee/seebergsee_occur.R")
-knitr::read_chunk("scripts/seebergsee/seebergsee_counts.R")
-knitr::read_chunk("scripts/seebergsee/seeberg_climate.R")
-
 Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
 ```
 
@@ -52,6 +46,9 @@ loadd(sites_all, spp_all, fos, fos_counts, recon, climate, fat_composite, instru
 
 #abisko objects
 loadd(abisko_cor)
+
+#seebergsee objects
+loadd(seeberg_sums, seeberg_n, seeberg_cit_perf, seeberg_ca)
 
 ```
 
@@ -285,27 +282,14 @@ small_counts <- 100/apply(fos_holocene, 1, function(x)min(x[x > 0]))
 
 Fossil assemblage percent data have been archived for the 420-year reconstruction. Unfortunately the count sums have not been archived but were reported to be at least 30. However, the data suggest that many of the samples have much smaller counts. For example, the sample for `r holocene_year %>% tail(1)` CE has `r as.english(ncol(last_sample))` taxa with relative abundances of `r last_sample[1]`% and `r last_sample[2]`%. Given that the rarest taxa is probably represented by a single individual, it seems that this represents a count of `r 100/last_sample[1]` individuals. Inspection of Figure 3a from Larocque-Tobler et al. [-@LarocqueTobler2009Holocene], which shows the raw counts, supports this interpretation. `r as.English(sum(small_counts < 20))` of the `r nrow(fos_holocene)` samples appear to have a count of fewer than 20 head capsules. Such extremely low counts cannot be expected to yield precise reconstructions.
 
-### Seebergsee [@LarocqueTobler2011b]
+### Seebergsee
 
-```{r seeberg_occur}
-```
-```{r seebergsee_digitised, fig.keep='none'}
-```
+No fossil data have been archived from the anoxic Seebergsee, but the raw count data from Figure 4a in Larocque-Tobler et al. [-@LarocqueTobler2011b] can be digitised and samples merged to match Figure 4b. The paper reports that adjacent fossil samples were merged until there were at least 30 chironomids. However, `r (mean(seeberg_sums$sum4 < 30) * 100) %>% insist(. > 0)`% of the merged samples have count sums lower than 30 with a minimum count sum of `r min(seeberg_sums$sum4) %>% insist(. < 30) %>% as.english()`. Curiously, all chironomid counts in Figure 4a of Larocque-Tobler et al. [-@LarocqueTobler2011b] are multiples of four. Since the rarest taxa in the fossil data is almost certainly present as a single individual, the probability that all counts are multiples of four is infinitesimally small (under very optimistic assumptions, the probability that a given count is divisible by four is 0.25. The probability that all `r seeberg_n` counts are divisible by four is 10^`r log10(0.25^seeberg_n) %>% round()`^). This suggests that the counts have been multiplied by four. If so, all the count sums are below 30 `r stopifnot(all(seeberg_sums$sum < 30))` and the minimum count sum is only `r min(seeberg_sums$sum) %>% as.english()`.
 
-No fossil data have been archived from the anoxic Seebergsee, but the raw count data from Figure 4a in Larocque-Tobler et al. [-@LarocqueTobler2011b] can be digitised and samples merged to match Figure 4b. The paper reports that adjacent fossil samples were merged until there were at least 30 chironomids. However, `r mean(seeberg_sums$sum4 < 30) * 100`% of the merged samples have count sums lower than 30 with a minimum count sum of `r min(seeberg_sums$sum4) %>% as.english()`. Curiously, all chironomid counts in Figure 4a of Larocque-Tobler et al. [-@LarocqueTobler2011b] are multiples of four. Since the rarest taxa in the fossil data is almost certainly present as a single individual, the probability that all counts are multiples of four is infinitesimally small (under very optimistic assumptions, the probability that a given count is divisible by four is 0.25. The probability that all `r sum_occur` counts are divisible by four is 10^`r log10(seeberg_prob) %>% round()`^). This suggests that the counts have been multiplied by four. If so, all the count sums are below 30 `r stopifnot(all(seeberg_sums$sum < 30))` and the minimum count sum is only `r min(seeberg_sums$sum) %>% as.english()`.
+Digitising the July instrumental temperature data from figure 6 in Larocque-Tobler et al. [-@LarocqueTobler2011b] allows the reproducibility of the calibration-in-time result to be tested. The paper does not report which transfer function method was used, but a two component WAPLS model on square-root transformed assemblage data yields a reconstruction that has a correlation of `r seeberg_cit_perf$object[2, "R2"] ^ 0.5` with the instrumental data, identical to that reported, and the reconstruction appears to be identical. However, this performance is only achieved if the model is not cross-validated. With leave-one-out cross-validation, which is essential to prevent overfitting and give an unbiased estimate of performance, the correlation drops to `r seeberg_cit_perf$crossval[2, "R2"] ^ 0.5`, and the reconstruction has no skill. The importance of cross-validation can be demonstrated by trying to reconstruct random noise: the observed correlation is exceeded by `r mean(random_perf > seeberg_cit_perf$object[2, "R2"]) * 100`% of `r readd(seeberg_nrep)` trials reconstructing Gaussian noise, and so cannot be considered remarkable.
 
-```{r digitised_seebergsee_climate, fig.keep="none", results = "hide"}
-```
 
-```{r random_temperature}
-```
-
-Digitising the July instrumental temperature data from figure 6 in Larocque-Tobler et al. [-@LarocqueTobler2011b] allows the reproducibility of the calibration-in-time result to be tested. The paper does not report which transfer function method was used, but a two component WAPLS model on square-root transformed assemblage data yields a reconstruction that has a correlation of `r sbs_perf$object[2, "R2"] ^ 0.5` with the instrumental data, identical to that reported, and the reconstruction appears to be identical. However, this performance is only achieved if the model is not cross-validated. With leave-one-out cross-validation, which is essential to prevent overfitting and give an unbiased estimate of performance, the correlation drops to `r sbs_perf$crossval[2, "R2"] ^ 0.5`, and the reconstruction has no skill. The importance of cross-validation can be demonstrated by trying to reconstruct random noise: the observed correlation is exceeded by `r mean(random_perf > performance(sbs_mod)$object[2, "R2"]) * 100`% of `r nrep` trials reconstructing Gaussian noise, and so cannot be considered remarkable.
-
-```{r sbs_ca}
-```
-
-There are some other issues with Larocque-Tobler et al. [-@LarocqueTobler2011b]. These include substantial discrepancies between the age-depth model shown in their Figure 3 and Figure 4b; difficulties reconciling the reported instrumental data with the series from Château d’Oex; and the report that the first and second axes of a correspondence analysis (CA) of the fossil data explain 45% and 27% of the inertia, respectively. Replicating the CA shows that the first and second axes explain only `r eigenvals(sbs_ca)[1]/sbs_ca$tot.chi * 100`% and `r eigenvals(sbs_ca)[2]/sbs_ca$tot.chi * 100`%, respectively, of the inertia.
+There are some other issues with Larocque-Tobler et al. [-@LarocqueTobler2011b]. These include substantial discrepancies between the age-depth model shown in their Figure 3 and Figure 4b; difficulties reconciling the reported instrumental data with the series from Château d’Oex; and the report that the first and second axes of a correspondence analysis (CA) of the fossil data explain 45% and 27% of the inertia, respectively. Replicating the CA shows that the first and second axes explain only `r eigenvals(seeberg_ca)[1]/seeberg_ca$tot.chi * 100`% and `r eigenvals(seeberg_ca)[2]/seeberg_ca$tot.chi * 100`%, respectively, of the inertia.
 
 Larocque-Tobler et al. [-@LarocqueTobler2012] use the calibration-in-time model from Larocque-Tobler et al. [-@LarocqueTobler2011b] to reconstruct July air temperature from a millennium-long chironomid stratigraphy from Seebergsee. In view of the very poor cross-validated performance of the calibration-in-time model (r^2^ = `r sbs_perf$crossval[2, "R2"]`), the millennium-long reconstruction cannot be expected to be skilful.
 
