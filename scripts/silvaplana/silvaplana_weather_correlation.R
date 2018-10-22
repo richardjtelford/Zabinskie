@@ -1,5 +1,5 @@
 #actual instrumental data
-sil_monthly <- read.table(file = "silvaplana/data/homog_mo_SIA.txt", skip = 27, header = TRUE) %>%
+sil_monthly <- read.table(file = "data/silvaplana/homog_mo_SIA.txt", skip = 27, header = TRUE) %>%
  select(year = Year, temperature = Temperature, month = Month) %>% 
   mutate(month = factor(month, labels = month.abb))
 
@@ -20,6 +20,6 @@ sil_monthly %>%
   mutate(correlation = if_else(month == month1, NA_real_, correlation)) %>% 
   ggplot(aes(x = month, y = month1, fill = correlation)) + 
   geom_raster() +
-  scale_fill_viridis() + 
+  scale_fill_continuous(type = "viridis") + 
   coord_equal() +
   theme(axis.title = element_blank())

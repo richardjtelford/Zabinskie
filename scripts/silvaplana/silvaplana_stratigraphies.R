@@ -23,18 +23,18 @@ cleanup_images <- function(){
 
 ## ---- load_published_stratigraphies
 
-strat_qsr <- image_read("images/silvaplana_qsr.png")
+strat_qsr <- image_read("data/silvaplana/images/silvaplana_qsr.png")
 # strat_qsr %>% image_crop(geometry = "1443x190+0+650")
 # strat_qsr %>% image_crop(geometry = "1443x83+0+757")
 
-strat_jopl <- image_read("images/JoPL-06.png")
+strat_jopl <- image_read("data/silvaplana/images/JoPL-06.png")
 strat_jopl <- strat_jopl  %>%  
   image_rotate(90)
 # strat_jopl %>% image_crop("2200x1180+380+470")
 # strat_jopl %>% image_crop("2200x810+380+810")
 
   
-strat_holocene <- image_read("images/Holocene-05.png")
+strat_holocene <- image_read("data/silvaplana/images/Holocene-05.png")
 strat_holocene <- strat_holocene %>% 
   image_rotate(90) 
 # strat_holocene %>% image_crop("3000x632+190+500")

@@ -58,8 +58,8 @@ source("scripts/zabinskie/calibration_set_issues.R")
 
 source("scripts/abisko/abisko_short_2003.R")
 
-#source("scripts/silvaplana/silvaplana_load.R")
-#source("scripts/silvaplana/silvaplana_plots.R")
+source("scripts/silvaplana/silvaplana_load.R")
+source("scripts/silvaplana/silvaplana_plots.R")
 
 source("scripts/seebergsee/seebergsee_counts.R")
 
@@ -200,9 +200,21 @@ analyses <- drake_plan(
   
   
   ###Silvaplana
+  #load data
+  silva_recon_holocene = silva_load_recon_holocene(file_in("data/silvaplana/silvaplana2009.txt")),
+  silva_recon_jopl = silva_load_recon_jopl(file_in("data/silvaplana/silvaplana2008.txt")),
+  silva_fos_holocene = silva_load_fos_holocene(file_in("data/silvaplana/silvaplana2009.txt")),
+    
+  #make plots of reconstructions
+  silva_recon_plot = silv_plot_reconstructions(silva_recon_jopl, silva_recon_holocene),
+  silva_side_by_side = silva_put_recons_side_by_side(silva_recon_jopl, silva_recon_holocene),
+  silva_recon_strat_plot = silva_plot_side_by_side(silva_side_by_side),
+  silva_max_diff = silva_calc_max_difference(silva_side_by_side),
+  silva_combined_recon_plots = silva_combine_recon_figures(silva_recon_plot, silva_recon_strat_plot),
+  silva_est_countSums = silva_estimate_countSums(silva_fos_holocene),
   
-  
-  
+  silva_est_countSum = silva_estimate_countSums(silva_fos_holocene),
+  silva_last = silva_last_sample(silva_fos_holocene),
   
   
   ###Seebergsee
