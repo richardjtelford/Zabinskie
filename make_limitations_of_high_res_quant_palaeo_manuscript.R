@@ -39,7 +39,9 @@ as.English <- function(x){ #sentence case
     as.character(as.english(x)), 
     opts_brkiter = stringi::stri_opts_brkiter(type = "sentence"))
 }
-
+format_p <- function(p) {
+  ifelse(p < 0.001, "< 0.001", paste("=", signif(p, 2)))
+}
 
 #import scripts
 source("scripts/general/pages2k.R")
@@ -62,6 +64,8 @@ source("scripts/silvaplana/silvaplana_load.R")
 source("scripts/silvaplana/silvaplana_plots.R")
 
 source("scripts/seebergsee/seebergsee_counts.R")
+
+source("scripts/luoto_digitised.R")
 
 source("scripts/zhang_et_al_2017/zhang_et_al.R")
 
@@ -239,7 +243,11 @@ analyses <- drake_plan(
   
   
   ###Luoto
-  
+  luoto_climate = luoto_load_digitised_climate(file_in("data/luoto/measured.txt")),
+  luoto_fos = luoto_digisise_stratigraphy(file_in("data/luoto/outfile2.pdf")),
+  luoto_cit_mod = luoto_run_cit_mod(luoto_fos, luoto_climate),
+  luoto_cit_perform = performance(luoto_cit_mod),
+
   
   ###Zhang
   zhang_data = zhang_import(file_in("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx")),
