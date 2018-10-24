@@ -248,7 +248,7 @@ The calibration set also has problems. Lac A and Lac H have identical assemblage
 
 ### Abisko lakes
 
-Larocque and Hall [-@Larocque2003] report reconstructions of July air temperature for four lakes in northern Sweden. The correlations of the reconstructions with instrumental data, all between `r min(readd(abisko_short)$r)` and `r max(readd(abisko_short)$r)`, are surprisingly similar. Using a simulation analogous to that used by Simonsohn [-@Simonsohn2013], the probability of obtaining a standard deviation of the correlations as low as that observed is `r readd(abisko_similar_cor) %>% insist(. > 0.001) %>% format_p()`.
+Larocque and Hall [-@Larocque2003] report reconstructions of July air temperature for four lakes in northern Sweden. The correlations of the reconstructions with instrumental data, all between `r min(readd(abisko_short)$r)` and `r max(readd(abisko_short)$r)`, are surprisingly similar. Using a simulation analogous to that used by Simonsohn [-@Simonsohn2013], the probability of obtaining a standard deviation of the correlations as low as that observed is `r readd(abisko_similar_cor) %>% insist(. < 0.001) %>% format_p()`.
 
 Of the four correlations, only one matches the correlation of data digitised from the authors' figure 4 -- Alanen Laanijavri `r stopifnot(readd(abisko_checked))`. For the other lakes, the correlations are 
 `r abisko_cor %>% filter(lake == "Njulla") %>% pull(r)`,
@@ -286,7 +286,9 @@ The main features of the reconstruction of mid-summer water temperature from Bar
 
 ### Nurmijärvi
 
-No data have been archived for Luoto and Ojala [-@Luoto2016] so it is not possible to determine if the calibration-in-time and calibration-in-space reconstructions of July air temperature in this paper are reproducible. However, the calibration-in-time model is reported as having a leave-one-out r^2^ of 0.64, whereas the reconstruction has a correlation with instrumental temperature of only 0.51 (i.e. r^2^ = `r 0.51^2`): these two performance statistics should be identical. The paper report that there is a 4--8 year lag (perhaps caused by the ecological and taphonomic processes described above) in the chironomid response to temperature, which would seem to preclude the development of a good calibration-in-time model. 
+No data have been archived for Luoto and Ojala [-@Luoto2016], but it is possible to digitise the fossil stratigraphy and test the reproducibility of the calibration-in-time reconstruction of July air temperature. The calibration-in-time model is reported as having a leave-one-out r^2^ of 0.64, whereas the reconstruction has a reported correlation with instrumental temperature of only 0.51 (i.e. r^2^ = `r 0.51^2`): these two performance statistics should be identical. With the digitised data, I find the leave-one-out r^2^ to be only `r readd(luoto_cit_perform)$crossval["WA.inv.tol", "R2"] %>% insist(. < 0.2)`. It is possible that the apparent performance was reported by mistake.
+
+The Nurmijärvi paper report that there is a 4--8 year lag (perhaps caused by the ecological and taphonomic processes described above) in the chironomid response to temperature, which would seem to preclude the development of a good calibration-in-time model. 
 
 ```{r eval = FALSE}
 The number of lakes in the calibration set is variously given as 180 or 183, both higher than the sum of the number of lakes in the prior calibration sets merged for this paper. 

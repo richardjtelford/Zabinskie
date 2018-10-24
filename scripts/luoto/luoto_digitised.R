@@ -125,82 +125,76 @@ luoto_get_optima <- function(mod){
   optima
 }
 
-#  optima %>% 
-#   ggplot(aes(Optima, cit_2017, label = taxon)) + 
-#   geom_point() +
-#   geom_text() +
-#   geom_abline()
-# 
-# optima %>% 
-#   ggplot(aes(cis_2017, cit_2017, label = taxon)) + 
-#   geom_point() +
-#   geom_text() +
-#   geom_abline()
-# 
-# optima %>% 
-#   ggplot(aes(cis_2014, Optima, label = taxon)) + 
-#   geom_point() +
-#   geom_text() +
-#   geom_abline()
-# 
-# optima %>% 
-#   ggplot(aes(cis_2014, cis_2017, label = taxon)) + 
-#   geom_point() +
-#   geom_text() +
-#   geom_abline()
-
-pca <- rda(fig2_fat %>% select(-depth) %>% sqrt())
-summary(pca)[[6]]
-screeplot(pca, bstick = TRUE)
-
-plot(pca)
-rda <- rda(fig2_fat %>% select(-depth) %>% slice(1:nrow(inst)) %>% sqrt(), inst$temp, inst$year)
-rda
-anova(rda)
-           
-
-result <- data_frame(
-  year = c(inst$year, seq(1827, 1785, length = 7)),
-  temp = c(inst$temp, rep(NA, 7)),
-  depth = fig2_fat$depth,
-  cit_fitted = c(fitted(mod)[, "WA.inv.tol"], rep(NA, 7)),
-  cit_pred = c(mod$predicted[, "WA.inv.tol"], rep(NA, 7)),
-  pc1 = scores(pca, choice = 1, display = "sites")[, "PC1"]
-  ) 
-
-# result %>% ggplot(aes(x = temp, y = cit_pred)) +
-#   geom_abline(colour = "grey40", linetype = "dashed") +
-#   geom_point() +
-# #  geom_smooth() +
-#   coord_equal() +
-#   labs(x = "Measured July temperature °C", y = "Predicted July temperature °C")
-
-
-result %$% cor.test(temp, pc1, use = "pair")
-
-result %$% cor.test(temp, cit_fitted, use = "pair")
-result %$% cor.test(temp, cit_pred, use = "pair")
-
-#detrend
-result %>% 
-  filter(!is.na(temp)) %>%
-  mutate(
-    detrend_temp = resid(lm(temp ~ year)),
-    detrend_cit_pred = resid(lm(cit_pred ~ year))
-  ) %$% 
-  cor.test(detrend_temp, detrend_cit_pred)
+luoto_plot_optima <- function(optima){
+   check_cit_optima <- optima %>%
+    ggplot(aes(Optima, cit_2017, label = taxon)) +
+    geom_point() +
+    geom_text() +
+    geom_abline()
   
-
-result %>% 
-  gather(key  = key, value = temperature, -year, -depth) %>% 
-  mutate(key = factor(key, levels = c("temp", "pc1", "cit_fitted", "cit_pred")),
-         key = recode(key, temp = "Instrumental", pc1 = "PC1", cit_fitted = "CiT", cit_pred = "CiT Prediction")) %>% 
+  check_digitisation <- check_cit_optima + aes(cis_2017, cit_2017, label = taxon)
+  cit_vs_cis2014 <- check_cit_optima + aes(cis_2014, Optima, label = taxon)
+  check_cis_optima <- check_cit_optima + aes(cis_2014, cis_2017, label = taxon)
   
-  ggplot(aes(x = year, y = temperature)) + 
-  geom_line() +
-  facet_wrap(~ key, nrow = 1, scales = "free_x") + 
-  coord_flip() +
-  labs(x = "Year", y = "")
+  return(list(check_cit_optima = check_cit_optima, 
+              check_digitisation = check_digitisation, 
+              cit_vs_cis2014 = cit_vs_cis2014, 
+              check_cis_optima = check_cis_optima))
+}
 
-lm(temp ~ year, inst) %>% summary()
-inst %$% cor(year, temp)
+# pca <- fig2_fat %>% 
+#   select(-depth) %>% 
+#   sqrt() %>% 
+#   downweight() %>% 
+#   rda()
+# summary(pca)[[6]]$import[,1:5]
+# screeplot(pca, bstick = TRUE)
+# 
+# fig2_fat %>% 
+#   select(-depth) %>% 
+#   sqrt() %>%
+#   downweight() %>% 
+#   decorana()
+# 
+# plot(pca)
+# rda <- rda(fig2_fat %>% select(-depth) %>% slice(1:nrow(inst)) %>% sqrt(), inst$temp)
+# rda
+# anova(rda)
+# c_rda <- rda(fig2_fat %>% select(-depth) %>% slice(1:nrow(inst)) %>% sqrt(), inst$temp, inst$year)           
+# 
+# result <- data_frame(
+#   year = c(inst$year, seq(1827, 1785, length = 7)),
+#   temp = c(inst$temp, rep(NA, 7)),
+#   depth = fig2_fat$depth,
+#   cit_fitted = c(fitted(mod)[, "WA.inv.tol"], rep(NA, 7)),
+#   cit_pred = c(mod$predicted[, "WA.inv.tol"], rep(NA, 7)),
+#   pc1 = scores(pca, choice = 1, display = "sites")[, "PC1"]
+#   ) 
+# 
+# result %$% cor.test(temp, pc1, use = "pair")
+# 
+#   
+# 
+# result %>% 
+#   gather(key  = key, value = temperature, -year, -depth) %>% 
+#   mutate(key = factor(key, levels = c("temp", "pc1", "cit_fitted", "cit_pred")),
+#          key = recode(key, temp = "Instrumental", pc1 = "PC1", cit_fitted = "CiT", cit_pred = "CiT Prediction")) %>% 
+#   ggplot(aes(x = year, y = temperature)) + 
+#   geom_line() +
+#   facet_wrap(~ key, nrow = 1, scales = "free_x") + 
+#   coord_flip() +
+#   labs(x = "Year", y = "")
+
+# #detrend
+# result %>% 
+#   filter(!is.na(temp)) %>%
+#   mutate(
+#     detrend_temp = resid(lm(temp ~ year)),
+#     detrend_cit_pred = resid(lm(cit_pred ~ year))
+#   ) %$% 
+#   cor.test(detrend_temp, detrend_cit_pred)
+# 
+
+
+#estimate count sums
+#fig2_fat %>% select(-depth) %>% estimate_n(digits = 0) %>% arrange(est_n)

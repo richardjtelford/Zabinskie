@@ -65,7 +65,7 @@ source("scripts/silvaplana/silvaplana_plots.R")
 
 source("scripts/seebergsee/seebergsee_counts.R")
 
-source("scripts/luoto_digitised.R")
+source("scripts/luoto/luoto_digitised.R")
 
 source("scripts/zhang_et_al_2017/zhang_et_al.R")
 
@@ -244,7 +244,7 @@ analyses <- drake_plan(
   
   ###Luoto
   luoto_climate = luoto_load_digitised_climate(file_in("data/luoto/measured.txt")),
-  luoto_fos = luoto_digisise_stratigraphy(file_in("data/luoto/outfile2.pdf")),
+  luoto_fos = luoto_digitise_stratigraphy(file_in("data/luoto/outfile2.pdf")),
   luoto_cit_mod = luoto_run_cit_mod(luoto_fos, luoto_climate),
   luoto_cit_perform = performance(luoto_cit_mod),
 

@@ -1,17 +1,24 @@
-inst <- read.table("luoto/data/measured.txt") %>% 
+inst <- read.table("data/luoto/measured.txt") %>% 
   select(temp = V1, year = V2) %>% 
   mutate(year = round(year))
 
-inst %>% ggplot(aes(x = year, y = temp)) + geom_point() + coord_flip() + geom_line()
+inst %>% ggplot(aes(x = year, y = temp)) + 
+  geom_point() + 
+  geom_line() + 
+  coord_flip() 
 
-cit <- read.table("luoto/data/cit.txt") %>% #fubar
+cit <- read.table("data/luoto/cit.txt") %>% #fubar
   select(temp = V1, year = V2) %>% 
   mutate(year = round(year), temp = (temp - mean(temp)) * -1 *1.47 + 14.6) %>% 
   slice(-(1:nrow(inst)))
 
-cit %>% ggplot(aes(x = year, y = temp)) + geom_point() + coord_flip() + geom_line()
+cit %>% 
+  ggplot(aes(x = year, y = temp)) + 
+  geom_point() + 
+  coord_flip() + 
+  geom_line()
 
-cis <- read.table("luoto/data/cis.txt") %>% #fubar
+cis <- read.table("data/luoto/cis.txt") %>% #fubar
   select(temp = V1, year = V2) %>% 
   mutate(year = round(year), temp = temp * - 1 + 15 * 2) %>% 
   slice(-(1:(nrow(inst) + nrow(cit)))) %>% 
@@ -53,7 +60,7 @@ inst_cit %>% mutate(temp.inst = lag(temp.inst, 1)) %$%
 
 
 ### optima
-glyp_pal <- read.table("luoto/data/glyp_pal.txt") %>% 
+glyp_pal <- read.table("data/luoto/glyp_pal.txt") %>% 
   select(perc = V1, samp = V2) %>% 
   mutate(samp = round(samp))
 
@@ -70,7 +77,7 @@ glyp_pal %$% weighted.mean(temp, perc)
 
 
 ### tany_men
-tany_men <- read.table("luoto/data/tany_men.txt") %>% 
+tany_men <- read.table("data/luoto/tany_men.txt") %>% 
   select(perc = V1, samp = V2) %>% 
   mutate(samp = round(samp))
 
@@ -86,6 +93,4 @@ tany_men %$% weighted.mean(temp, perc)
 
 tany_men %>% filter(year != 1999) %$% weighted.mean(temp, perc)
 
-
 tany_men
-
