@@ -90,7 +90,7 @@ luoto_run_cit_mod <- function(fig2_fat, inst){
   return(mod)
 }
 
-performance(mod)
+#performance(mod)
 
 #get optima from fitted model and from figures in papers.
 luoto_get_optima <- function(mod){

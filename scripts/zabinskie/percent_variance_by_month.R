@@ -24,7 +24,7 @@ zabinskie_plot_perform_by_month <- function(perform_by_month){
     geom_point() + 
     geom_line(aes(group = 1)) +
     labs(x = "Month", y = "CCA inertia\nexplained %") +
-    scale_y_continuous(limits = c(0, NA), expand = c(0.02, 0)) +
+    scale_y_continuous(expand = c(0.02, 0)) +
     scale_x_discrete(expand = c(0.02, 0.02)) + 
     theme(axis.title.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)))
   
@@ -47,6 +47,7 @@ zabinskie_plot_perform_by_month <- function(perform_by_month){
                                       )
   return(variance_plot)
 }
+
 ## ---- reconstruction_by_month
 zabinskie_reconstruction_by_month <- function(climate, spp, chron){
   recon_by_month <- climate %>% 

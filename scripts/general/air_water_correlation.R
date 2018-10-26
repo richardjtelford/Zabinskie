@@ -26,7 +26,7 @@ values <- laketemps:::gltc_values %>%
 correlations <- values %>% 
  summarise(correlation = cor(Air.Temp.Mean.Summer.CRU, Lake.Temp.Summer.InSitu), n = n(), sd = sd(Lake.Temp.Summer.InSitu))
 
-correlations
+list(values = values, correlations = correlations)
 }
 
 ## ---- correlations_check

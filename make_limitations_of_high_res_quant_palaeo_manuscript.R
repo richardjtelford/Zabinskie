@@ -141,10 +141,10 @@ analyses <- drake_plan(
     inner_join(recon %>% mutate(recon_year = year)) %>% 
     arrange(desc(recon_year)),
   
-  #performance_by_month "scripts/percent_variance_by_month.R"
+  #performance_by_month "scripts/zabinskie/percent_variance_by_month.R"
   perform_by_month = zabinskie_perform_by_month(climate, spp, fat_composite_as_zab_published),
   perform_by_month_plot = zabinskie_plot_perform_by_month(perform_by_month),
-  #reconstruction_by_month "scripts/percent_variance_by_month.R"
+  #reconstruction_by_month "scripts/zabinskie/percent_variance_by_month.R"
   recon_by_month = zabinskie_reconstruction_by_month(climate, spp, chron), 
   recon_by_month_plot = zabinskie_plot_reconstruction_by_month(recon_by_month),
   
@@ -266,10 +266,15 @@ analyses <- drake_plan(
   #knit manuscript
   manuscript = target(
     command = rmarkdown::render(
-      input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"), knit_root_dir = "../", output_dir = "./output"), 
+      input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"),
+      knit_root_dir = "../", 
+      output_dir = "./output"), 
     trigger = trigger(change = biblio2)  
     ),
-  
+  presentation = rmarkdown::render(
+    input = knitr_in("Rmd/eecrg_2018_10_26.Rmd"), 
+    knit_root_dir = "../", 
+    output_dir = "./output"),
   strings_in_dots = "literals"
 )
 
