@@ -1,17 +1,14 @@
 #silvaplana digitise
 
 #extract page 6 from pdf
-system("qpdf silvaplana/s10933-008-9228-0.pdf  --pages silvaplana/s10933-008-9228-0.pdf 6 -- silvaplana/data/jopl_p6.pdf")
-
-
+system("qpdf data/silvaplana/s10933-008-9228-0.pdf  --pages silvaplana/s10933-008-9228-0.pdf 6 -- data/silvaplana/jopl_p6.pdf")
 
 #uncompress
-
-system("qpdf silvaplana/data/jopl_p6.pdf --stream-data=uncompress  silvaplana/data/jopl_p6_uc.pdf")
+system("qpdf data/silvaplana/jopl_p6.pdf --stream-data=uncompress  data/silvaplana/jopl_p6_uc.pdf")
 
 #import pdf
 
-page6 <- readLines("silvaplana/data/jopl_p6_uc.pdf")
+page6 <- readLines("data/silvaplana/jopl_p6_uc.pdf")
 
 #find figure
 start <- grep("/Document /MC5 BDC", page6)
@@ -31,45 +28,39 @@ jopl_fig3 <- jopl_fig3 %>%
   filter(between(width, -1, 1)) %>% 
   mutate(taxa = factor(y, labels = taxa),#relabel
           percent = height/max(height) * 68,
-          depth = (x - min(x))/(max(x) - min(x)) * 94, 
+          depth = (x - min(x))/(max(x) - min(x)) * 94, #scale
           depth = round(depth, 1)
   )
 
-jopl_fig3 %>% 
-  ggplot(aes(x = x + width/2, y = y, width = width, height = height, fill = factor(sign(width)))) +
-  geom_tile(show.legend = FALSE) +
-  scale_y_reverse()
+# jopl_fig3 %>% 
+#   ggplot(aes(x = x + width/2, y = y, width = width, height = height, fill = factor(sign(width)))) +
+#   geom_tile(show.legend = FALSE) +
+#   scale_y_reverse()
 
 jopl_fig3_fat <- jopl_fig3 %>% 
   select(-x, -width, -height, -re, -y) %>%
   spread(key = taxa, value = percent, fill = 0) %>%  
   filter(rep(c(TRUE, FALSE), length.out = nrow(.)))
 
-jopl_fig3_fat %>% select(-depth) %>% estimate_n(digits = 2) %>% mutate(n = 1:n()) %>% arrange(est_n)
-
-dim(jopl_fig3_fat)
-jopl_fig3_fat %>% select(depth)
 jopl_fig3_fat  %>%  ggplot(aes(x = depth, y = Ortho)) + geom_col() 
 
 bad <- c(6)
 n = 5
 full_join(
-jopl_fig3_fat %>% slice(n) %>% gather(key, value, -depth) %>% filter(value > 0) %>% arrange(key),
-
-fos_holocene %>% slice(n) %>% gather(key, value) %>% filter(value > 0) %>% arrange(key), suffix = c("jopl", "holo"), by = "key") %>% print(n = Inf) %>% ggplot(aes(x = valueholo, y = valuejopl)) + geom_point() + geom_abline()
-
-
-jopl_fig3 %>% group_by(depth) %>% count() %>% ungroup() %>% filter(rep(c(TRUE, FALSE), length.out = nrow(.)))
+  jopl_fig3_fat %>% slice(n) %>% gather(key, value, -depth) %>% filter(value > 0) %>% arrange(key),
+  
+  silva_fos_holocene %>% slice(n) %>% gather(key, value) %>% filter(value > 0) %>% arrange(key), suffix = c("jopl", "holo"), by = "key")  %>% 
+  ggplot(aes(x = valueholo, y = valuejopl)) + geom_point() + geom_abline()
 
 
 full_join(
   jopl_fig3 %>% filter(depth == 93.7) %>% select(-(x:re)),
-  fos_holocene %>% mutate(n = 1:n()) %>% filter(Sergent > 0, Chiro_Plu > 0, Tany.p > 0) %>% select_if(colSums(.) > 0) %>% gather(key, value, -n), 
+  silva_fos_holocene %>% select(-YearAD) %>% mutate(n = 1:n()) %>% filter(Sergent > 0, Chiro_Plu > 0, Tany.p > 0) %>% select_if(colSums(.) > 0) %>% gather(key, value, -n), 
   by = c(taxa = "key"), suffix = c("_jopl","_holo"))
 
 
 ##random tf
-spp <- fos_holocene %>% slice(1:64) %>% select_if(colSums(. > 0) > 1)
+spp <- silva_fos_holocene %>% select(-YearAD) %>% slice(1:64) %>% select_if(colSums(. > 0) > 1)
 random_wapls2 <- rerun(.n = 1000, rnorm(64)) %>% 
   map(WAPLS, y = sqrt(spp), npls = 2) %>% 
   map(crossval, verbose = FALSE) %>% 
@@ -92,17 +83,18 @@ eigenvals(CA)[1:4]/sum(eigenvals(CA)[1:4])
 screeplot(CA, bstick = TRUE)
 
 plot(CA, display = "sites", type = "p")
-text(CA, display = "sites", labels = holocene_year$YearAD[1:69])
+text(CA, display = "sites", labels = silva_fos_holocene$YearAD[1:64])
 
 
-holocene_year %>% mutate(Year = as.numeric(YearAD), delta = lag(Year)- Year) %>%  print(n = Inf) %>% ggplot(aes(x = Year, y = delta)) + geom_point() + ylim(0, NA) + geom_line()
+silva_fos_holocene %>% 
+  mutate(Year = as.numeric(YearAD), delta = lag(Year)- Year) %>%  print(n = Inf) %>% ggplot(aes(x = Year, y = delta)) + geom_point() + ylim(0, NA) + geom_line()
 
 #actual instrumental data
-sil_inst <- read.table(file = "silvaplana/data/homog_mo_SIA.txt", skip = 27, header = TRUE) %>%
+sil_inst <- read.table(file = "data/silvaplana/homog_mo_SIA.txt", skip = 27, header = TRUE) %>%
   filter(Month == 7) %>% select(year = Year, temperature = Temperature)
 
 # digitised instrumental data for calibration in time
-sil_cit_temp <- read.table("silvaplana/data/calibration_in_time.txt") %>% 
+sil_cit_temp <- read.table("data/silvaplana/calibration_in_time.txt") %>% 
   select(1:2) %>% 
   set_names(c("year", "temperature")) %>% 
   mutate(year = round(year))
@@ -113,9 +105,9 @@ sil_cit_temp %>% ggplot(aes(x = year, y = temperature)) +
   geom_point()
 
 sil_cit_temp %>% mutate(year = as.character(year)) %>%
-  anti_join(holocene_year, by = c(year = "YearAD"))
+  anti_join(silva_fos_holocene, by = c(year = "YearAD"))
 
-sil_space_temp <- read.table("silvaplana/data/calibration_in_space.txt") %>% 
+sil_space_temp <- read.table("data/silvaplana/calibration_in_space.txt") %>% 
   select(1:2) %>% 
    set_names(c("year", "temperature")) %>% 
   bind_rows(#overplotted points
@@ -144,7 +136,7 @@ bind_rows(
 
 cor(sil_cit_temp$temperature, sil_space_temp$temperature)
 
-sil_space_recon <- read.table("silvaplana/data/calibration_in_space_recon.txt") %>% 
+sil_space_recon <- read.table("data/silvaplana/calibration_in_space_recon.txt") %>% 
   select(1:2) %>% 
   set_names(c("year", "temperature"))
 dim(sil_space_recon)
@@ -155,27 +147,6 @@ sil_space_recon %>% ggplot(aes(x = year, y = temperature)) +
   geom_point(alpha = 0.5)
 
 
-bind_rows(
-  space = sil_space_temp, 
-  recon = sil_space_recon, .id = "what") %>% 
-  ggplot(aes(x = year, y = temperature, colour = what)) + 
-  geom_point() + 
-  geom_line() +
-  theme(legend.position = c(0, 1)) +
-  xlim(1925, 1950)
-
-bind_rows(
-  space = sil_space_temp, 
-  recon = sil_space_recon, .id = "what") %>%
-  group_by(what) %>%
-  arrange(year) %>% 
-  mutate(n = 1:n()) %>% 
-#  mutate(n = if_else(what == "recon", n-3L, n)) %>% 
-  ggplot(aes(x = n, y = year, colour = what)) + 
-  geom_point() + 
-  geom_line() +
-  theme(legend.position = c(0, 1))
-
 cor(sil_space_recon$temperature, sil_space_temp$temperature)
 
 #cit with instrumental data
@@ -183,7 +154,7 @@ cor(sil_space_recon$temperature, sil_space_temp$temperature)
 sil_inst
 holocene_year
 
-sil_temp <- approx(x = sil_inst$year, y = sil_inst$temperature, xout = holocene_year %>% filter(YearAD> 1850) %>% pull(YearAD) %>%  as.numeric())
+sil_temp <- approx(x = sil_inst$year, y = sil_inst$temperature, xout = silva_fos_holocene %>% mutate(YearAD = as.numeric(YearAD)) %>% filter(YearAD > 1850) %>% pull(YearAD))
 
-mod <- WAPLS(fos_holocene %>% slice(1:64) %>% select_if(colSums(. > 0) > 1) %>% sqrt(), sil_temp$y[1:64]) %>% crossval(verbose = FALSE)
+mod <- WAPLS(silva_fos_holocene %>% select(-YearAD) %>% slice(1:64) %>% select_if(colSums(. > 0) > 1) %>% sqrt(), sil_temp$y[1:64]) %>% crossval(verbose = FALSE)
 performance(mod)

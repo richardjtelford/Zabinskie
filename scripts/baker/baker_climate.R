@@ -1,4 +1,4 @@
-baker <- read.table(file = "baker/t71926.dat") %>% set_names(c("year", month.abb))
+baker <- read.table(file = "data/baker/t71926.dat") %>% set_names(c("year", month.abb))
 baker[baker < -999] <- NA
 baker %>% select(-year) %>% 
   cor(use = "pair") %>% 
@@ -12,7 +12,6 @@ baker %>% select(-year) %>%
   geom_raster() + 
   scale_fill_gradient2()
 
-pairs(baker, gap = 0)
 
 baker <- baker %>% 
   gather(key = month, value = temperature, -year) %>% 
