@@ -78,13 +78,11 @@ analyses <- drake_plan(
   pagesHi = pages2k_load(pages2k_data_file = file_in("data/general/sdata201788-s3.xlsx")),
   
   
-  #weather_climate - "scripts/weather_climate.R"
+  #weather_climate - "scripts/general/weather_climate.R"
   cet = read.table(file_in("data/general/cetml1659on.dat"), skip = 7, header = FALSE),
   cet2  = weather_climate_process(cet), 
-  wc_JA = map_df(1:50, weather_climate, month1 = "Jun", month2 = "Aug", dat = cet2),
-  wc_AS = map_df(1:50, weather_climate, month1 = "Aug", month2 = "summer", dat = cet2),
-  weather_clim_plot = weather_climate_plot(wc_AS = wc_AS, wc_JA = wc_JA),
-  
+  weather_clim_cor = calc_weather_climate_correlations(cet2, climate),
+  weather_clim_plot = plot_weather_climate_correlations(weather_clim_cor),
   
   #lake-air temperature correlations - "scripts/air_water_correlation.R"
   max_area = 2,
@@ -157,9 +155,6 @@ analyses <- drake_plan(
   pc_explained = eigenvals(cca_fos)[1]/sum(eigenvals(cca_fos)) * 100,
   L1L2 = eigenvals(cca_fos)[1]/eigenvals(cca_fos)[2],
   anova_fos = anova(cca_fos)$Pr[1],
-  
-  
-  
   
   # replicating_figure_2 - "scripts/figure2_ordination.R"
   fig2 = zabinskie_figure2(spp_all, env_all),
@@ -283,6 +278,7 @@ config <- drake_config(analyses)
 outdated(config)        # Which targets need to be (re)built?
 make(analyses)          # Build the right things.
 
+system("evince output/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)
 #show dependency graph
 vis_drake_graph(config)
 vis_drake_graph(config, targets_only = TRUE)

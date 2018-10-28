@@ -46,3 +46,54 @@ weather_climate_plot <- function(wc_AS, wc_JA){
     
   JuneAugustSummer_plot
 }
+
+
+calc_weather_climate_correlations <- function(cet2, climate){
+  annual <- cet2 %>% 
+    select(-year, -summer, -annual) 
+  
+  
+  multidecadal <- cet2 %>% 
+    select(-year, -summer, -annual) %>% 
+    mutate(n = (1:n() - 1) %/% 30) %>% #group into 30-yr periods
+    group_by(n) %>% 
+    summarise_all(.funs = mean) %>% 
+    select(-n) 
+  
+  space <- climate %>% select(Jan:Dec)
+  
+  process <- . %>% cor() %>% 
+    as_tibble(rownames = "month1") %>% 
+    gather(key = month2, value = correlation, -month1) %>% 
+    filter(month1 != month2)
+  
+  all_correlations <- bind_rows(Annual = annual %>% process,
+                                Multidecadal = multidecadal %>% process,
+                                Space = space %>% process, 
+                                .id = "what") %>% 
+    mutate(month1 = factor(month1, levels = month.abb),
+           month2 = factor(month2, levels = month.abb),
+           what = factor(what, levels = c("Space", "Annual", "Multidecadal")))
+  return(all_correlations)
+}
+
+plot_weather_climate_correlations <- function(all_correlations){
+  weather_climate_plot <- all_correlations %>% 
+    ggplot(aes(x = month1, y = month2, fill = correlation)) + 
+    geom_raster() +
+    scale_fill_continuous(type = "viridis", breaks = seq(0, 1, 0.2), limits = c(NA, 1)) +
+    scale_x_discrete(expand = c(0, 0)) +
+    scale_y_discrete(expand = c(0, 0)) +
+    labs(fill = "r") +
+    coord_equal() +
+    facet_wrap(~ what) +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5),
+      axis.title = element_blank(),
+      # legend.position = "bottom",
+      panel.grid = element_blank(), 
+      legend.box.spacing = unit(x = 5, units = "pt"), 
+      legend.title.align = 0.2
+    )
+  return(weather_climate_plot)
+}
