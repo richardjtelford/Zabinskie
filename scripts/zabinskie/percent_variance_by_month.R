@@ -37,14 +37,21 @@ zabinskie_plot_perform_by_month <- function(perform_by_month){
   th <- theme(axis.title.x = element_blank(), 
               axis.text.x = element_blank(), 
               axis.ticks.x = element_blank())
-  variance_plot <- cowplot::plot_grid(explained_plot + th,  
-                                      perform_plot + th, 
-                                      result_plot, 
-                                      ncol = 1, 
-                                      align = "v", 
-                                      rel_heights = c(0.8, 0.8, 1), 
-                                      labels = paste0(letters[1:3], ")")
-                                      )
+  
+  variance_plot <- list(
+    explained_plot = explained_plot + th,
+    perform_plot = perform_plot + th,
+    result_plot = result_plot
+  )
+  
+  # variance_plot <- cowplot::plot_grid(explained_plot + th,  
+  #                                     perform_plot + th, 
+  #                                     result_plot, 
+  #                                     ncol = 1, 
+  #                                     align = "v", 
+  #                                     rel_heights = c(0.8, 0.8, 1), 
+  #                                     labels = paste0(letters[1:3], ")")
+  #                                     )
   return(variance_plot)
 }
 

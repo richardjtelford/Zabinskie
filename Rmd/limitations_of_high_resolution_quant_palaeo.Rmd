@@ -24,11 +24,12 @@ output:
       rticles::elsevier_article
     latex_engine: xelatex
     number_sections: true
+
 documentclass: article
 classoption: a4paper
 bibliography: extra/chironomid2.bib
+csl: extra/journal-of-paleolimnology.csl
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
@@ -92,14 +93,14 @@ Larocque and Hall [-@Larocque2003];Chironomids;July air-T;Lake Njulla;2--7 years
   ;  ;  ;Vuoskkujavri;1--6 years;0.37
 Larocque et al. [-@Larocque2009], Larocque-Tobler et al. [-@Larocque-Tobler2011];Chironomids;July air-T;Lake Silvaplana;Near annual;0.65/0.53*
 Larocque-Tobler et al. [-@LarocqueTobler2011b];Chironomids;July air-T;Seebergsee;3--8 years;0.64/0.73
-'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-T;Lake Żabińskie;Mostly annual;0.76*
+'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-T;Lake Żabińskie;1--5 years;0.76*
 Medeiros et al. [-@Medeiros2012];Chironomids;Mid-summer water T;Baker Lake;1--8 years;\"corresponded well\" vs annual air T
 Luoto and Ojala [-@Luoto2016];Chironomids;July air-T;Nurmijärvi;1--11 years;0.38/0.51*
 Zhang et al. [-@Zhang2017];Chironomids;July air-T;Tiancai Lake;1--4 years;0.45
 Lang et al. [-@Lang2017];Chironomids;July air-T;Speke Hall Lake; ~8 years;0.62
 Kamenik et al. [-@Kamenik2009];Pollen;April-November air T;Mauntschas Mire;1--5 years; --/0.66", stringsAsFactors = FALSE )
 
-pander::pander(studies, caption = "Location, proxy, resolution, and correlation with the instrumental record of the validated reconstructions derived from the microfossil stratigraphies. Where two numbers are given for the correlation, the first is the correlation for a calibration-in-space model, the second a calibration-in-time model.", split.cells = 30, split.tables = 170)
+pander::pander(studies, caption = "Location, proxy, resolution, and correlation with the instrumental record of the validated reconstructions derived from the microfossil stratigraphies. Where two numbers are given for the correlation, the first is for a calibration-in-space model, the second a calibration-in-time model.", split.cells = 30, split.tables = 170)
 ```
 
 \* indicates lakes with varve chronologies. T - temperature
@@ -130,7 +131,15 @@ readd(weather_clim_plot)
 ```
 
 ```{r plot-explained-variance, fig.cap = "By month, a) the percent of intertia in the Canadian-Polish calibration set explained in a cannonical correspondence analysis CCA constrained by temperature, b) transfer function leave-one-out cross-validation r^2^ calibrated against temperature, c) correlation between the reconstructed temperature from Lake Żabińskie and the instrumental temperature", fig.width = 90/25.4, fig.height = 130/25.4}
-readd(perform_by_month_plot)
+loadd(perform_by_month_plot)
+cowplot::plot_grid(perform_by_month_plot$explained_plot,  
+                   perform_by_month_plot$perform_plot, 
+                   perform_by_month_plot$result_plot, 
+                   ncol = 1, 
+                   align = "v", 
+                   rel_heights = c(0.8, 0.8, 1), 
+                   labels = paste0(letters[1:3], ")")
+                  )
 ```
 
 ```{r plot-recon-by-month, fig.cap = "Temperature reconstruction for different months at Lake Żabińskie", fig.width = 140/25.4, fig.height = 80/25.4}
@@ -228,7 +237,13 @@ The surprisingly poor reconstruction diagnostics are not the only problematic as
 The two ordinations in the `r Zabinskie` paper cannot be reproduced from the archived data (seven substantially different versions of the fossil data were archived without explanation before the current version). Figure 2 in the `r Zabinskie` paper is a principal component analysis of the calibration set. There are `r nrow(spp_all)` lakes in the calibration set (the paper reports 122) but Figure 2 shows only 103 lakes: 18 lakes have been omitted, including all `r sum(readd(env_all) > 23) %>% as.english()` lakes warmer than 23°C (Fig. \@ref(fig:LTfigure2)a). The omission of these lakes makes the relationship between the chironomid assemblages and temperature appear to be stronger than it is. In the pre-publication versions of this figure, several lakes had been moved rather than omitted.
 
 ```{r LTfigure2, fig.cap = "a) Attempt to reproduce the principal component analysis shown in Figure 2 from the the Żabińskie paper. Lakes enclosed by a red circle are missing from the published figure. Axis labels indicate the percent of variance in the calibration set explained (the Żabińskie paper reports 22.3% and 17.5% for the first two axes). b) Attempt to reproduce the redundancy analysis shown in Supplementary Data Figure 1 from the Żabińskie paper. The original figure has six more Canadian lakes in the lower right quadrant.", warning=FALSE, fig.width = 190/25.4, fig.height = 110/25.4}
-readd(ordination_composite)
+  th <- theme(legend.position = "bottom")
+  cowplot::plot_grid(
+    readd(rep_fig2) + th + 
+      guides(colour = guide_legend(nrow=2,byrow=TRUE)) +
+      guides(shape = guide_legend(nrow=2,byrow=TRUE)),
+    readd(rep_sdf1) + th, 
+    nrow = 1, labels = c("a)", "b)"), align = "h", vjust = 2, hjust  = -4.4)
 ```
 
 Conversely, Supplementary Data Figure 1 in the `r Zabinskie` paper, a redundancy analysis of the calibration set constrained to temperature with the fossil data added passively, has more lakes than expected (Fig. \@ref(fig:LTfigure2)b). There are `r sum(sites_all$source != "Poland")` Canadian lakes in the calibration set (the paper reports 72) but the figure shows 78. The extra Canadian lakes are mostly in the same quadrant as the Polish lakes and falsely suggest "a similarity between the assemblages in warmer lakes in Canada and those which cover the same temperature gradient in Poland" [@Larocque-Tobler2015].
@@ -254,7 +269,7 @@ for Lake Njulla, Lake 850, and Vuoskkujavri, respectively. No assemblage data ha
 The chironomid-based July temperature reconstruction from Lake Silvaplana for the period 1850--2001 CE is first presented in Larocque et al. [-@Larocque2009]. Subsequently, Larocque-Tobler et al. [-@LarocqueTobler2009Holocene] and Larocque-Tobler et al. [-@LarocquTobler2010] published 420 and 1000 year long reconstructions respectively which both include the 1850--2001 CE period. The three reconstructions for the last 150 years should be identical, or at least nearly so, however they are very different. Furthermore, archived reconstructions for the 150-year reconstruction [@larocque2008_data] and the 420-year reconstruction [@Larocque420] are different from their associated papers, giving five different reconstructions for this time interval. None of the papers include any explanation of these differences. The overlapping portions of the archived 150- and 420-year reconstructions can largely be reconciled by aligning by sample number rather than age, which stretches the time series by up to `r readd(silva_max_diff)` years (Fig. \@ref(fig:silvaplana-recon-plot)) -- far more than the chronological uncertainty of the varve record [@Blass2007]. Remaining differences between the aligned reconstructions are nearly all integer °C differences.
 
 ```{r silvaplana-recon-plot, fig.cap = "The 150-yr reconstruction (solid, red) and the overlapping portion of the 420-yr reconstruction (dashed, blue) from Silvaplana plotted against a) date, and b) stratigraphic rank. In b) circles indicate integer °C differences, crosses show non-integer differences between reconstructions.", fig.width = 140/25.4, fig.height = 90/25.4}
-readd(silva_combined_recon_plots)
+silva_combine_recon_figures(readd(silva_recon_plot), readd(silva_recon_strat_plot))
 ```
 
 ```{r define_small_count}
@@ -326,10 +341,10 @@ The number and severity of errors in the papers reviewed highlights the importan
 
 All analyses were done in `r getRversion()` [@R]. Ordinations were fitted with vegan version `r packageVersion("vegan")` [@vegan] with square-root transformed assemblage data. Transfer functions were fitted with rioja version `r packageVersion("rioja")` [@rioja] using square-root transformed species data. Some diagnostics were performed using analogue version `r packageVersion("analogue")` [@analogue1]. The reconstruction significance test was run with randomTF from palaeoSig version `r packageVersion("palaeoSig")` [@palaeoSig] with 999 trials for the null distribution.
 
-Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as their locations have not all been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN series [@Lawrimore2011] extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series.
+Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as their locations have not all been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN series [@Lawrimore2011] extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series. Code to reproduce all the analyses shown above is archived at [https://doi.org/xxxx.xxxx](https://doi.org/xxxx.xxxx).
  
 ## Acknowledgements{-}
 
-I thank all my colleagues in Bergen and elsewhere who have given the help, advice, and encouragement needed to write this manuscript. I thank Dr Gavin Simpson and three anonymous reviewers for their constructive comments. This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). Code to reproduce all the analyses shown above is archived at [https://github.com/richardjtelford/Zabinskie](https://github.com/richardjtelford/Zabinskie).
+I thank all my colleagues in Bergen and elsewhere who have given the help, advice, and encouragement needed to write this manuscript. I thank Dr Gavin Simpson and three anonymous reviewers for their constructive comments. This work was partially funded by the Norwegian Research Council FriMedBio project palaeoDrivers (213607). 
 
 ## References{-}

@@ -142,6 +142,7 @@ analyses <- drake_plan(
   #performance_by_month "scripts/zabinskie/percent_variance_by_month.R"
   perform_by_month = zabinskie_perform_by_month(climate, spp, fat_composite_as_zab_published),
   perform_by_month_plot = zabinskie_plot_perform_by_month(perform_by_month),
+  
   #reconstruction_by_month "scripts/zabinskie/percent_variance_by_month.R"
   recon_by_month = zabinskie_reconstruction_by_month(climate, spp, chron), 
   recon_by_month_plot = zabinskie_plot_reconstruction_by_month(recon_by_month),
@@ -157,12 +158,10 @@ analyses <- drake_plan(
   anova_fos = anova(cca_fos)$Pr[1],
   
   # replicating_figure_2 - "scripts/figure2_ordination.R"
-  fig2 = zabinskie_figure2(spp_all, env_all),
+  rep_fig2 = zabinskie_figure2(spp_all, env_all),
   # supplementary_data_fig_1 - "scripts/figure2_ordination.R"
-  sdf1 = zabinskie_sup_data_fig1(spp_all, env_all, fos),
-  #ordination composite
-  ordination_composite = zabinskie_ordination_composite(fig2, sdf1),
-  
+  rep_sdf1 = zabinskie_sup_data_fig1(spp_all, env_all, fos),
+
   #reconstruction diagnostics
   dist_to_analogues = zabinskie_distance_to_nearest_neighbour(spp, env, fos, chron),
   residual_len = zabinskie_residual_length(spp, env, fos, chron),
@@ -278,7 +277,8 @@ config <- drake_config(analyses)
 outdated(config)        # Which targets need to be (re)built?
 make(analyses)          # Build the right things.
 
-system("evince output/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)
+system("evince output/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
+
 #show dependency graph
 vis_drake_graph(config)
 vis_drake_graph(config, targets_only = TRUE)
