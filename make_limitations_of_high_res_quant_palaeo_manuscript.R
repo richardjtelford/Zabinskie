@@ -208,7 +208,6 @@ analyses <- drake_plan(
   silva_side_by_side = silva_put_recons_side_by_side(silva_recon_jopl, silva_recon_holocene),
   silva_recon_strat_plot = silva_plot_side_by_side(silva_side_by_side),
   silva_max_diff = silva_calc_max_difference(silva_side_by_side),
-  silva_combined_recon_plots = silva_combine_recon_figures(silva_recon_plot, silva_recon_strat_plot),
   silva_est_countSums = silva_estimate_countSums(silva_fos_holocene),
   
   silva_est_countSum = silva_estimate_countSums(silva_fos_holocene),
@@ -262,7 +261,8 @@ analyses <- drake_plan(
     command = rmarkdown::render(
       input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"),
       knit_root_dir = "../", 
-      output_dir = "./output"), 
+      output_dir = "./output", 
+      clean = FALSE), 
     trigger = trigger(change = biblio2)  
     ),
   presentation = rmarkdown::render(
