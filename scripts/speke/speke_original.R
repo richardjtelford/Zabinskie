@@ -113,7 +113,7 @@ speke_chron %>%
   geom_point(data = speke_temp2, aes(x = year, y = inst), colour  = "blue", alpha = 0.5) +
   geom_line(data = valley, aes(x = year, y = Jul), colour = "grey40")
 
-speke_chron %>%
+speke_reported_climate <- speke_chron %>%
   mutate(top = CodeNum, base = lead(CodeNum)) %>%
   crossing(valley) %>%
   filter(year >= base, year < top) %>%
@@ -121,11 +121,24 @@ speke_chron %>%
   summarise(Jul = mean(Jul)) %>% 
   arrange(desc(base)) %>% 
   bind_cols(speke_pred %>% slice(1:17)) %>% 
-  slice(-17) %$% 
+  slice(-17) 
+
+speke_reported_climate %>% 
+  ggplot(aes(x = base, y = Jul)) + 
+  geom_line(colour = "red") + 
+  geom_point(colour = "red") +
+  geom_line(data = speke_temp2, aes(x = year, y = inst), colour  = "blue", alpha = 0.5) + 
+  geom_point(data = speke_temp2, aes(x = year, y = inst), colour  = "blue", alpha = 0.5) +
+  geom_line(data = valley, aes(x = year, y = Jul), colour = "grey40")
+
+speke_reported_climate %$% 
   cor.test(Jul, pred) 
   
+
+#time track
 analogue::timetrack(speke_spp1, speke_fos1, speke_env$July) %>% plot()
 
+#coverage plot
 speke_n <- data_frame(taxa = names(speke_spp), 
                       max = sapply(speke_spp, max), 
                       n2 = Hill.N2(speke_spp))
@@ -143,8 +156,6 @@ speke_max_n %>%
   geom_abline() +
   geom_text(data = filter(speke_max_n, max_fos > 2 * max_spp), aes(label = taxa, colour = n2_spp > 5))
 
-
-speke_spp
 
 
 
