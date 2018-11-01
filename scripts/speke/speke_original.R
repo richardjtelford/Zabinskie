@@ -161,8 +161,12 @@ speke_max_n %>%
 
 
 ####
-fos <- decostand(speke_fos, method="hellinger")
-spp <- decostand(speke_spp, method="hellinger")
+fos <- speke_fos[, sapply(speke_fos, max) > 2]
+ fos <- decostand(fos, method="chi.square")
+ spp <- decostand(speke_spp, method="chi.square")
+ fos <- decostand(fos, method="hellinger")
+ spp <- decostand(speke_spp, method="hellinger")
+spp <- speke_spp
 env <- speke_env$July
 plot(cca(spp~env))
 
@@ -170,10 +174,10 @@ rlen<-analogue::residLen(spp, env, fos, method="cca")
 rlen
 plot(rlen) # distribution of modern and fossil residual lengths
 plot(speke_chron$CodeNum, rlen$passive, ylab="Squared residual length", xlab="Depth")
-abline(h=quantile(rlen$train, probs = c(0.75,0.95)), col=c("orange", "red"))
+abline(h=quantile(rlen$train, probs = c(0.85,0.95)), col=c("orange", "red"))
 #
 
-goodpoorbad <- quantile(rlen$train, prob=c(0.75, 0.95))
+goodpoorbad <- quantile(rlen$train, prob=c(0.85, 0.95))
 qualitybands <- data.frame(xmin = rep(-Inf, 3),
                            xmax = rep(Inf, 3),
                            ymax = c(goodpoorbad, Inf),
@@ -188,3 +192,9 @@ g <- ggplot(data.frame(chron = speke_chron$CodeNum, analogue =  rlen$passive)) +
   geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill), qualitybands, alpha = .5) +
   fillscale
 print(g)
+
+decorana(sqrt(speke_spp))
+decorana(sqrt(speke_fos))
+decorana((speke_fos))
+
+plot(rda((speke_spp)~ env))
