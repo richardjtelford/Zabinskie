@@ -27,6 +27,8 @@ library("broom")
 library("rjt.misc")
 #devtools::install_github("richardjtelford/countChecker")
 library("countChecker")
+#devtools::install_github("richardjtelford/ggpalaeo")
+library("ggpalaeo")
 
 #analogue, stringi, rticles, english, bibtex, laketemps, rgdal also required 
 

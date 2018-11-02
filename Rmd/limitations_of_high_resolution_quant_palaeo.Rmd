@@ -17,7 +17,8 @@ header-includes:
    - \linenumbers
    - \usepackage{pdflscape}
    - \newcommand{\blandscape}{\begin{landscape}}
-   - \newcommand{\elandscape}{\end{landscape}}   
+   - \newcommand{\elandscape}{\end{landscape}} 
+   - \usepackage{xr} \externaldocument{limitations_high_res_SM}
 output:
   bookdown::pdf_book:
     base_format: 
@@ -339,7 +340,7 @@ The number and severity of errors in the papers reviewed highlights the importan
 
 # Methods
 
-All analyses were done in `r getRversion()` [@R]. Ordinations were fitted with vegan version `r packageVersion("vegan")` [@vegan] with square-root transformed assemblage data. Transfer functions were fitted with rioja version `r packageVersion("rioja")` [@rioja] using square-root transformed species data. Some diagnostics were performed using analogue version `r packageVersion("analogue")` [@analogue1]. The reconstruction significance test was run with randomTF from palaeoSig version `r packageVersion("palaeoSig")` [@palaeoSig] with 999 trials for the null distribution.
+All analyses were done in R version `r getRversion()` [@R]. Ordinations were fitted with vegan version `r packageVersion("vegan")` [@vegan] with square-root transformed assemblage data. Transfer functions were fitted with rioja version `r packageVersion("rioja")` [@rioja] using square-root transformed species data. Some diagnostics were performed using analogue version `r packageVersion("analogue")` [@analogue1]. The reconstruction significance test was run with randomTF from palaeoSig version `r packageVersion("palaeoSig")` [@palaeoSig] with 999 trials for the null distribution.
 
 Spatial climate data were extracted from WorldClim2 [@Fick2017]; some of the lake positions are approximate as their locations have not all been archived. The regional Polish temperature composite included data from Kaliningrad, Kaunas, Vilnius, and Warsaw GHCN series [@Lawrimore2011] extracted using the [KNMI Climate Explorer](https://climexp.knmi.nl/selectstation.cgi?id=someone@somewhere). The 1951-1980 mean was subtracted from each series. Code to reproduce all the analyses shown above is archived at [https://doi.org/xxxx.xxxx](https://doi.org/xxxx.xxxx).
  
