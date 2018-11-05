@@ -18,12 +18,11 @@ header-includes:
    - \usepackage{pdflscape}
    - \newcommand{\blandscape}{\begin{landscape}}
    - \newcommand{\elandscape}{\end{landscape}} 
-   - \usepackage{xr} \externaldocument{limitations_high_res_SM}
+   - \usepackage{xr} \externaldocument{output/Telford_supplementary_data}
 output:
   bookdown::pdf_book:
     base_format: 
       rticles::elsevier_article
-    latex_engine: xelatex
     number_sections: true
 
 documentclass: article
@@ -84,9 +83,9 @@ Lotter [-@Lotter1998];Diatoms;Total phosphorus;Baldegersee;Annual;\"compares wel
 Alefs and Müller [-@Alefs1999];Diatoms;Total phosphorus;Ammersee;Annual;0.91* 
   ;  ;  ;Starnberger See;Annual;0.77*
 
-De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana; Annual (3 year smooth);–0.58 vs Oct.--May air T*
-Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentration;Lake Żabińskie;Annual (3 year smooth);0.5 vs May--Oct. zonal wind speed*
-Hernández-Almeida et al. [-@HernandezAlmeida2015];Chrysophytes;No. consecutive days with water < 4°C;Lake Żabińskie;Annual (3 year smooth);0.35 vs Jan.--March air T*
+De Jong and Kamenik [-@DeJong2011];Chrysophytes;Date of spring mixing;Lake Silvaplana; Annual (3 year smooth);-0.58 vs Oct.--May air T*
+Hernández-Almeida et al. [-@HernandezAlmeida2015b];Chrysophytes;Calcium concentration;Lake Zabinskie;Annual (3 year smooth);0.5 vs May--Oct. zonal wind speed*
+Hernández-Almeida et al. [-@HernandezAlmeida2015];Chrysophytes;No. consecutive days with water < 4°C;Lake Zabinskie;Annual (3 year smooth);0.35 vs Jan.--March air T*
 
 Larocque and Hall [-@Larocque2003];Chironomids;July air-T;Lake Njulla;2--7 years;0.39
    ;  ;  ;Lake 850;2--6 years;0.365
@@ -94,12 +93,13 @@ Larocque and Hall [-@Larocque2003];Chironomids;July air-T;Lake Njulla;2--7 years
   ;  ;  ;Vuoskkujavri;1--6 years;0.37
 Larocque et al. [-@Larocque2009], Larocque-Tobler et al. [-@Larocque-Tobler2011];Chironomids;July air-T;Lake Silvaplana;Near annual;0.65/0.53*
 Larocque-Tobler et al. [-@LarocqueTobler2011b];Chironomids;July air-T;Seebergsee;3--8 years;0.64/0.73
-'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-T;Lake Żabińskie;1--5 years;0.76*
+'Larocque-Tobler et al. [-@Larocque-Tobler2015; -@Larocque-Tobler2016]';Chironomids;August air-T;Lake Zabinskie;1--5 years;0.76*
 Medeiros et al. [-@Medeiros2012];Chironomids;Mid-summer water T;Baker Lake;1--8 years;\"corresponded well\" vs annual air T
 Luoto and Ojala [-@Luoto2016];Chironomids;July air-T;Nurmijärvi;1--11 years;0.38/0.51*
 Zhang et al. [-@Zhang2017];Chironomids;July air-T;Tiancai Lake;1--4 years;0.45
 Lang et al. [-@Lang2017];Chironomids;July air-T;Speke Hall Lake; ~8 years;0.62
-Kamenik et al. [-@Kamenik2009];Pollen;April-November air T;Mauntschas Mire;1--5 years; --/0.66", stringsAsFactors = FALSE )
+Kamenik et al. [-@Kamenik2009];Pollen;April-November air T;Mauntschas Mire;1--5 years; --/0.66", stringsAsFactors = FALSE ) %>% 
+  mutate(Site = gsub("Zabinskie", Zabinskie, Site))
 
 pander::pander(studies, caption = "Location, proxy, resolution, and correlation with the instrumental record of the validated reconstructions derived from the microfossil stratigraphies. Where two numbers are given for the correlation, the first is for a calibration-in-space model, the second a calibration-in-time model.", split.cells = 30, split.tables = 170)
 ```
@@ -229,9 +229,9 @@ Given the high correlations between chironomid-inferred temperatures and air tem
 
 ### Lake `r Zabinskie`
 
-One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, the `r Zabinskie` paper reports that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in the `r Zabinskie` paper with the archived data [@LT15_data], `r sum(readd(dist_to_analogues)$quality == "bad")` of the `r nrow(fos)` fossil samples have no analogues (distance > 95% of calibration-set distances to nearest neighbour). Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows that `r sum(readd(residual_len)$quality == "very poor")` samples have a very poor fit (> 95% of calibration-set squared residual distances), and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r readd(rtf)$sig %>% insist(. > 0.1)`). This lack of significance is reflected in the relatively weak correlation (r = 0.36) between principal component axis 1 of the fossil data and August air temperature reported in the `r Zabinskie` paper.
+One might expect that a reconstruction as excellent as the Lake `r Zabinskie` chironomid-temperature reconstruction would have excellent reconstruction diagnostics [@Juggins2012]. Indeed, the `r Zabinskie` paper reports that all the fossil samples had good or fair analogues in the modern calibration set. However, using the methods described in the `r Zabinskie` paper with the archived data [@LT15_data], `r sum(readd(dist_to_analogues)$quality == "bad")` of the `r nrow(fos)` fossil samples have no analogues (distance > 95% of calibration-set distances to nearest neighbour). Another reconstruction diagnostic, the squared residual distance [@Juggins2012], shows that `r sum(readd(residual_len)$quality == "very poor")` samples have a very poor fit (> 95% of calibration-set squared residual distances), and a test of reconstruction significance [@Telford2011] is not statistically significant (p = `r readd(rtf)$sig %>% insist(. >= 0.1)`). This lack of significance is reflected in the relatively weak correlation (r = 0.36) between principal component axis 1 of the fossil data and August air temperature reported in the `r Zabinskie` paper.
 
-Since both the assemblage and instrumental temperature data are available, more direct tests can be applied than the reconstruction diagnostics used above. A canonical correspondence analysis fitted to the fossil assemblage data with August temperature as the sole predictor explains `r readd(pc_explained)`% of the variance in the assemblage data. This is statistically significant (p = `r readd(anova_fos) %>% format.pval()`) but the ratio of the constrained eigenvalue to the first unconstrained eigenvalue is far below one ($\lambda_1/\lambda_2$ = `r readd(L1L2)`) suggesting that August temperature is not the most important axis of variability in the assemblage data and hence precise reconstructions cannot be expected [@Juggins2013]. 
+Since both the assemblage and instrumental temperature data are available, more direct tests can be applied than the reconstruction diagnostics used above. A canonical correspondence analysis fitted to the fossil assemblage data with August temperature as the sole predictor explains `r readd(pc_explained)`% of the variance in the assemblage data. This is statistically significant (p = `r readd(anova_fos) %>% format.pval()`) but the ratio of the constrained eigenvalue to the first unconstrained eigenvalue is far below one ($\lambda_1/\lambda_2$ = `r readd(L1L2)`) suggesting that August temperature is not the most important axis of variability in the assemblage data and hence precise reconstructions cannot be expected [@Juggins2013].
 
 The surprisingly poor reconstruction diagnostics are not the only problematic aspect of the `r Zabinskie` paper. The instrumental temperature series used by the paper was miscalculated for the period before 1939, the period in which chironomid samples were merged because of low abundances (Larocque-Tobler, pers comm). Rather than using the mean temperature for the interval corresponding to each sample, the temperature of the first year of the interval was used. Despite this, the pre-1939 section of the reconstruction has a better correlation (r = `r readd(incorrect_correlation) %>% insist(. > readd(correct_correlation))`) with the incorrectly calculated temperature data than with the correct temperature data (r = `r readd(correct_correlation)`).
 
@@ -286,7 +286,7 @@ No fossil data have been archived from the anoxic Seebergsee, but the raw count 
 
 Digitising the July instrumental temperature data from figure 6 in Larocque-Tobler et al. [-@LarocqueTobler2011b] allows the reproducibility of the calibration-in-time result to be tested. The paper does not report which transfer function method was used, but a two component WAPLS model on square-root transformed assemblage data yields a reconstruction that has a correlation of `r seeberg_cit_perf$object[2, "R2"] ^ 0.5` with the instrumental data, identical to that reported, and the reconstruction appears to be identical. However, this performance is only achieved if the model is not cross-validated. With leave-one-out cross-validation, which is essential to prevent overfitting and give an unbiased estimate of performance, the correlation drops to `r seeberg_cit_perf$crossval[2, "R2"] ^ 0.5`, and the reconstruction has no skill. The importance of cross-validation can be demonstrated by trying to reconstruct random noise: the observed correlation is exceeded by `r mean(readd(seeberg_random_perform) > seeberg_cit_perf$object[2, "R2"]) * 100`% of `r readd(seeberg_nrep)` trials reconstructing Gaussian noise, and so cannot be considered remarkable.
 
-There are some other issues with Larocque-Tobler et al. [-@LarocqueTobler2011b]. These include substantial discrepancies between the age-depth model shown in their Figure 3 and Figure 4b; difficulties reconciling the reported instrumental data with the series from Château d’Oex; and the report that the first and second axes of a correspondence analysis (CA) of the fossil data explain 45% and 27% of the inertia, respectively. My attempt to reproduce the CA finds that the first and second axes explain only `r eigenvals(seeberg_ca)[1]/seeberg_ca$tot.chi * 100`% and `r eigenvals(seeberg_ca)[2]/seeberg_ca$tot.chi * 100`%, respectively, of the inertia.
+There are some other issues with Larocque-Tobler et al. [-@LarocqueTobler2011b]. These include substantial discrepancies between the age-depth model shown in their Figure 3 and Figure 4b; difficulties reconciling the reported instrumental data with the series from Château d'Oex; and the report that the first and second axes of a correspondence analysis (CA) of the fossil data explain 45% and 27% of the inertia, respectively. My attempt to reproduce the CA finds that the first and second axes explain only `r eigenvals(seeberg_ca)[1]/seeberg_ca$tot.chi * 100`% and `r eigenvals(seeberg_ca)[2]/seeberg_ca$tot.chi * 100`%, respectively, of the inertia.
 
 Larocque-Tobler et al. [-@LarocqueTobler2012] use the calibration-in-time model from Larocque-Tobler et al. [-@LarocqueTobler2011b] to reconstruct July air temperature from a millennium-long chironomid stratigraphy from Seebergsee. In view of the very poor cross-validated performance of the calibration-in-time model (r^2^ = `r seeberg_cit_perf$crossval[2, "R2"]`), the millennium-long reconstruction cannot be expected to be skilful.
 
@@ -315,7 +315,7 @@ Zhang et al. [-@Zhang2017] report that they correlate their July air temperature
 
 ### Speke Hall Lake
 
-The polluted, eutrophic Speke Hall Lake [@Lang2017] is a curious choice of site on which to apply the Norwegian chironomid calibration set [@Brooks2001], conflicting with the usual guidance that sites should be within the environmental space covered by the calibration set to minimise non-analogue problems. The reported correlation between the reconstruction and instrumental data, based on sixteen samples, is statistically significant at the p < 0.05 level, but given the lack of correction for temporal autocorrelation, the inverse correlation between July temperature and most of the heavy metals measured, and the poor goodness-of-fit of several fossil samples to the calibration set, it is more likely that the correlation is due to chance than that the reconstruction has any real skill. 
+The polluted, eutrophic Speke Hall Lake [@Lang2017] is a curious choice of site on which to apply the Norwegian chironomid calibration set [@Brooks2001], conflicting with the usual guidance that sites should be within the environmental space covered by the calibration set to minimise non-analogue problems. Perhaps not surprisingly, none of the fossil samples have good analogues in the calibration set (Fig. S\@ref(fig:speke-ana-dist-plot)), and other diagnostics are generally very poor (Fig. S\@ref(fig:speke-res-len-plot)). The reported lack of correlation between the detrended correspondence analysis scores and the reconstruction suggests that temperature is not the most important variable driving the variability in assemblage composition. The reported correlation between the reconstruction and instrumental data, based on sixteen samples, is statistically significant at the p < 0.05 level, but given the lack of correction for temporal autocorrelation, the inverse correlation between July temperature and most of the heavy metals measured, and the very poor reconstruction diagnostics, it is more likely that the correlation is due to chance than that the reconstruction has any real skill. 
 
 ## Recommendations for increasing reproducibility
 

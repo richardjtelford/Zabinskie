@@ -2,41 +2,23 @@
 
 #distance to nearest neigbour in calibration set
 zabinskie_distance_to_nearest_neighbour <- function(spp, env, fos, chron){
-  mat <- MAT(spp, env)
+  mat <- MAT(spp/100, env)
   dist1_mod <- mat$dist.n[, 1]
   
   goodpoorbad <- quantile(dist1_mod, probs = c(0.75, 0.95))
   
   #fossil distances
-  pred_mat <- predict(mat, fos)
+  pred_mat <- predict(mat, fos/100)
   dist_to_analogues <- chron %>% 
     mutate(
       dist_to_analogues = pred_mat$dist.n[, 1],
       quality  = cut(dist_to_analogues, breaks = c(0, goodpoorbad, Inf), labels = c("good", "poor", "bad"))
     )
-
+  attr(dist_to_analogues, which = "goodpoorbad") <- goodpoorbad
   return(dist_to_analogues)
 }
 
-## ---- dist_to_analogues_plot
-dist_to_analogues_plot <- function(dist_to_analogues, goodpoorbad){
-  
-  qualitybands <- data.frame(xmin = rep(-Inf, 3), 
-                             xmax = rep(Inf, 3), 
-                             ymax = c(goodpoorbad, Inf), 
-                             ymin = c(-Inf, goodpoorbad), 
-                             fill = factor(c("Good", "Fair", "None"), levels = c("None", "Fair", "Good")))
-  
-  fillscale <-  scale_fill_manual(values = c("salmon", "lightyellow", "skyblue"), name = "Analogue Quality")
-  
-  dist_to_analogues_plot <- ggplot(dist_to_analogues, aes(x = year, y = dist_to_analogues)) + 
-    geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill), qualitybands, alpha = .5, inherit.aes = FALSE) + 
-    geom_point() + 
-    labs(x = "Date CE", y = "Squared chord distance to nearest analogue") +
-    fillscale
-  
-  return(dist_to_analogues_plot)
-}
+
 
 # ## ---- dist_to_analogues_output
 # sum(dist_to_analogues$dist_to_analogues > goodpoorbad[2])
@@ -53,6 +35,7 @@ zabinskie_residual_length <- function(spp, env, fos, chron){
       rlen = rlen$passive,
       quality  = cut(rlen, breaks = c(0, rlen_thresholds, Inf), labels = c("good", "poor", "very poor"))
     )
+  attr(rlen_quality, "goodpoorbad") <- rlen_thresholds
   return(rlen_quality)
 }
 

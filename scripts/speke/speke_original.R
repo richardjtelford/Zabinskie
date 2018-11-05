@@ -1,200 +1,127 @@
-#import data
-speke_env <- read_excel("data/speke/temperature.xls")
-speke_spp <- read_excel("data/speke/species.xls")
-speke_fos <- read_excel("data/speke/core.xls")
+speke_import <- function(){
+  #import data
+  speke_env <- read_excel(file_in("data/speke/temperature.xls"))
+  speke_spp <- read_excel(file_in("data/speke/species.xls"))
+  speke_fos <- read_excel(file_in("data/speke/core.xls"))
+  
+  #split off chron
+  speke_chron <- speke_fos %>% 
+    select(CodeNum:FullName) %>% 
+    rename(year = CodeNum)
+  
+  speke_spp <- speke_spp %>% select(-(CodeNum:FullName))
+  speke_fos <- speke_fos %>% select(-(CodeNum:FullName))
+  
+  # remove outliers following Lang et al.
+  lowCount <- c(13, 111, 134, 139)#outliers, probably not low count
+  
+  speke_spp <- speke_spp %>% 
+    filter(!speke_env$CodeNum %in% lowCount)
+  speke_env <- speke_env %>% 
+    filter(!CodeNum %in% lowCount)
+  
+  #remove rare taxa
+  speke_spp <- speke_spp %>% select_if(~max(.) > 2)
+  
+  #trasform
+  speke_fos1 <- decostand(speke_fos, method="hellinger")
+  speke_spp1 <- decostand(speke_spp, method="hellinger")
+  
+  speke <- list(speke_env = speke_env,
+       speke_spp = speke_spp,
+       speke_fos = speke_fos,
+       speke_chron = speke_chron,
+       speke_spp1 = speke_spp1,
+       speke_fos1 = speke_fos1)
+  return(speke)
+}
 
-speke_chron <- speke_fos %>% select(CodeNum:FullName)
 
-speke_spp <- speke_spp %>% select(-(CodeNum:FullName))
-speke_fos <- speke_fos %>% select(-(CodeNum:FullName))
-
-lowCount <- c(13, 111, 134, 139)#outliers, probably not low count
-
-# remove outliers
-speke_spp <- speke_spp %>% filter(!speke_env$CodeNum %in% lowCount)
-speke_env <- speke_env %>% filter(!CodeNum %in% lowCount)
-
-#remove rare taxa
-speke_spp <- speke_spp %>% select_if(~max(.) > 2)
-
-
-#trasform
-speke_fos1 <- decostand(speke_fos, method="hellinger")
-speke_spp1 <- decostand(speke_spp, method="hellinger")
-
-
-
-
-#fit model
-# speke_mod0 <- WAPLS(speke_spp1, speke_env$July) %>% 
+# #mod
+# speke_mod <- WAPLS(speke_spp1, speke_env$July) %>% 
 #   crossval()
-# performance(speke_mod0)
+# performance(speke_mod)
+# rand.t.test(speke_mod)
 # 
-# data_frame(measured = speke_mod0$x, 
-#            fitted = speke_mod0$fitted.values[, "Comp02"],
-#            predicted = speke_mod0$predicted[, "Comp02"], 
-#            lowc = 1:nrow(speke_spp) %in% lowCount) %>% 
-#   ggplot(aes(x = measured, y = predicted, colour = lowc)) + geom_point()
-
-
-#refit mod
-speke_mod <- WAPLS(speke_spp1, speke_env$July) %>% 
-  crossval()
-performance(speke_mod)
-rand.t.test(speke_mod)
-
-data_frame(measured = speke_mod$x, 
-           fitted = speke_mod$fitted.values[, "Comp03"],
-           predicted = speke_mod$predicted[, "Comp03"]) %>% 
-  ggplot(aes(x = measured, y = predicted)) + geom_point()
-
-
-speke_pred <- data_frame(
-  year = speke_chron$CodeNum,
-  pred = predict(speke_mod, speke_fos1)$fit[, "Comp03"])
-
-speke_pred %>% ggplot(aes(x = year, y = pred)) + 
-  geom_point() + 
-  geom_line() + 
-  scale_x_reverse() + 
-  geom_line(speke_temp2, mapping = aes(y = recon), colour = "red")
+# autoplot(speke_mod, npls = 3)
+# 
+# speke_pred <- data_frame(
+#   year = speke_chron$CodeNum,
+#   year1 = lead(year),
+#   pred = predict(speke_mod, speke_fos1)$fit[, "Comp03"])
+# 
+# speke_pred %>% ggplot(aes(x = year1, y = pred)) + 
+#   geom_point() + 
+#   geom_line() + 
+#   scale_x_reverse() + 
+#   geom_line(speke_temp2, mapping = aes(x = year, y = recon), colour = "red")
 
 
 #analogue distances
-d <- paldist(speke_spp) %>% 
-  as.matrix() %>% 
-  as.dist() %>% #hist()
-  quantile(probs = c(.05, .1))
-
-mat <- MAT(speke_spp, speke_env$July)
-speke_pred$dist <- predict(mat, speke_fos)$dist.n[, 1] 
-
-ggplot(speke_pred, aes(x = year, y = dist)) + geom_point() + 
-  geom_hline(yintercept = d)
+speke_analogue_distances <- function(speke){
+  with(speke, {
+    speke_AD <- analogue_distances(speke_spp/100, speke_fos/100)  
+    autoplot(speke_AD, df = speke_chron, x_axis = "year") + 
+      labs(x = "Year CE", y = "Squared chord distance", fill = "Analogue quality")
+  })
+}
 
 #residual length
-rl <- analogue::residLen(speke_spp1, speke_env$July, speke_fos1, method = "cca")
+speke_residual_length <- function(speke){
+  with(speke, {
+    rl <- analogue::residLen(speke_spp1, speke_env$July, speke_fos1, method = "cca")
+    
+    autoplot(rl, df = speke_chron, x_axis = "year", categories = c("Good", "Poor", "Very Poor")) +
+      labs(y = expression(Squared~chi^2~residual~distance), x = "Year CE", fill = "Goodness of fit")
+  })
+}
 
-plot(rl)
-speke_pred$resLen <- rl$passive
-
-ggplot(speke_pred, aes(x = year, y = resLen)) + geom_point() + 
-  geom_hline(yintercept = quantile(rl$train, probs = c(.85, .95))) +
-  scale_x_reverse()
+speke_randomtf <- function(speke){
+  with(speke, {
+    randomTF(speke_spp1, speke_env$July, speke_fos1, fun = WAPLS, col = 3)
+  })
+}
 
 
 #
-est_n <- estimate_n(speke_fos, digits = 2) %>% 
-  mutate(n = 1:n()) %>% 
-  arrange(est_n)
-
-est_n %>% 
-  summarise(s = sum(est_n), m = mean(est_n))
-
-percent_checker(speke_fos, digits = 2) %>% 
-  select(-one_max, -one_min, -est_max, -est_min)
+# est_n <- estimate_n(speke_fos, digits = 2) %>% 
+#   mutate(n = 1:n()) %>% 
+#   arrange(est_n)
+# 
+# est_n %>% 
+#   summarise(s = sum(est_n), m = mean(est_n))
 
 
-valley2 <- valley %>% 
-  select(year,Jul) %>% 
-  mutate(
-    smo3 = rollmean(Jul, k = 3, na.pad = TRUE, align = "center"),
-    smo5 = rollmean(Jul, k = 5, na.pad = TRUE, align = "center")) %>% 
-  select(-Jul) %>% 
-  gather(key = smooth, value = Jul, -year)
 
-speke_chron %>% 
-  mutate(top = CodeNum, base = lead(CodeNum)) %>% 
-  crossing(valley2) %>% 
-  filter(year == base) %>% 
-  ggplot(aes(x = base, y = Jul, colour = smooth)) + 
-  geom_line() + geom_point() +
-  geom_line(data = speke_temp2, aes(x = year, y = inst), colour  = "blue", alpha = 0.5) + 
-  geom_point(data = speke_temp2, aes(x = year, y = inst), colour  = "blue", alpha = 0.5) +
-  geom_line(data = valley, aes(x = year, y = Jul), colour = "grey40")
-
-speke_reported_climate <- speke_chron %>%
-  mutate(top = CodeNum, base = lead(CodeNum)) %>%
-  crossing(valley) %>%
-  filter(year >= base, year < top) %>%
-  group_by(base) %>%
-  summarise(Jul = mean(Jul)) %>% 
-  arrange(desc(base)) %>% 
-  bind_cols(speke_pred %>% slice(1:17)) %>% 
-  slice(-17) 
-
-speke_reported_climate %>% 
-  ggplot(aes(x = base, y = Jul)) + 
-  geom_line(colour = "red") + 
-  geom_point(colour = "red") +
-  geom_line(data = speke_temp2, aes(x = year, y = inst), colour  = "blue", alpha = 0.5) + 
-  geom_point(data = speke_temp2, aes(x = year, y = inst), colour  = "blue", alpha = 0.5) +
-  geom_line(data = valley, aes(x = year, y = Jul), colour = "grey40")
-
-speke_reported_climate %$% 
-  cor.test(Jul, pred) 
   
 
-#time track
-analogue::timetrack(speke_spp1, speke_fos1, speke_env$July) %>% plot()
 
-#coverage plot
-speke_n <- data_frame(taxa = names(speke_spp), 
-                      max = sapply(speke_spp, max), 
-                      n2 = Hill.N2(speke_spp))
-speke_fosn <- data_frame(taxa = names(speke_fos), 
-                      max = sapply(speke_fos, max), 
-                      n2 = Hill.N2(speke_fos)) %>% 
-  filter(max > 0) 
+# #coverage plot
+# speke_n <- data_frame(taxa = names(speke_spp), 
+#                       max = sapply(speke_spp, max), 
+#                       n2 = Hill.N2(speke_spp))
+# speke_fosn <- data_frame(taxa = names(speke_fos), 
+#                       max = sapply(speke_fos, max), 
+#                       n2 = Hill.N2(speke_fos)) %>% 
+#   filter(max > 0) 
+# 
+# speke_max_n <- speke_n %>% 
+#   full_join(speke_fosn, by = "taxa", suffix = c("_spp", "_fos")) %>% 
+#   replace_na(list(max_spp = 0, n2_spp = 0, max_fos = 0, n2_fos = 0))
+# 
+# speke_max_n %>% 
+#   ggplot(aes(x = max_spp, y = max_fos, colour = n2_spp > 5)) + 
+#   geom_point() +
+#   geom_abline() +
+#   geom_text(data = filter(speke_max_n, max_fos > 2 * max_spp), aes(label = taxa, colour = n2_spp > 5))
 
-speke_max_n <- speke_n %>% 
-  full_join(speke_fosn, by = "taxa", suffix = c("_spp", "_fos")) 
+# 
+# speke_dca <- decorana(speke_fos1)
+# speke_dca
+# scores(speke_dca) %>% as.data.frame() %>% bind_cols(speke_pred) %>% select(-year, -year1) %>% cor()
+# 
+# speke_dca <- decorana(speke_fos1[1:16,])
+# speke_dca
+# scores(speke_dca) %>% as.data.frame() %>% bind_cols(speke_pred[1:16, ]) %>% select(-year, -year1) %>% cor()
+#   
 
-speke_max_n %>% 
-  ggplot(aes(x = max_spp, y = max_fos, colour = n2_spp > 5)) + 
-  geom_point() +
-  geom_abline() +
-  geom_text(data = filter(speke_max_n, max_fos > 2 * max_spp), aes(label = taxa, colour = n2_spp > 5))
-
-
-
-
-
-####
-fos <- speke_fos[, sapply(speke_fos, max) > 2]
- fos <- decostand(fos, method="chi.square")
- spp <- decostand(speke_spp, method="chi.square")
- fos <- decostand(fos, method="hellinger")
- spp <- decostand(speke_spp, method="hellinger")
-spp <- speke_spp
-env <- speke_env$July
-plot(cca(spp~env))
-
-rlen<-analogue::residLen(spp, env, fos, method="cca")
-rlen
-plot(rlen) # distribution of modern and fossil residual lengths
-plot(speke_chron$CodeNum, rlen$passive, ylab="Squared residual length", xlab="Depth")
-abline(h=quantile(rlen$train, probs = c(0.85,0.95)), col=c("orange", "red"))
-#
-
-goodpoorbad <- quantile(rlen$train, prob=c(0.85, 0.95))
-qualitybands <- data.frame(xmin = rep(-Inf, 3),
-                           xmax = rep(Inf, 3),
-                           ymax = c(goodpoorbad, Inf),
-                           ymin = c(-Inf, goodpoorbad),
-                           fill = factor(c("Good", "Fair", "None"), levels = c("None", "Fair", "Good")))
-
-fillscale <-  scale_fill_manual(values = c("salmon", "lightyellow", "skyblue"), name = "Analogue Quality")
-
-g <- ggplot(data.frame(chron = speke_chron$CodeNum, analogue =  rlen$passive)) +
-  geom_point(aes(x = chron, y = analogue)) +
-  labs(x = "Date CE", y = "Squared residual length") +
-  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill), qualitybands, alpha = .5) +
-  fillscale
-print(g)
-
-decorana(sqrt(speke_spp))
-decorana(sqrt(speke_fos))
-decorana((speke_fos))
-
-plot(rda((speke_spp)~ env))

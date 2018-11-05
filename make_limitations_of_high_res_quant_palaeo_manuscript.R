@@ -30,7 +30,6 @@ library("countChecker")
 #devtools::install_github("richardjtelford/ggpalaeo")
 library("ggpalaeo")
 
-#analogue, stringi, rticles, english, bibtex, laketemps, rgdal also required 
 
 #helper functions
 as.english <- function(x){ # problem with new version of rmarkdown
@@ -70,6 +69,8 @@ source("scripts/seebergsee/seebergsee_counts.R")
 source("scripts/luoto/luoto_digitised.R")
 
 source("scripts/zhang_et_al_2017/zhang_et_al.R")
+
+source("scripts/speke/speke_original.R")
 
 
 
@@ -166,7 +167,11 @@ analyses <- drake_plan(
 
   #reconstruction diagnostics
   dist_to_analogues = zabinskie_distance_to_nearest_neighbour(spp, env, fos, chron),
+  zabinskie_dist_analogue_plot = ggpalaeo:::plot_diagnostics(x = dist_to_analogues, x_axis = "year", y_axis = "dist_to_analogues", goodpoorbad = attr(dist_to_analogues, "goodpoorbad"), fill = c("salmon", "lightyellow", "skyblue"), categories = c("Good", "Fair", "None")) + 
+    labs(x = "Year CE", y = "Squared chord distance", fill = "Analogue quality"),
   residual_len = zabinskie_residual_length(spp, env, fos, chron),
+  zabinskie_residLen_plot = ggpalaeo:::plot_diagnostics(x = residual_len, x_axis = "year", y_axis = "rlen", goodpoorbad = attr(residual_len, "goodpoorbad"), fill = c("salmon", "lightyellow", "skyblue"), categories = c("Good", "Poor", "Very Poor")) + 
+    labs(x = "Year CE", y = expression(Squared~chi^2~residual~distance), fill = "Goodness of fit"),
   rtf = randomTF(sqrt(as.data.frame(spp)), env, fos, n = 999, fun = WAPLS, col = 2),
   
   
@@ -249,6 +254,9 @@ analyses <- drake_plan(
   zhang_cor = zhang_calc_cor(zhang_data),
   
   ###Speke Hall Lake
+  speke = speke_import(),
+  speke_ana_dist_plot = speke_analogue_distances(speke),
+  speke_resLen_plot = speke_residual_length(speke),
   
   
   ##prepare ms
@@ -265,8 +273,14 @@ analyses <- drake_plan(
       knit_root_dir = "../", 
       output_dir = "./output", 
       clean = FALSE), 
-    trigger = trigger(change = biblio2)  
+    trigger = trigger(change =list(biblio2, supplementary_data))  
     ),
+  supplementary_data = rmarkdown::render(
+    input = knitr_in("Rmd/Telford_supplementary_data.Rmd"),
+    knit_root_dir = "../",
+    output_dir = "./output", 
+    clean = FALSE
+  ),
   presentation = rmarkdown::render(
     input = knitr_in("Rmd/eecrg_2018_10_26.Rmd"), 
     knit_root_dir = "../", 
@@ -277,9 +291,17 @@ analyses <- drake_plan(
 #configure and make drake plan
 config <- drake_config(analyses)
 outdated(config)        # Which targets need to be (re)built?
-make(analyses)          # Build the right things.
+make(analyses, jobs = 2) # Build the right things.
+
+# tinytex::xelatex("output/limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
+# tinytex::pdflatex("output/Telford_supplementary_data.tex", clean=FALSE)
+
+# tinytex::pdflatex("output/limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
+# tinytex::pdflatex("output/Telford_supplementary_data.tex", clean=FALSE)
 
 system("evince output/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
+
+system("evince output/Telford_supplementary_data.pdf", wait = FALSE)#display pdf - only linux
 
 #show dependency graph
 vis_drake_graph(config)
