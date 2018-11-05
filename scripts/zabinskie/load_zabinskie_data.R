@@ -82,15 +82,16 @@ zabinskie_reconstruction <- function(zabinskie_excel_file){
 
 # instrumental from xml
 zabiniskie_instrumental <- function(instrumental_file = "data/chart1.xml"){
-  temperature_chart <- read_xml(instrumental_file)
+  temperature_chart <- xml2::read_xml(instrumental_file)
   
   bad_format <- temperature_chart %>% 
-    xml_find_all("//c:numCache") %>% 
-    xml_find_all("//c:v") %>% 
-    xml_double()
+    xml2::xml_find_all("//c:numCache") %>% 
+    xml2::xml_find_all("//c:v") %>% 
+    xml2::xml_double()
   
   bad_format <- bad_format[!is.na(bad_format)]
-  instrumental_temperature <- bad_format %>% matrix(ncol = 4) %>%
+  instrumental_temperature <- bad_format %>% 
+    matrix(ncol = 4) %>%
     as_data_frame() %>% 
     select(year = V1, old = V2, new = V4)
   

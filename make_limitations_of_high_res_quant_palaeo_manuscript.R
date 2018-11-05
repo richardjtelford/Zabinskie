@@ -6,7 +6,6 @@ library("magrittr")
 
 library("readr")
 library("readxl")#
-library("xml2")#
 
 library("gridExtra")
 library("directlabels")#
@@ -17,11 +16,7 @@ library("rioja")
 library("vegan")
 #devtools::install_github("gavinsimpson/ggvegan")
 library("ggvegan")
-
 library("palaeoSig")
-library("zoo")
-library("nlme")
-library("broom")
 
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
@@ -293,11 +288,9 @@ config <- drake_config(analyses)
 outdated(config)        # Which targets need to be (re)built?
 make(analyses, jobs = 2) # Build the right things.
 
-# tinytex::xelatex("output/limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
-# tinytex::pdflatex("output/Telford_supplementary_data.tex", clean=FALSE)
+ # tinytex::pdflatex("output/limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
+ # tinytex::pdflatex("output/Telford_supplementary_data.tex", clean=FALSE)
 
-# tinytex::pdflatex("output/limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
-# tinytex::pdflatex("output/Telford_supplementary_data.tex", clean=FALSE)
 
 system("evince output/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
 
