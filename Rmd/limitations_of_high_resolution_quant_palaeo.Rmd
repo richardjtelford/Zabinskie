@@ -290,9 +290,9 @@ There are some other issues with Larocque-Tobler et al. [-@LarocqueTobler2011b].
 
 Larocque-Tobler et al. [-@LarocqueTobler2012] use the calibration-in-time model from Larocque-Tobler et al. [-@LarocqueTobler2011b] to reconstruct July air temperature from a millennium-long chironomid stratigraphy from Seebergsee. In view of the very poor cross-validated performance of the calibration-in-time model (r^2^ = `r seeberg_cit_perf$crossval[2, "R2"]`), the millennium-long reconstruction cannot be expected to be skilful.
 
-### Baker Lake [@Medeiros2012]
+### Baker Lake
 
-The main features of the reconstruction of mid-summer water temperature from Barker Lake can be reproduced from the raw data (Andrew Scott, Personal Communication). Baker Lake is a relatively favourable study system: changes in the short ice-free period of this arctic lake due to climate change will have ecological consequences; and the lake experienced a large, year-round warming trend over the studied interval. However, the smooth chironomid stratigraphy indicates mixing by bioturbation which has removed high-frequency variability but preserved the multi-decadal warming trend. The strong autocorrelation induced by this mixing would complicate testing the statistical significance of the correlation between the reconstruction and instrumental data.  
+The main features of the reconstruction of mid-summer water temperature from Barker Lake [@Medeiros2012] can be reproduced from the raw data (Andrew Scott, Personal Communication), and the correlation with the smoothed annual temperature anomaly is high. Baker Lake is a relatively favourable study system: changes in the short ice-free period of this arctic lake due to climate change will have ecological consequences; and the lake experienced a large, year-round warming trend during the studied interval. However, chronological uncertainties, the relatively low resolution, and autocorrelation due to both the relatively smooth chiromid stratigraphy, which may be due to taphonomic processes, and the smoothing of the instrumental data, act together to preclude the detection of a sub-decadal signal.  
 
 ### Nurmijärvi
 
