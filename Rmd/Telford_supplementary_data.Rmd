@@ -1,0 +1,47 @@
+---
+title: "Supplementary Data for 'Review and test of reproducibility of sub-decadal resolution palaeoenvironmental reconstructions from microfossil assemblages'"
+author: "Richard J. Telford"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output: 
+  pdf_document:
+    keep_tex: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(digits = 2)
+theme_set(theme_bw(base_size = 12))
+
+Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special characters
+```
+
+## Lake `r Zabinskie`
+
+```{r zab-dist-analogue, fig.cap = "Squared chord distance from Lake Żabińskie fossil samples to nearest analogue in the Canadian-Polish calibration set. Analogue quality indicated by background colour estimated with the methods and thresholds used in the original paper. Calibration set samples with low count sums are omitted, but the results are similar if they are included."}
+readd(zabinskie_dist_analogue_plot)
+```
+
+```{r zab-residlen, fig.cap = "Goodness of fit of the Lake Żabińskie fossil samples added passively to a CCA of the Canadian-Polish calibration set constrained by temperature."}
+readd(zabinskie_residLen_plot)
+```
+
+
+## Lake Silvaplana
+
+## Seebergsee
+
+## Nurmijärvi
+
+## Speke Hall Lake
+```{r speke-ana-dist-plot, fig.cap = "Squared chord distance from Speke Hall Lake fossil samples to nearest analogue in the Norwegian calibration set. Analogue quality indicated by background colour. Thresholds derived from quantiles of all calibration set distances (Good < 0.05, Fair < 0.1). "}
+readd(speke_ana_dist_plot)
+```
+
+```{r speke-res-len-plot, fig.cap = "Goodness of fit of the Speke Hall Lake fossil samples added passively to a CCA of the Norwegian calibration set constrained by temperature. Thresholds derived from quantiles of all calibration set squared residual lengths (Good < 0.9, Fair < 0.95). An equivalent figure in the original paper used an inappropriate data tranformation prior to the analysis."}
+readd(speke_resLen_plot)
+```
+
+
+
+
+
