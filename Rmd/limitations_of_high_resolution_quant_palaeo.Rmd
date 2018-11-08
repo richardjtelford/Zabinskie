@@ -18,7 +18,8 @@ header-includes:
    - \usepackage{pdflscape}
    - \newcommand{\blandscape}{\begin{landscape}}
    - \newcommand{\elandscape}{\end{landscape}} 
-   - \usepackage{xr} \externaldocument{output/Telford_supplementary_data}
+   - \usepackage{xr}
+   - \externaldocument{Telford_supplementary_data}
 output:
   bookdown::pdf_book:
     base_format: 
@@ -263,7 +264,7 @@ Of the four correlations, only one matches the correlation of data digitised fro
 `r abisko_cor %>% filter(lake == "Njulla") %>% pull(r)`,
 `r abisko_cor %>% filter(lake == "Lake850") %>% pull(r)`, and
 `r abisko_cor %>% filter(lake == "Vuoskkujavri")  %>% pull(r)`
-for Lake Njulla, Lake 850, and Vuoskkujavri, respectively. No assemblage data have been archived, so the reconstructions cannot be verified, but there are some discrepancies between the published stratigraphies and the reconstructions. Lake 850 lacks an assemblage for 1999 CE but has a reconstruction. Similarly, Lake Njulla has a reconstruction but no assemblage for 1923 CE and the converse for 1949 CE.
+for Lake Njulla, Lake 850, and Vuoskkujavri, respectively (Fig. S \@ref(fig:abisko-all-lakes-plot). No assemblage data have been archived, so the reconstructions cannot be verified, but there are some discrepancies between the published stratigraphies and the reconstructions. Lake 850 lacks an assemblage for 1999 CE but has a reconstruction. Similarly, Lake Njulla has a reconstruction but no assemblage for 1923 CE and the converse for 1949 CE.
 
 ### Lake Silvaplana
 
@@ -292,11 +293,11 @@ Larocque-Tobler et al. [-@LarocqueTobler2012] use the calibration-in-time model 
 
 ### Baker Lake
 
-The main features of the reconstruction of mid-summer water temperature from Barker Lake [@Medeiros2012] can be reproduced from the raw data (Andrew Scott, Personal Communication), and the correlation with the smoothed annual temperature anomaly is high. Baker Lake is a relatively favourable study system: changes in the short ice-free period of this arctic lake due to climate change will have ecological consequences; and the lake experienced a large, year-round warming trend during the studied interval. However, chronological uncertainties, the relatively low resolution, and autocorrelation due to both the relatively smooth chiromid stratigraphy, which may be due to taphonomic processes, and the smoothing of the instrumental data, act together to preclude the detection of a sub-decadal signal.  
+The main features of the reconstruction of mid-summer water temperature from Baker Lake [@Medeiros2012] can be reproduced from the raw data (Andrew S. Medeiros, Personal Communication), and the correlation with the smoothed annual temperature anomaly is high. Baker Lake is a relatively favourable study system: changes in the short ice-free period of this arctic lake due to climate change will have ecological consequences; and the lake experienced a large, year-round warming trend during the studied interval. However, chronological uncertainties, the relatively low resolution, and autocorrelation due to both the relatively smooth chiromid stratigraphy, which may be due to taphonomic processes, and the smoothing of the instrumental data, act together to preclude the detection of a sub-decadal signal so the authors never attempted to interpret one.  
 
 ### Nurmijärvi
 
-No data have been archived for Luoto and Ojala [-@Luoto2016], but it is possible to digitise the fossil stratigraphy and test the reproducibility of the calibration-in-time reconstruction of July air temperature. The calibration-in-time model is reported as having a leave-one-out r^2^ of 0.64, whereas the reconstruction has a reported correlation with instrumental temperature of only 0.51 (i.e. r^2^ = `r 0.51^2`): these two performance statistics should be identical. With the digitised data, I find the leave-one-out r^2^ to be only `r readd(luoto_cit_perform)$crossval["WA.inv.tol", "R2"] %>% insist(. < 0.2)`. It is possible that the apparent performance was reported by mistake.
+No data have been archived for Luoto and Ojala [-@Luoto2016], but it is possible to digitise the fossil stratigraphy and test the reproducibility of the calibration-in-time reconstruction of July air temperature. The calibration-in-time model is reported as having a leave-one-out r^2^ of 0.64, whereas the reconstruction has a reported correlation with instrumental temperature of only 0.51 (i.e. r^2^ = `r 0.51^2`): these two performance statistics should be identical. With the digitised data, I find the leave-one-out r^2^ to be only `r readd(luoto_cit_perform)$crossval["WA.inv.tol", "R2"] %>% insist(. < 0.2)` (Fig. S\@ref(fig:luoto-cit-plot)). It is possible that the apparent performance was reported by mistake.
 
 The Nurmijärvi paper report that there is a 4--8 year lag (perhaps caused by the ecological and taphonomic processes described above) in the chironomid response to temperature, which would seem to preclude the development of a good calibration-in-time model. 
 

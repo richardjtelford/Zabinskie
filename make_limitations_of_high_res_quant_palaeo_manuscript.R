@@ -197,7 +197,7 @@ analyses <- drake_plan(
   abisko_all_lakes = abisko_digitised(),
   abisko_cor = abisko_correlations(abisko_all_lakes),
   abisko_checked = abisko_check(abisko_short, abisko_cor),
-  
+  abisko_all_lakes_plot = abisko_plot_all_lakes(abisko_all_lakes),
   
   ###Silvaplana
   #load data
@@ -231,7 +231,7 @@ analyses <- drake_plan(
   seeberg_nrep = 1000, 
   seeberg_random_perform = seeberg_calc_random_perform(seeberg_pc, seeberg_nrep),
   seeberg_ca = cca(sqrt(seeberg_pc)),
-
+  seeberg_cit_plot = autoplot(seeberg_cit_mod, npls = 1, show_apparent = TRUE, smooth = FALSE) + labs(x = "Measured July air temperature anomaly °C", y = "Predicted July air temperature anomaly °C"),
   
   
   ###Baker
@@ -242,7 +242,7 @@ analyses <- drake_plan(
   luoto_fos = luoto_digitise_stratigraphy(file_in("data/luoto/outfile2.pdf")),
   luoto_cit_mod = luoto_run_cit_mod(luoto_fos, luoto_climate),
   luoto_cit_perform = performance(luoto_cit_mod),
-
+  luoto_cit_plot = autoplot(luoto_cit_mod, show_apparent = TRUE, smooth = FALSE, column = "WA.inv.tol") + labs(x = "Measured July air temperature °C", y = "Predicted July air temperature °C"),
   
   ###Zhang
   zhang_data = zhang_import(file_in("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx")),
@@ -266,14 +266,14 @@ analyses <- drake_plan(
     command = rmarkdown::render(
       input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"),
       knit_root_dir = "../", 
-      output_dir = "./output", 
+   #   output_dir = "./output", 
       clean = FALSE), 
-    trigger = trigger(change =list(biblio2, supplementary_data))  
+    trigger = trigger(change =list(biblio2, supplementary_data))
     ),
   supplementary_data = rmarkdown::render(
     input = knitr_in("Rmd/Telford_supplementary_data.Rmd"),
     knit_root_dir = "../",
-    output_dir = "./output", 
+  #  output_dir = "./output", 
     clean = FALSE
   ),
   presentation = rmarkdown::render(
@@ -292,10 +292,11 @@ make(analyses, jobs = 2) # Build the right things.
  # tinytex::pdflatex("output/Telford_supplementary_data.tex", clean=FALSE)
 
 
-system("evince output/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
+system("evince Rmd/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
 
-system("evince output/Telford_supplementary_data.pdf", wait = FALSE)#display pdf - only linux
+system("evince Rmd/Telford_supplementary_data.pdf", wait = FALSE)#display pdf - only linux
 
 #show dependency graph
 vis_drake_graph(config)
 vis_drake_graph(config, targets_only = TRUE)
+options(digits = 6)#reset

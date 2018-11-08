@@ -97,26 +97,27 @@ abisko_digitised <- function(){
                          Lake850 = lake850, 
                          Vuoskkujavri = lakeV, 
                          Alanen = lakeA, .id = "lake") %>%
-    spread(key = type, value = temp) %>% 
-    group_by(lake)
+    spread(key = type, value = temp) 
   
   all_lakes
 }
 
-abisko_all_Lakes_plot <- function(abisko_all_lakes){
-  all_lakes %>%    
-    mutate(lake = factor(lake, levels = c("Njulla", "Lake850", "Vuoskkujavri", "Alanen"))) %>%
+abisko_plot_all_lakes <- function(abisko_all_lakes){
+  abisko_all_lakes %>%    
+    mutate(lake = factor(lake, levels = rev(c("Njulla", "Lake850", "Vuoskkujavri", "Alanen")), labels = rev(c("Njulla", "Lake850", "Vuoskkujavri", "Alanen Laanijavri")))) %>%
     ggplot(aes(x = instrumental, y = reconstruction, colour = lake)) + 
-    geom_point() +
     geom_smooth(method = "lm") +
+    geom_point() +
     coord_equal() +
-    labs(x = "Instrumental °C", y = "Reconstructed °C") +
+    labs(x = "Instrumental July temperature °C", y = "Reconstructed July temperature °C") +
+    scale_colour_brewer(palette = "Set1") +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) + 
-    theme(legend.position = c(0.99, .01), legend.justification =  c(1, 0), legend.title = element_blank())
+    theme(legend.position = c(0.01, 0.99), legend.justification =  c(0, 1), legend.title = element_blank(), legend.background = element_blank())
 }
 ## ---- all_lakes_corelation
 abisko_correlations <- function(abisko_all_lakes){ 
   abisko_all_lakes %>% 
+    group_by(lake) %>% 
     do(data_frame(r = cor(.$reconstruction, .$instrumental)))
 }
 

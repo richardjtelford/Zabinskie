@@ -2,13 +2,17 @@
 title: "Supplementary Data for 'Review and test of reproducibility of sub-decadal resolution palaeoenvironmental reconstructions from microfossil assemblages'"
 author: "Richard J. Telford"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
+header-includes:
+   - \usepackage{float}
+   - \usepackage{xr} \externaldocument{Telford_supplementary_data}
 output: 
   pdf_document:
     keep_tex: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, fig.pos = 'H')
+
 options(digits = 2)
 theme_set(theme_bw(base_size = 12))
 
@@ -25,12 +29,27 @@ readd(zabinskie_dist_analogue_plot)
 readd(zabinskie_residLen_plot)
 ```
 
+## Abisko lakes
+
+```{r abisko-all-lakes-plot, fig.cap = " Twentieth century reconstructed and instrumental July air temperatures for four lakes near Abisko. Data digitised from the original paper which reported that all the lakes had a similar correlation between the reconstructed and instrumental record."}
+readd(abisko_all_lakes_plot)
+```
 
 ## Lake Silvaplana
 
 ## Seebergsee
 
+```{r seeberg-cit-plot, fig.cap = "Apparent and cross-validated performance of the calibration-in-time WAPLS-2 model from Seebergsee."}
+readd(seeberg_cit_plot)
+```
+
+
 ## Nurmijärvi
+```{r luoto-cit-plot, fig.cap = "Apparent and cross-validated performance of the calibration-in-time tolerance-weighted weighted averaging model from Nurmijärvi."}
+readd(luoto_cit_plot)
+```
+
+
 
 ## Speke Hall Lake
 ```{r speke-ana-dist-plot, fig.cap = "Squared chord distance from Speke Hall Lake fossil samples to nearest analogue in the Norwegian calibration set. Analogue quality indicated by background colour. Thresholds derived from quantiles of all calibration set distances (Good < 0.05, Fair < 0.1). "}
