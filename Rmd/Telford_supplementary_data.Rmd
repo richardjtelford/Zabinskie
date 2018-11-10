@@ -4,14 +4,16 @@ author: "Richard J. Telford"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
    - \usepackage{float}
-   - \usepackage{xr} \externaldocument{Telford_supplementary_data}
+   - \floatplacement{figure}{H}
 output: 
-  pdf_document:
+  bookdown::pdf_document2:
     keep_tex: true
+    number_sections: false
+    toc: false
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, fig.pos = 'H')
+knitr::opts_chunk$set(echo = FALSE)
 
 options(digits = 2)
 theme_set(theme_bw(base_size = 12))
@@ -36,12 +38,20 @@ readd(abisko_all_lakes_plot)
 ```
 
 ## Lake Silvaplana
+```{r silva-climate-plot, fig.cap="Instrumental July air temperatures from Selg-Maria as archived by MeteoSwiss and digitised from the 140-year Silvaplana (CiS) and calibration-in-time (CiT) papers."}
+readd(silva_climate_plot)
+```
 
 ## Seebergsee
 
 ```{r seeberg-cit-plot, fig.cap = "Apparent and cross-validated performance of the calibration-in-time WAPLS-2 model from Seebergsee."}
 readd(seeberg_cit_plot)
 ```
+
+```{r seeberg-climate-plot, fig.cap = "Instrumental July air temperature anomalies from Château-d'Oex as archived by MeteoSwiss and digitised from the Seebergsee paper."}
+readd(seeberg_climate_plot)
+```
+
 
 
 ## Nurmijärvi

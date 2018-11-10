@@ -1,5 +1,5 @@
 ## ---- silvaplana_met_data
-silva_met <- read_table("data/homog_mo_SIA.txt", skip = 27) 
+silva_met <- read_table("data/silvaplana/homog_mo_SIA.txt", skip = 27) 
 
 silva_july <- silva_met %>% 
   filter(Month == 7, Year <= 2001)
@@ -16,7 +16,7 @@ silva_july %$%
 
 ## ---- overlay_jopl_6a_met 
 
-fig6a <- readPNG("images/JoPL_6a.png")
+fig6a <- readPNG("data/silvaplana/images/JoPL_6a.png")
 
 jopl <- ggplot(silva_july, aes(x = Year, y = Temperature)) +
   annotation_custom(

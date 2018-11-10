@@ -83,6 +83,20 @@ seeberg_load_digitised_climate <- function(f){
 }
 
 
+##climate plots
+seeberg_plot_climate <- function(seeberg_digitised_climate, seeberg_climate){
+  g <- bind_rows(Paper = seeberg_digitised_climate %>% select(year, anomaly = july),
+            Station = seeberg_climate %>% select(year = Year, anomaly), .id = "what") %>% 
+    ggplot(aes(x = year, y = anomaly, colour = what)) + 
+    geom_point() +
+    geom_line() +
+    scale_colour_manual(values = RColorBrewer::brewer.pal(9, "Set1")[c(1, 9)]) + 
+    scale_x_continuous(expand = c(0.02, 0)) +
+    labs(x = "Year CE", y = "July temperature anomaly °C") +
+    theme(legend.position = c(0.01, 0.99), legend.justification = c(0, 1), legend.title = element_blank())
+  return(g)
+}
+
 ## ---- random_temperature reconstruction
 seeberg_calc_random_perform <- function(seeberg_pc, seeberg_nrep){
   random_perf <- replicate(seeberg_nrep, {

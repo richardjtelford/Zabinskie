@@ -25,21 +25,8 @@ library("countChecker")
 #devtools::install_github("richardjtelford/ggpalaeo")
 library("ggpalaeo")
 
-
-#helper functions
-as.english <- function(x){ # problem with new version of rmarkdown
-  as.character(english::as.english(x))
-}
-as.English <- function(x){ #sentence case
-  stringi::stri_trans_totitle(
-    as.character(as.english(x)), 
-    opts_brkiter = stringi::stri_opts_brkiter(type = "sentence"))
-}
-format_p <- function(p) {
-  ifelse(p < 0.001, "< 0.001", paste("=", signif(p, 2)))
-}
-
 #import scripts
+source("scripts/general/utils.R")
 source("scripts/general/pages2k.R")
 source("scripts/general/weather_climate.R")
 source("scripts/general/air_water_correlation.R")
@@ -214,6 +201,9 @@ analyses <- drake_plan(
   
   silva_est_countSum = silva_estimate_countSums(silva_fos_holocene),
   silva_last = silva_last_sample(silva_fos_holocene),
+  silva_climate = silva_load_climate(file_in("data/silvaplana/homog_mo_SIA.txt")),
+  silva_digitised_climate = silva_load_digitised_climate(),
+  silva_climate_plot = silva_plot_climate(silva_climate, silva_digitised_climate),
   
   
   ###Seebergsee
@@ -225,6 +215,8 @@ analyses <- drake_plan(
  
   seeberg_climate = seeberg_load_climate(file_in("data/seebergsee/homog_mo_CHD.txt")),
   seeberg_digitised_climate = seeberg_load_digitised_climate(file_in("data/seebergsee/seebergsee_climate")),
+  seeberg_climate_plot = seeberg_plot_climate(seeberg_digitised_climate, seeberg_climate),
+    
   
   seeberg_cit_mod = WAPLS(sqrt(seeberg_pc), seeberg_digitised_climate$july) %>% crossval(),
   seeberg_cit_perf = seeberg_cit_mod %>% performance(),
@@ -288,9 +280,11 @@ config <- drake_config(analyses)
 outdated(config)        # Which targets need to be (re)built?
 make(analyses, jobs = 2) # Build the right things.
 
- # tinytex::pdflatex("output/limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
- # tinytex::pdflatex("output/Telford_supplementary_data.tex", clean=FALSE)
-
+float_tex("Rmd/Telford_supplementary_data.tex", clean = FALSE)
+setwd("Rmd/")#only appears to work when tex file is in working directory
+tinytex::pdflatex("limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
+tinytex::pdflatex("Telford_supplementary_data.tex", clean=FALSE)
+setwd("../")
 
 system("evince Rmd/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
 

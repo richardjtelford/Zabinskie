@@ -66,3 +66,33 @@ silva_load_recon_qsr <- function(f){
 #   rename(Year = X1, JulyT = X2) %>% 
 #   filter(!is.na(JulyT)) %>% 
 #   arrange(desc(Year))
+
+
+silva_load_climate <- function(f){
+    #"data/silvaplana/homog_mo_SIA.txt"
+  sil_inst <- read.table(file = f, skip = 27, header = TRUE) %>%
+    filter(Month == 7) %>% 
+    select(year = Year, temperature = Temperature) %>% 
+    filter(year <= 2001) #last year in paper
+  return(sil_inst)
+}
+
+# digitised instrumental data for calibration in time
+silva_load_digitised_climate <- function(){
+  sil_cit_temp <- read.table("data/silvaplana/calibration_in_time.txt") %>% 
+    select(1:2) %>% 
+    set_names(c("year", "temperature")) %>% 
+    mutate(year = round(year))
+  
+  sil_space_temp <- read.table("data/silvaplana/calibration_in_space.txt") %>% 
+    select(1:2) %>% 
+    set_names(c("year", "temperature")) %>% 
+    bind_rows(#overplotted points
+      data_frame(year = 1933, temperature = 11.3144),
+      data_frame(year = 1941, temperature = 11.1127),
+      data_frame(year = 1944, temperature = 11.5991)) %>% 
+    arrange(year)
+  
+  bind_rows(cis = sil_space_temp, cit = sil_cit_temp, .id = "what")
+}
+

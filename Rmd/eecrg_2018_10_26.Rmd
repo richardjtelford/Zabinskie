@@ -1,0 +1,448 @@
+---
+title: "A test of the reproducibility of high-resolution palaeoenvironmental reconstructions."
+subtitle: "'Totally unsuitable for a scientific publication'"
+author: "Richard J. Telford | University of Bergen | \\@richardjtelford"
+date: "EECRG 26^th^ October, 2018"
+output: 
+   ioslides_presentation:
+   mathjax: "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, eval = TRUE, warning = FALSE)
+library(png)
+library(jpeg)
+```
+
+```{r load_packages, cache=FALSE}
+options(digits = 2)
+
+theme_set(theme_bw(base_size = 18))
+```
+
+```{r load_Zabinskie_data, warnings = FALSE, results = "hide", message = FALSE}
+```
+
+
+<!-- abstract -->
+<!-- Palaeoecologists are understandably attracted to high-resolution archives, and despite the amount of labour involved, several sub-decadal – or even annual – resolution microfossil stratigraphies have been generated. Reconstructions of palaeoenvironmental conditions derived from these stratigraphies using transfer functions apparently compare well to instrumental data. -->
+<!-- High-resolution reconstructions face challenges from several ecological, taphonomic, and chronological factors that are small or negligible for lower-resolution reconstructions. The extent of these problems varies with microfossil group and the properties of the environmental variable being reconstructed. -->
+<!-- For example, long-lived organisms are likely to be less sensitive to the climate of a particular month than short lived organisms; taphonomic problems will be smallest for planktic organisms and greatest for benthic organisms that live in shallow water; and reconstructions of environmental variables with pronounced high-frequency variability will suffer more from chronological errors. -->
+<!-- The excellent performance of some sub-decadal resolution reconstructions despite the severe challenges they face is surprising. The reproducibility of these papers needs to be verified. -->
+<!-- Several research fields have recently been shown to have lower reproducibility than desirable, but little work has been done to ascertain the reproducibility of palaeoecological papers. I will conclude by suggesting how palaeoecology can be made a more reproducible science. -->
+
+## High-resolution reconstructions
+
+Everybody wants high resolution reconstructions
+
+ * Comparison with instrumental data
+ * Inclusion in data synthesis
+
+What limits the resolution of reconstructions from assemblage data with transfer functions? 
+
+<div class = "notes">
+Time consuming
+</div>
+
+## Validated reconstructions: diatoms
+
+Baldegersee diatom-inferred total phosphorous (Lotter, 1998)  
+ - **"compares well"**
+ 
+```{r}
+par(mar = rep(0, 4))
+plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+rasterImage(readPNG("stockholm/figures/Lotter1999_fig5.png", native = TRUE), 0, 0, 1, 1)
+#knitr::include_graphics("stockholm/figures/Lotter1999_fig5.png")
+```
+
+## Validated reconstructions: chironomids
+
+Lake Żabińskie chironomid-inferred August air temperature (Larocque-Tobler et al 2015) - **r = 0.76**
+
+```{r}
+par(mar = rep(0, 4))
+plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+rasterImage(readJPEG("data/zabinskie/instrumental_vs_recon.jpg", native = TRUE), 0, 0, 1, 1)
+#knitr::include_graphics("stockholm/figures/Lotter1999_fig5.png")
+```
+
+
+## Challenges
+
+- Calibrate against climate in space --  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- validate against weather in time
+         
+- Ecological sensitivity         
+              
+- Taphonomy
+
+- Chronology
+
+
+## Climate correlations in space
+
+```{r climate_maps}
+mp <- map_data("world", region = "Canada")
+detach("package:maps")
+
+Jul <- raster::raster(x = "data/worldclim/wc2.0_10m_tavg_07.tif")
+Aug <- raster::raster(x = "data/worldclim/wc2.0_10m_tavg_08.tif")
+
+canada_temps <- bind_rows(
+  July = raster::as.data.frame(Jul, xy = TRUE) %>% 
+    rename(temp = wc2.0_10m_tavg_07),
+  August = raster::as.data.frame(Aug, xy = TRUE) %>% 
+    rename(temp = wc2.0_10m_tavg_08), 
+  .id = "month") %>%
+  mutate(month = factor(month, levels = month.name)) %>% 
+  filter(x < -51, x> -96, y > 46, y < 70) 
+
+
+ggplot(canada_temps, aes(x = x, y = y, fill = temp)) + 
+  geom_raster() + 
+  scale_x_continuous(expand = c(0, 0))+ 
+  scale_y_continuous(expand = c(0,0)) + 
+  labs(fill = "Temperature °C") +
+  geom_map(map = mp, data = mp, aes(map_id = region), inherit.aes = FALSE, fill = NA, colour = "black") +
+  facet_wrap(~ month) +
+  scale_fill_distiller(palette = "RdBu", direction = -1) +
+  theme(axis.title = element_blank(), legend.position = "bottom")
+
+```
+
+Worldclim2
+
+## Correlations in space and time
+
+Climate vs weather
+
+```{r space, fig.width = 7, fig.height  = 5}
+loadd(climate)
+loadd(fat_composite)
+
+cc <- climate %>% 
+  select(Jan:Dec) %>% 
+  cor() %>% 
+  as_tibble(rownames = "rowname") 
+
+wc <- fat_composite %>% 
+  ungroup() %>% 
+  select(-year, -station, -summer) %>% 
+  cor() %>% 
+  as_tibble(rownames = "rowname") 
+
+bind_rows(Space = cc, Time = wc, .id  = "clim_weather") %>% 
+  gather(key = month, value = correlation, -rowname, -clim_weather) %>% 
+  mutate(month = factor(month, levels = month.abb),
+         rowname = factor(rowname, levels = month.abb),
+         correlation = if_else(month == rowname, NA_real_, correlation)) %>%
+  ggplot(aes(x = month, y = rowname, fill = correlation)) +
+  geom_raster() +
+  scale_fill_continuous(type = "viridis") + 
+  coord_equal() +
+  facet_wrap(~ clim_weather) +
+  theme(
+    axis.title = element_blank(), 
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  labs(fill = "Correlation")
+  
+```
+
+## Transfer function performance by month
+
+```{r percent_variance_plot}
+loadd(perform_by_month)
+explained_plot <- ggplot(perform_by_month, aes(x = month, y = pc_explained)) + 
+    geom_point() + 
+    geom_line(aes(group = 1)) +
+    labs(x = "Month", y = "CCA inertia\nexplained %") +
+    scale_y_continuous(expand = c(0.02, 0)) +
+    scale_x_discrete(expand = c(0.02, 0.02)) + 
+    theme(axis.title.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)))
+  
+  perform_plot <- explained_plot + aes(y = r2_mod) + 
+    labs(y = expression(atop(Transfer, `function`~r^2)))
+  
+  th <- theme(axis.title.x = element_blank(), 
+              axis.text.x = element_blank(), 
+              axis.ticks.x = element_blank())
+  cowplot::plot_grid(explained_plot + th,  
+                      perform_plot , 
+                      ncol = 1, 
+                      align = "v", 
+                      rel_heights = c(0.8, 1), 
+                      labels = paste0(letters[1:2], ")")
+                      )
+
+```
+
+Calibration data from Larocque-Tobler et al (2015)
+
+
+## Reconstructions by month
+
+
+```{r}
+readd(recon_by_month_plot)
+```
+
+Data from Larocque-Tobler et al (2015)
+
+## Weather correlations in time
+
+```{r weather_climate_plot, fig.cap = "Correlation between summer temperatures averaged over different length periods in the central England temperature series", fig.height = 4}
+readd(weather_clim_plot)
+```
+
+## Summer lake vs air temperatures
+```{r}
+loadd(lake_air_correlations)
+```
+
+
+Time series from `r nrow(lake_air_correlations$correlations)` small, relatively deep, mid--high latitude lakes in Sharma et al. (2015)
+
+
+```{r lake_air_plots}
+lake_means <- lake_air_correlations$values %>% 
+  group_by(siteID) %>% 
+  summarise(air = mean(Air.Temp.Mean.Summer.CRU),
+            water = mean(Lake.Temp.Summer.InSitu))
+
+p1 <- lake_means %>% 
+  ggplot(aes(x = air, y = water)) + 
+  geom_point() +
+  annotate(geom = "text", 
+           label = paste("r =", round(cor(lake_means$air, lake_means$water), 2)), 
+           x = 9, y = 23, size = 6) + 
+  geom_abline(linetype = "dashed", colour =  scales::muted("red")) +
+  labs(x = "Air temperature °C", y = "Water temperature °C", title = "Space - across lakes")
+
+p2 <- lake_air_correlations$correlations %>% 
+  ggplot(aes(x = correlation)) + 
+  geom_histogram() +
+  geom_vline(xintercept = cor(lake_means$air, lake_means$water), colour = scales::muted("red"), linetype = "dashed") + 
+  labs(x = "Correlation", title = "Time - within each lake") 
+  
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+```
+<div class = "notes">
+n = `r nrow(lake_air_correlations$correlations)`  
+better in time  = `r sum(lake_air_correlations$correlations$correlation > cor(lake_means$air, lake_means$water))`  
+median correlation  = `r median(lake_air_correlations$correlations$correlation)`
+
+</div>
+
+## Spatial correlations with other variables
+```{r}
+env_norway <- read.cep("data/brooks_birks/NCHIR7.ENV")
+
+env_norway %>% 
+  mutate(ConifF = recode(ConifF, "1" = "Yes", "0" = "No"),
+         ConifF = factor(ConifF, levels = c("Yes", "No"))
+         ) %>% 
+  ggplot(aes(x = Julyt, y = TOC, colour = ConifF)) +
+  geom_point() +
+  scale_colour_brewer(palette = "Set1") + 
+  labs(x = "July air temperature °C", y = expression(Total~organic~carbon~mg~l^-1), colour = "Conifer Forest") +
+  theme(legend.position = c(0.01, 0.99), legend.justification = c(0, 1))
+```
+
+Data from Brooks and Birks (2001)
+
+<div class = "notes">
+Ecological impact of TOC difficult to distinguish from temperature  
+Cannot be expected to vary on an annual timescale
+</div>
+
+## Ecology
+
+- Life-span
+
+- Phenology
+
+- Secondary gradients
+
+<div class = "notes">
+Chironomids life for months to years
+</div>
+
+## Taphonomy
+
+Littoral benthic chironomids vs planktic diatoms
+
+```{r taponomy_figure1}
+par(mar = rep(0, 4))
+plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+rasterImage(readPNG("stockholm/figures/Bonk_fig3_Geochronometrica.png", native = TRUE), 0, 0, 1, 1)
+
+#knitr::include_graphics("stockholm/figures/Bonk_fig3_Geochronometrica.png")
+```
+
+Bonk et al (2015; Geochronometria)
+
+<div class = "notes">
+Need to get proxy to core site in middle of lake
+</div>
+
+## Taphonomy
+
+Autumn mixing
+
+```{r taponomy_figure2}
+par(mar = rep(0, 4))
+plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+rasterImage(readPNG("stockholm/figures/Bonk_fig3_1.png", native = TRUE), 0, 0, 1, 1)
+#knitr::include_graphics("stockholm/figures/Bonk_fig3_1.png")
+```
+
+Bonk et al (2015; J. Limnol.)
+
+## Chronology
+
+Even the best chronologies have uncertainties
+
+Impact of chronological error depends on target variable
+
+
+```{r}
+par(mar = rep(0, 4))
+plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+rasterImage(readPNG("stockholm/figures/Lotter1999_fig5.png", native = TRUE), 0, 0, 1, 1)
+#knitr::include_graphics("stockholm/figures/Lotter1999_fig5.png")
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$TP~ \mu gl^{-1}$ Lotter (1998)
+
+<div class = "notes">
+Robust against small chronological errors
+
+Difficult to demonstrate skill at sub decadal resolution
+
+</div>
+
+## Chronology
+```{r}
+loadd(fat_composite)
+fat_composite %>%
+  ggplot(aes(x = year, y = Aug)) + 
+  geom_line() +
+  labs(x = "Year CE", y = "August °C anomaly")
+```
+
+Northeastern Poland regional temperature anomaly
+
+<div class = "notes">
+7 uncertain varves  
+simulation - perfect reconstruction has r = 0.84
+</div>
+
+## Favourable and unfavourable aspects{.smaller}
+
+```{r}
+read.table(header = TRUE, sep = "|", quote = "", text = "Aspect|Favourable|Unfavourable|Explanation
+#------|---------|--------
+Proxy sensitivity to target variable|High|Low|Better reconstruction
+Habitat|Planktic|Littoral|Simple taphonomy
+Generation time|Hours-Days|Months-Years|Rapid response
+Ecological lags|None|Proxy responds to previous year|Lagged proxy response
+Target variable resolution|Seasonal|Monthly|More ecologically relevant
+Other environmental change|Minimal|Substantial|Minimise secondary gradients
+Dominant frequency in target|Trends and low frequencies|High-frequencies|Less sensitive to lags and chronological error"
+) %>% 
+  pander::pander(split.cell = 22, split.table = 100)
+```
+
+
+
+# Reconstructing the improbable
+
+## Sub-decadal chironomid-temperature reconstructions
+
+- Four lakes near Abisko
+- Silvaplana
+- Seebergsee
+- Baker Lake
+- Lake Zabinskie
+- Nurmijärvi
+- Tiancai Lake
+- Speke Hall Lake
+
+## Mis-handled climate data
+
+```{r zhang_et_al, fig.height=6}
+par(mar = rep(0, 4))
+plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+rasterImage(readPNG("data/zhang_et_al_2017/Figure-6-a-Chironomid-based-mean-July-temperature-MJT-reconstruction-results-from.ppm.png", native = TRUE), 0, 0, 1, 1)
+```
+
+
+## Calibration in time
+
+Apparent performance reported as crossvalidated
+
+```{r}
+loadd(seeberg_cit_mod)
+data_frame(Measured = seeberg_cit_mod$x, Apparent = seeberg_cit_mod$fitted.values[, 2], Crossvalidated = seeberg_cit_mod$predicted[, 2]) %>% 
+  gather(key  = key, value = Predicted, -Measured) %>% 
+  ggplot(aes(x = Measured, y = Predicted)) +
+  geom_abline(colour = "grey50") +
+  geom_point() + 
+  facet_wrap(~ key)
+
+```
+
+Seebergsee, also Lake Silvaplana, Nurmijärvi
+
+## Count sums
+
+"samples with less than 30 head capsules were merged."
+
+```{r}
+loadd(seeberg_sums)
+
+seeberg_sums %>% 
+  ggplot(aes(x = sum4)) + 
+  geom_bar(width = 1) + 
+  labs(x = "Count sum", y = "Frequency")
+
+```
+
+Seebergsee, also Lake Zabinskie, Silvaplana (probably others)
+
+## Wandering sites
+
+```{r}
+library(jpeg)
+par(mar = rep(0, 4))
+plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+rasterImage(readJPEG("blog_posts/figure2A_published.jpg", native = TRUE), 0, 0, 1, 1)
+```
+
+Lake Zabinskie calibration set
+
+
+## Sub-decadal chironomid-temperature reconstructions
+
+- <strike>Four lakes near Abisko</strike>
+- <strike>Silvaplana</strike>
+- <strike>Seebergsee</strike>
+- Baker Lake
+- <strike>Lake Zabinskie</strike>
+- <strike>Nurmijärvi</strike>
+- <strike>Tiancai Lake</strike>
+- Speke Hall Lake
+
+
+
+
+## Conclusions
+
+Time scale dependent challenges for transfer functions
+
+Near annual resolution assemblage-based climate reconstructions probably futile
+
+Decadal resolution reconstructions may be possible under favourable circumstances
+
+Palaeolimnology has reproducibility problems
