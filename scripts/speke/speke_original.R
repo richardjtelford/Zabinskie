@@ -1,4 +1,8 @@
 speke_import <- function(){
+  if(!file.exists(file_in("data/speke/temperature.xls"))){
+    return("Data will be archived by the authors of the Speke Hall Lake paper in 2019")
+  }
+  
   #import data
   speke_env <- read_excel(file_in("data/speke/temperature.xls"))
   speke_spp <- read_excel(file_in("data/speke/species.xls"))
@@ -59,6 +63,9 @@ speke_import <- function(){
 
 #analogue distances
 speke_analogue_distances <- function(speke){
+  if(class(speke) == "character"){
+    return(speke)
+  }
   with(speke, {
     speke_AD <- analogue_distances(speke_spp/100, speke_fos/100)  
     autoplot(speke_AD, df = speke_chron, x_axis = "year") + 
@@ -68,6 +75,9 @@ speke_analogue_distances <- function(speke){
 
 #residual length
 speke_residual_length <- function(speke){
+  if(class(speke) == "character"){
+    return(speke)
+  }
   with(speke, {
     rl <- analogue::residLen(speke_spp1, speke_env$July, speke_fos1, method = "cca")
     
@@ -77,6 +87,9 @@ speke_residual_length <- function(speke){
 }
 
 speke_randomtf <- function(speke){
+  if(class(speke) == "character"){
+    return(speke)
+  }
   with(speke, {
     randomTF(speke_spp1, speke_env$July, speke_fos1, fun = WAPLS, col = 3)
   })
