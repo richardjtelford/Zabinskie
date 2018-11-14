@@ -1,14 +1,14 @@
 #import packages
-library("drake")#
+library("drake")
 
-library("tidyverse")#
+library("tidyverse")
 library("magrittr")
 
 library("readr")
-library("readxl")#
+library("readxl")
 
 library("gridExtra")
-library("directlabels")#
+library("directlabels")
 library("assertthat")
 
 library("sp")
@@ -54,7 +54,8 @@ source("scripts/zhang_et_al_2017/zhang_et_al.R")
 
 source("scripts/speke/speke_original.R")
 
-
+#drake configuration
+pkgconfig::set_config("drake::strings_in_dots" = "literals")
 
 #construct drake plan
 analyses <- drake_plan(
@@ -271,8 +272,7 @@ analyses <- drake_plan(
   presentation = rmarkdown::render(
     input = knitr_in("Rmd/eecrg_2018_10_26.Rmd"), 
     knit_root_dir = "../", 
-    output_dir = "./output"),
-  strings_in_dots = "literals"
+    output_dir = "./output")
 )
 
 #configure and make drake plan
