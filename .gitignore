@@ -24,6 +24,7 @@ vignettes/*.pdf
 #*.md
 *.html
 *.pdf
+!data/luoto/outfile2.pdf
 
 #strange file made by rticles or latex
 *.spl
@@ -40,6 +41,7 @@ vignettes/*.pdf
 *.png
 *.gif
 !data/silvaplana/images/*.png
+
 #temp files
 *~
 *#
