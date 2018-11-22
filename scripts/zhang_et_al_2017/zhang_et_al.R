@@ -29,7 +29,7 @@ zhang_calc_cor <- function(zhang_data){
   
   inst_smo <- inst %>% 
     mutate(
-      smoothed_July_T_L = rollmean(`Mean July temperature (°C)`, k = 3, fill = NA, align = "center"))#Centred to match fig6a 
+      smoothed_July_T_L = zoo::rollmean(`Mean July temperature (°C)`, k = 3, fill = NA, align = "center"))#Centred to match fig6a 
   
   #matches fig6a with smooth
   fig6a <- ggplot(recon, aes(x = `Year (AD)`, y = scale(`Mean July temperature (°C)`, scale = FALSE))) + 
