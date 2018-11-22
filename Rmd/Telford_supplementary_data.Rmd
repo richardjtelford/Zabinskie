@@ -40,6 +40,7 @@ readd(abisko_all_lakes_plot)
 ```
 
 ## Lake Silvaplana
+
 ```{r silva-climate-plot, fig.cap="Instrumental July air temperatures from Selg-Maria [@Bergert2005] and the instrumental data as digitised from different papers. Digitised data are labelled after the calibration set used to make the reconstruction the instrumental data were compared against. All the digitised instrumental data should be identical, unless fossil samples have been merged/unmerged."}
 readd(silva_climate_plot)
 ```
@@ -56,10 +57,11 @@ readd(seeberg_cit_plot)
 readd(seeberg_climate_plot)
 ```
 
-There may be, probably small, differences between the data shown in Fig. S\@ref(fig:seeberg-climate-plot) and the version of the Château-d'Oex temperature series homogenised by Berget et al. [@Berget2005].
+There may be, probably small, differences between the data shown in Fig. S\@ref(fig:seeberg-climate-plot) and the version of the Château-d'Oex temperature series homogenised by Berget et al. [@Bergert2005].
 
 
 ## Nurmijärvi
+
 ```{r luoto-cit-plot, fig.cap = "Apparent and cross-validated performance of the calibration-in-time tolerance-weighted weighted averaging model from Nurmijärvi."}
 readd(luoto_cit_plot)
 ```
@@ -67,6 +69,7 @@ readd(luoto_cit_plot)
 
 
 ## Speke Hall Lake
+
 ```{r speke-ana-dist-plot, fig.cap = "Squared chord distance from Speke Hall Lake fossil samples to nearest analogue in the Norwegian calibration set. Analogue quality indicated by background colour. Thresholds derived from quantiles of all calibration set distances (Good < 0.05, Fair < 0.1). "}
 readd(speke_ana_dist_plot)
 ```
@@ -75,7 +78,7 @@ readd(speke_ana_dist_plot)
 readd(speke_resLen_plot)
 ```
 
-
+## References
 
 
 

@@ -22,7 +22,7 @@ vignettes/*.pdf
 #output
 *.docx
 #*.md
-*.html
+*.html  
 *.pdf
 !data/luoto/outfile2.pdf
 
