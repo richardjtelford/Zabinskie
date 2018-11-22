@@ -10,6 +10,8 @@ output:
     keep_tex: true
     number_sections: false
     toc: false
+bibliography: extra/chironomid2.bib
+csl: extra/journal-of-paleolimnology.csl
 ---
 
 ```{r setup, include=FALSE}
@@ -38,9 +40,11 @@ readd(abisko_all_lakes_plot)
 ```
 
 ## Lake Silvaplana
-```{r silva-climate-plot, fig.cap="Instrumental July air temperatures from Selg-Maria as archived by MeteoSwiss and digitised from the 140-year Silvaplana (CiS) and calibration-in-time (CiT) papers."}
+```{r silva-climate-plot, fig.cap="Instrumental July air temperatures from Selg-Maria [@Bergert2005] and the instrumental data as digitised from different papers. Digitised data are labelled after the calibration set used to make the reconstruction the instrumental data were compared against. All the digitised instrumental data should be identical, unless fossil samples have been merged/unmerged."}
 readd(silva_climate_plot)
 ```
+
+Long Swiss climate series were homogenised by Berget et al. [-@Bergert2005]. They were reprocessed in 2009 [@meteoswiss2010]. The Silvaplana papers probably all used the version of the Segl Maria series by Berget et al. [-@Bergert2005], which is shown in Fig. S\@ref(fig:silva-climate-plot). The differences between these data and the current version of the data are minimal (r^2^  = `r readd(silva_version_r2) %>% insist(. > 0.99) %>% format(digits = 3)`).
 
 ## Seebergsee
 
@@ -48,10 +52,11 @@ readd(silva_climate_plot)
 readd(seeberg_cit_plot)
 ```
 
-```{r seeberg-climate-plot, fig.cap = "Instrumental July air temperature anomalies from Château-d'Oex as archived by MeteoSwiss and digitised from the Seebergsee paper."}
+```{r seeberg-climate-plot, fig.cap = "Instrumental July air temperature anomalies from Château-d'Oex [@meteoswiss2010] and the instrumental data as digitised from the Seebergsee paper."}
 readd(seeberg_climate_plot)
 ```
 
+There may be, probably small, differences between the data shown in Fig. S\@ref(fig:seeberg-climate-plot) and the version of the Château-d'Oex temperature series homogenised by Berget et al. [@Berget2005].
 
 
 ## Nurmijärvi

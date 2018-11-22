@@ -81,16 +81,16 @@ silva_last_sample <- function(silva_fos_holocene){
 }
 
 silva_plot_climate <- function(silva_climate, silva_digitised_climate){
-  silva_climate %>% 
+   g <-  silva_climate %>% 
     mutate(what = "Station") %>% 
     bind_rows(silva_digitised_climate) %>%
-    mutate(what = factor(what, levels = c("cis", "cit", "Station"), labels = c("CiS", "CiT", "Station"))) %>% 
-    ggplot(aes(x = year, y = temperature, colour = what)) +
+    mutate(what = factor(what, levels = c("cis", "can", "cit",  "Station"), labels = c("Swiss", "Canadian", "Time", "Station"))) %>% 
+    ggplot(aes(x = year, y = temperature, colour = what, shape = what)) +
     geom_point() +
     geom_line() +    
-    scale_colour_manual(values = RColorBrewer::brewer.pal(9, "Set1")[c(2, 1, 9)]) + 
+    scale_colour_manual(values = RColorBrewer::brewer.pal(9, "Set1")[c(2, 3, 1, 9)]) + 
     scale_x_continuous(expand = c(0.02, 0)) +
     labs(x = "Year CE", y = "July temperature anomaly °C") +
     theme(legend.position = c(0.01, 0.99), legend.justification = c(0, 1), legend.title = element_blank(), legend.direction = "horizontal")
-
+ return(g)
 }

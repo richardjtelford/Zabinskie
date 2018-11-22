@@ -9,8 +9,8 @@
 #   
 
 #read digitised climate data
-luoto_load_digitised_climate <- function(f){
-  #f <- "data/luoto/measured.txt"
+luoto_load_digitised_climate <- function(){
+  f <- file_in("data/luoto/measured.txt")
   inst <- read.table(f) %>% 
     select(temp = V1, year = V2) %>% 
     mutate(year = round(year)) %>% 
@@ -28,8 +28,8 @@ luoto_load_digitised_climate <- function(f){
 
 
 #digitise stratigraphy
-luoto_digitise_stratigraphy <- function(f){
-  #f <- "data/luoto/outfile2.pdf"
+luoto_digitise_stratigraphy <- function(){
+  f <- file_in("data/luoto/outfile2.pdf")
   page4 <- readLines(f)
   start <- grep("/PlacedGraphic", page4)[2]
   end <- grep("[(Figur)20(e 2.)]TJ", page4, fixed = TRUE)

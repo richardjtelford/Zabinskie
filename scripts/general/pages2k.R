@@ -1,10 +1,7 @@
 ## ---- pages2k
 
-pages2k_load <- function(pages2k_data_file = "data/sdata201788-s3.xlsx"){
-  if(!file.exists(pages2k_data_file)){
-    message("Downloading file from https://www.nature.com/articles/sdata201788")
-    download.file("https://media.nature.com/original/nature-assets/sdata/2017/sdata201788/extref/sdata201788-s3.xlsx", destfile = pages2k_data_file)
-  }
+pages2k_load <- function(){
+  pages2k_data_file = file_in("data/general/sdata201788-s3.xlsx")
   
   pages <- read_excel(pages2k_data_file, sheet = "Table S1")
   lakes <- pages %>% 

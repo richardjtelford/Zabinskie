@@ -158,3 +158,87 @@ sil_temp <- approx(x = sil_inst$year, y = sil_inst$temperature, xout = silva_fos
 
 mod <- WAPLS(silva_fos_holocene %>% select(-YearAD) %>% slice(1:64) %>% select_if(colSums(. > 0) > 1) %>% sqrt(), sil_temp$y[1:64]) %>% crossval(verbose = FALSE)
 performance(mod)
+
+
+
+
+############# Canadian recon
+
+dictionary <- read_csv(
+"  swiss, canadian
+H_brund, 
+Smitti, Smittia
+Paraph, Paraphaenocladius
+Paraten, 
+Sticto, Stichtochironomus B
+TanyC, Tanytarsus sp# C
+Tany.p, Tanytarsus pallidicornis
+Paracl, Paracladius
+Chir_Anth, Chironomus anthracinus
+Dicrot, Dicrotendipes nervosus
+Pseudos, Pseudosmittia
+Parat, Paratanytarsus
+H_Marc, H# marcidus
+Limnoph, Limnophyes
+Sergent, Sergentia1
+Chiro_Plu, Chironomus plumosus
+Eukief, Eukiefferiella fittkaui
+Microt, Microtendipes pedellus
+Polyped, 
+Micro.b, Micropsectra bidentata
+Proclad, Procladius
+Cory.o, Corynocera oliveri
+Parakieff_, Parakiefferiella bathophila
+Ortho, Orthocladius
+Tany_L, Tanytarsus lugens
+Diamesa, Diamesa?
+Micro.r, Micropsectra radialis
+Nanocl, Nanocladius branchio
+Tany.sp, Tanytarsus sp
+Monodi, Monodiamesa
+H_grim, H# grimshawi
+Cricoto, Cricotopus
+Thienne, Thiennemanyia
+Corynoneura, Corynoneura
+Pentan, Pentaneurini
+TanyB, 
+Tany.c, Tanytarsus chinyensis
+Synor, 
+Micro_I, Micropsectra insignilobus
+Psectrocladius sordidellus, Psectrocladius sordidellus
+Rheocr, Rheocricotopus
+Paracladopelma, Paracladopelma
+H_sub, H# subpilosus
+Chaet, Chaetocladius
+Protany, Protanypus
+Oliver, Oliverdia
+Allops, Allopsectrocladius
+Zalu_zal, Zalutschia zalutschicola
+Prodi, 
+Heterota, Heterotanytarsus
+")
+
+
+'"Abiskomyia"  "Ablabesmyia"  "Brillia"  "Chironomini" "Cladopelma lateralis" "Cladotanytarsus mancus1" "Constempellina"  "Corynocera ambigua"  "Cryptochironomus" "Cryptotendipes" "Einfeldia"  "Endochironomus albipennis" "Endochironomus impar" "Endochironomus tendens"  "Glyptotendipes pallens"  "Glyptotendipes severini" "Guttipelopia"  "H# maeri"  "Hydrobaenus"  "Krenopelopia" "Labrundinia"  "Lauterborniella"  "Macropelopia" "Mesocricotopus" "Microchironomus"  ""  "Microtendipes II" "Omisus"  "Pagastiella"  "Parachironomus varus"  "Paracricotopus"  "Paratendipes nudisquama" "Phaneosectra type A"  "Polypedilum nubeculosum" "Polypedilum nubifer"  "Polypedilum sordens"  "Psectrocladius septentri" "Pseudochironomus" "Pseudorthocladius" "Sergentia coracina" "Stempellina" "Stempelinella"  "Tanytarsus glabrescens" "Tanytarsus gracilentus"  "Tanytarsus lactesens"  "Tanytarsus mendax" "Tanytarsus with" "Zalutschia muclonata" "Pseudodiamesa" "Zavrelymia" "Telopelopia" '
+
+sil_fos_c <- jopl_fig3_fat
+dictionary <- dictionary %>% filter(!is.na(canadian))
+names(sil_fos_c) <- plyr::mapvalues(names(sil_fos_c), from = dictionary$swiss, to = dictionary$canadian)
+
+
+loadd(sites)
+loadd(spp)
+loadd(env)
+spp_c = spp %>% filter(sites$source != "Poland") %>% select_if(~sum(.) > 0)
+env_c = env[sites$source != "Poland"]
+
+mod <- WAPLS(sqrt(spp_c), env_c) %>% crossval()
+performance(mod)
+pred <- data_frame(depth = sil_fos_c$depth, recon = predict(mod, sqrt(sil_fos_c %>% select(-depth)))$fit[, 2])
+pred %>% ggplot(aes(x = depth, y = recon)) + 
+  geom_point() + 
+  geom_line() +
+  scale_x_reverse()
+
+sil_fos_c %>% slice(which.min(pred$recon)) %>% gather(taxon, percent, -depth) %>% filter(percent > 0)
+coef(mod)[,1:2]

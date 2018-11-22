@@ -61,8 +61,7 @@ pkgconfig::set_config("drake::strings_in_dots" = "literals")
 analyses <- drake_plan(
   #### General code
   # pages2k data - "scripts/pages2k.R"
-  pagesHi = pages2k_load(pages2k_data_file = file_in("data/general/sdata201788-s3.xlsx")),
-  
+  pagesHi = pages2k_load(),
   
   #weather_climate - "scripts/general/weather_climate.R"
   cet = read.table(file_in("data/general/cetml1659on.dat"), skip = 7, header = FALSE),
@@ -77,7 +76,7 @@ analyses <- drake_plan(
   
   #### Zabinskie
   #load data - "scripts/load_zabinskie_data.R"
-  zabinskie_excel_file = "data/zabinskie/zabinskie2015cit.xls",
+  zabinskie_excel_file = file_in("data/zabinskie/zabinskie2015cit.xls"),
   #modern spp
   spp_all0 = read_excel(zabinskie_excel_file, sheet = "Training species"),
   #modern environment
@@ -189,9 +188,9 @@ analyses <- drake_plan(
   
   ###Silvaplana
   #load data
-  silva_recon_holocene = silva_load_recon_holocene(file_in("data/silvaplana/silvaplana2009.txt")),
-  silva_recon_jopl = silva_load_recon_jopl(file_in("data/silvaplana/silvaplana2008.txt")),
-  silva_fos_holocene = silva_load_fos_holocene(file_in("data/silvaplana/silvaplana2009.txt")),
+  silva_recon_holocene = silva_load_recon_holocene(),
+  silva_recon_jopl = silva_load_recon_jopl(),
+  silva_fos_holocene = silva_load_fos_holocene(),
     
   #make plots of reconstructions
   silva_recon_plot = silv_plot_reconstructions(silva_recon_jopl, silva_recon_holocene),
@@ -202,20 +201,22 @@ analyses <- drake_plan(
   
   silva_est_countSum = silva_estimate_countSums(silva_fos_holocene),
   silva_last = silva_last_sample(silva_fos_holocene),
-  silva_climate = silva_load_climate(file_in("data/silvaplana/homog_mo_SIA.txt")),
+  silva_climate = silva_load_climate(old = TRUE),
+  silva_new_climate = silva_load_climate(old = FALSE),
   silva_digitised_climate = silva_load_digitised_climate(),
   silva_climate_plot = silva_plot_climate(silva_climate, silva_digitised_climate),
+  silva_version_r2 = silva_calc_version_r2(silva_climate, silva_new_climate),
   
   
   ###Seebergsee
-  seeberg_count = seeberg_read_counts(file_in("data/seebergsee/seebergsee_counts.csv")),
+  seeberg_count = seeberg_read_counts(),
   seeberg_merged = seeberg_merge_counts(seeberg_count),
   seeberg_pc = seeberg_calc_percent(seeberg_merged),
   seeberg_sums = seeberg_calc_countsums(seeberg_count),
   seeberg_n = seeberg_calc_noccur(seeberg_count),
  
-  seeberg_climate = seeberg_load_climate(file_in("data/seebergsee/homog_mo_CHD.txt")),
-  seeberg_digitised_climate = seeberg_load_digitised_climate(file_in("data/seebergsee/seebergsee_climate")),
+  seeberg_climate = seeberg_load_climate(),
+  seeberg_digitised_climate = seeberg_load_digitised_climate(),
   seeberg_climate_plot = seeberg_plot_climate(seeberg_digitised_climate, seeberg_climate),
     
   
@@ -231,14 +232,14 @@ analyses <- drake_plan(
   
   
   ###Luoto
-  luoto_climate = luoto_load_digitised_climate(file_in("data/luoto/measured.txt")),
-  luoto_fos = luoto_digitise_stratigraphy(file_in("data/luoto/outfile2.pdf")),
+  luoto_climate = luoto_load_digitised_climate(),
+  luoto_fos = luoto_digitise_stratigraphy(),
   luoto_cit_mod = luoto_run_cit_mod(luoto_fos, luoto_climate),
   luoto_cit_perform = performance(luoto_cit_mod),
   luoto_cit_plot = autoplot(luoto_cit_mod, show_apparent = TRUE, smooth = FALSE, column = "WA.inv.tol") + labs(x = "Measured July air temperature °C", y = "Predicted July air temperature °C"),
   
   ###Zhang
-  zhang_data = zhang_import(file_in("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx")),
+  zhang_data = zhang_import(),
   zhang_cor = zhang_calc_cor(zhang_data),
   
   ###Speke Hall Lake
@@ -263,11 +264,13 @@ analyses <- drake_plan(
       clean = FALSE), 
     trigger = trigger(change =list(biblio2, supplementary_data))
     ),
-  supplementary_data = rmarkdown::render(
-    input = knitr_in("Rmd/Telford_supplementary_data.Rmd"),
-    knit_root_dir = "../",
-  #  output_dir = "./output", 
-    clean = FALSE
+  supplementary_data = target(
+    command = rmarkdown::render(
+      input = knitr_in("Rmd/Telford_supplementary_data.Rmd"),
+      knit_root_dir = "../",
+    #  output_dir = "./output", 
+      clean = FALSE),
+    trigger = trigger(change =list(biblio2))
   ),
   presentation = rmarkdown::render(
     input = knitr_in("Rmd/eecrg_2018_10_26.Rmd"), 

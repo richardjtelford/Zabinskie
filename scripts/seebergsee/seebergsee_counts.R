@@ -1,7 +1,7 @@
 ## ---- seebergsee_digitised
 #import digitised count data
-seeberg_read_counts <- function(f){ 
-  #"data/seebergsee/seebergsee_counts.csv"
+seeberg_read_counts <- function(){ 
+  f <- file_in("data/seebergsee/seebergsee_counts.csv")
   seeberg_count <- read.csv(f)
   seeberg_count[is.na(seeberg_count)] <- 0
   return(seeberg_count)
@@ -53,8 +53,8 @@ seeberg_calc_countsums <- function(seeberg_count){
 
 
 ## ---- seebergsee_climate load original climate data
-seeberg_load_climate <- function(f){
-  #  "data/seebergsee/homog_mo_CHD.txt"
+seeberg_load_climate <- function(){
+  f <-  file_in("data/seebergsee/homog_mo_CHD.txt")
   seeberg_climate0 <- read_table(f, skip  = 27)
   
   seeberg_climate <- seeberg_climate0 %>% 
@@ -68,8 +68,8 @@ seeberg_load_climate <- function(f){
 }
 
 #load digitised climate data
-seeberg_load_digitised_climate <- function(f){
-  "data/seebergsee/seebergsee_climate"
+seeberg_load_digitised_climate <- function(){
+  f <- file_in("data/seebergsee/seebergsee_climate")
   sbs_digitised <- read.table(f) %>% 
     rename(year = V1, july = V2) %>% 
     slice(-40)#bad click

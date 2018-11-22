@@ -1,18 +1,17 @@
 ## ---- read_silvaplana_Holocene_reconstruction
 #Load 540 yr reconstruction - Holocene 2009
 
-silva_load_recon_holocene <- function(f){
-  #f <- "data/silvaplana/silvaplana2009.txt"
-  recon_holocene <- read_table(f, skip = 91, n_max = 134) %>% 
+silva_load_recon_holocene <- function(){
+  recon_holocene <- read_table(file_in("data/silvaplana/silvaplana2009.txt"), skip = 91, n_max = 134) %>% 
     mutate(Year = as.numeric(Year))# '...' values to NA
   return(recon_holocene)
 }
 
 ## ---- read_silvaplana_Holocene_fossil
 #Load fossil data from Holocene 2009
-silva_load_fos_holocene <- function(f){
+silva_load_fos_holocene <- function(){
   
-  #f <- "data/silvaplana/silvaplana2009.txt"
+  f <- file_in("data/silvaplana/silvaplana2009.txt")
   
   f2 <- readLines(f)
   YearAD <- grep("^YearAD", f2)
@@ -39,17 +38,15 @@ silva_load_fos_holocene <- function(f){
 
 ## ---- read_silvaplana_2008_JoPL
 #Load 140 yr reconstruction - JoPL 2009
-silva_load_recon_jopl <- function(f){
-  #f <- "silvaplana/data/silvaplana2008.txt"
-  recon_jopl <- read_table(f, skip = 78) %>% 
+silva_load_recon_jopl <- function(){
+  recon_jopl <- read_table(file_in("data/silvaplana/silvaplana2008.txt"), skip = 78) %>% 
     filter(!is.na(Year))
   return(recon_jopl)
 }
 ## ---- read_silvaplana_2010_QSR
 #Load 1000 yr reconstruction - QSR 2010
-silva_load_recon_qsr <- function(f){
-  f <- "data/silvaplana/silvaplana2010.txt"
-  recon_qsr <- read_table(f, skip = 98) %>% 
+silva_load_recon_qsr <- function(){
+  recon_qsr <- read_table(file_in("data/silvaplana/silvaplana2010.txt"), skip = 98) %>% 
     filter(!is.na(Year)) %>%   
     mutate(JulyT = `3-year`, 
            JulyT = ifelse(is.na(JulyT), `10-year`, JulyT)) %>% #use 10-yr smooth if needed
@@ -68,23 +65,30 @@ silva_load_recon_qsr <- function(f){
 #   arrange(desc(Year))
 
 
-silva_load_climate <- function(f){
-    #"data/silvaplana/homog_mo_SIA.txt"
-  sil_inst <- read.table(file = f, skip = 27, header = TRUE) %>%
-    filter(Month == 7) %>% 
-    select(year = Year, temperature = Temperature) %>% 
-    filter(year <= 2001) #last year in paper
+silva_load_climate <- function(old){
+  if(isTRUE(old)){
+    sil_inst <- read_delim(file_in("data/silvaplana/sils_meteo_2008.txt"), delim = " ") %>% 
+    set_names(c("year", "month", "temperature", "precip")) 
+  } else {
+  sil_inst <- read.table(file = file_in("data/silvaplana/homog_mo_SIA.txt"), skip = 27, header = TRUE) %>%
+    select(year = Year, temperature = Temperature, month = Month) 
+  }
+  
+  sil_inst <- sil_inst %>% 
+    filter(month == 7, year <= 2001) %>%  #2001 - last year in paper
+    select(year, temperature)
+  
   return(sil_inst)
 }
 
 # digitised instrumental data for calibration in time
 silva_load_digitised_climate <- function(){
-  sil_cit_temp <- read.table("data/silvaplana/calibration_in_time.txt") %>% 
+  sil_cit_temp <- read.table(file_in("data/silvaplana/calibration_in_time.txt")) %>% 
     select(1:2) %>% 
     set_names(c("year", "temperature")) %>% 
     mutate(year = round(year))
   
-  sil_space_temp <- read.table("data/silvaplana/calibration_in_space.txt") %>% 
+  sil_space_temp <- read.table(file_in("data/silvaplana/calibration_in_space.txt")) %>% 
     select(1:2) %>% 
     set_names(c("year", "temperature")) %>% 
     bind_rows(#overplotted points
@@ -93,6 +97,16 @@ silva_load_digitised_climate <- function(){
       data_frame(year = 1944, temperature = 11.5991)) %>% 
     arrange(year)
   
-  bind_rows(cis = sil_space_temp, cit = sil_cit_temp, .id = "what")
+  # sil_swe <- read.csv(file_in("data/silvaplana/Silvaplana_SE.csv"), skip = 4) %>% 
+  #   select(year = Year, temperature  = Instrumental.temperature, recon = Chironomid.inferred)
+  # Swedish reconstruction and instrumental data are mixed up. Recon = canadian_tf inst; residuals inverted.
+  
+  sil_can <- read.csv(file_in("data/silvaplana/Silvaplana_NAm_TF.csv"), skip = 4) %>% 
+    select(year = Year, temperature  = Instumental_temperature, recon = Chironomid.inferred)
+  
+  bind_rows(cis = sil_space_temp, cit = sil_cit_temp, can = sil_can, .id = "what")
 }
 
+silva_calc_version_r2 <- function(old, new){
+  cor(old$temperature, new$temperature)^2
+}

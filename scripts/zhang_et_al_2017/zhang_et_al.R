@@ -1,6 +1,6 @@
 ## ---- zhang_fossil
-zhang_import <- function(f = "data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx"){
-
+zhang_import <- function(){
+  f = file_in("data/zhang_et_al_2017/Zhang et al 2017_Climate of the Past_dataset.xlsx")
   zhang <- read_excel(f, sheet = "Key chironomid taxa of Tiancai", skip = 2)
   meta <- zhang[, 1:3]
   fos <- zhang[, -(1:3)]  

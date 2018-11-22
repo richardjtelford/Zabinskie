@@ -52,7 +52,7 @@ abisko_similar_correlations <- function(abisko_short){
 ## ---- digitised
 abisko_digitised <- function(){
   #lake850
-  lake850 <- read.table("data/abisko/lake850.txt") %>% 
+  lake850 <- read.table(file_in("data/abisko/lake850.txt")) %>% 
     select(1:2) %>% 
     setNames(c("date", "temp")) %>% 
     mutate(type = rep(c("reconstruction", "instrumental"), each = 23),
@@ -63,7 +63,7 @@ abisko_digitised <- function(){
   time_plot850
   
   #lakeV
-  lakeV <- read.table("data/abisko/lakeV.txt") %>% 
+  lakeV <- read.table(file_in("data/abisko/lakeV.txt")) %>% 
     select(1:2) %>% 
     setNames(c("date", "temp")) %>% 
     mutate(type = rep(c("reconstruction", "instrumental"), each = 14),
@@ -72,7 +72,7 @@ abisko_digitised <- function(){
   time_plot850 %+% lakeV
   
   #lakeA
-  lakeA <- read.table("data/abisko/lakeA.txt") %>% 
+  lakeA <- read.table(file_in("data/abisko/lakeA.txt")) %>% 
     select(1:2) %>% 
     setNames(c("date", "temp")) %>% 
     mutate(type = rep(c("reconstruction", "instrumental"), each = 24),
@@ -81,7 +81,7 @@ abisko_digitised <- function(){
   time_plot850 %+% lakeA 
   
   #lakeN
-  lakeN <- read.table("data/abisko/lakeN.txt") %>% 
+  lakeN <- read.table(file_in("data/abisko/lakeN.txt")) %>% 
     select(1:2) %>% 
     setNames(c("date", "temp")) %>% 
     mutate(type = rep(c("reconstruction", "instrumental"), each = 19),
