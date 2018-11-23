@@ -271,11 +271,7 @@ analyses <- drake_plan(
     #  output_dir = "./output", 
       clean = FALSE),
     trigger = trigger(change =list(biblio2))
-  ),
-  presentation = rmarkdown::render(
-    input = knitr_in("Rmd/eecrg_2018_10_26.Rmd"), 
-    knit_root_dir = "../", 
-    output_dir = "./output")
+  )
 )
 
 #configure and make drake plan

@@ -21,9 +21,10 @@ vignettes/*.pdf
 
 #output
 *.docx
-#*.md
+*.md
 *.html  
 *.pdf
+*.tex
 !data/luoto/outfile2.pdf
 
 #strange file made by rticles or latex
