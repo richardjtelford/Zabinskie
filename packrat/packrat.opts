@@ -8,12 +8,13 @@ external.packages:
     shiny
 local.repos: 
 load.external.packages.on.startup: TRUE
-ignored.packages: 
+ignored.packages:
     magick
     microbenchmark
     citr
     RefManageR
     miniUI
+    devtools
 ignored.directories:
     data
     etc
@@ -29,3 +30,4 @@ snapshot.fields:
     Imports
     Depends
     LinkingTo
+symlink.system.packages: TRUE
