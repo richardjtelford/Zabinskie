@@ -5,7 +5,7 @@ weather_climate_process <- function(x){
     as.tibble() %>%
     set_names(c("year", month.abb, "annual")) %>% 
     #remove partial years
-    filter(!apply(cet == -99.9, 1, any)) %>% 
+    filter(!apply(. == -99.9, 1, any)) %>% 
     #calculate mean summer
     mutate(summer = rowMeans(data_frame(Jun, Jul, Aug)))
   

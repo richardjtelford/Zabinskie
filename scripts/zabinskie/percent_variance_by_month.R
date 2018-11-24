@@ -1,6 +1,6 @@
 ## ---- percent_variance
 #predictive power of different months 
-zabinskie_perform_by_month <- function(climate, spp, fat_composite_as_zab_published){
+zabinskie_perform_by_month <- function(climate, spp, fos, fat_composite_as_zab_published){
   perform_by_month <- climate %>% 
     select(-(Lake:country), -summer) %>% 
     gather(key = month, value = temperature) %>% 
@@ -56,7 +56,7 @@ zabinskie_plot_perform_by_month <- function(perform_by_month){
 }
 
 ## ---- reconstruction_by_month
-zabinskie_reconstruction_by_month <- function(climate, spp, chron){
+zabinskie_reconstruction_by_month <- function(climate, spp, fos, chron){
   recon_by_month <- climate %>% 
     select(-(Lake:country), -summer) %>% 
     gather(key = month, value = temperature) %>% 

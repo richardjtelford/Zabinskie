@@ -125,11 +125,11 @@ analyses <- drake_plan(
     arrange(desc(recon_year)),
   
   #performance_by_month "scripts/zabinskie/percent_variance_by_month.R"
-  perform_by_month = zabinskie_perform_by_month(climate, spp, fat_composite_as_zab_published),
+  perform_by_month = zabinskie_perform_by_month(climate, spp, fos, fat_composite_as_zab_published),
   perform_by_month_plot = zabinskie_plot_perform_by_month(perform_by_month),
   
   #reconstruction_by_month "scripts/zabinskie/percent_variance_by_month.R"
-  recon_by_month = zabinskie_reconstruction_by_month(climate, spp, chron), 
+  recon_by_month = zabinskie_reconstruction_by_month(climate, spp, fos, chron), 
   recon_by_month_plot = zabinskie_plot_reconstruction_by_month(recon_by_month),
   
   #age uncertainty
