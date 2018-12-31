@@ -20,7 +20,7 @@ library("palaeoSig")
 
 #devtools::install_github("richardjtelford/rjt.misc")
 library("rjt.misc")
-#devtools::install_github("richardjtelford/countChecker")
+#devtools::install_github("richardjtelford/count_checker")
 library("countChecker")
 #devtools::install_github("richardjtelford/ggpalaeo")
 library("ggpalaeo")
@@ -276,13 +276,13 @@ analyses <- drake_plan(
 
 #configure and make drake plan
 config <- drake_config(analyses)
-outdated(config)        # Which targets need to be (re)built?
+#outdated(config)        # Which targets need to be (re)built?
 make(analyses, jobs = 2) # Build the right things.
 
 float_tex("Rmd/Telford_supplementary_data.tex", clean = FALSE)
 setwd("Rmd/")#only appears to work when tex file is in working directory
-tinytex::pdflatex("limitations_of_high_resolution_quant_palaeo.tex", clean=FALSE)
-tinytex::pdflatex("Telford_supplementary_data.tex", clean=FALSE)
+tinytex::pdflatex("limitations_of_high_resolution_quant_palaeo.tex", clean=TRUE)
+tinytex::pdflatex("Telford_supplementary_data.tex", clean=TRUE)
 setwd("../")
 
 system("evince Rmd/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
@@ -291,5 +291,5 @@ system("evince Rmd/Telford_supplementary_data.pdf", wait = FALSE)#display pdf - 
 
 #show dependency graph
 vis_drake_graph(config)
-vis_drake_graph(config, targets_only = TRUE)
+vis_drake_graph(config, targets_only = TRUE, main = "Zabinskie ms dependency graph")
 options(digits = 6)#reset

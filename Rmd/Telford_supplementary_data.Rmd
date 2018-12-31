@@ -57,7 +57,7 @@ readd(seeberg_cit_plot)
 readd(seeberg_climate_plot)
 ```
 
-There may be, probably small, differences between the data shown in Fig. S\@ref(fig:seeberg-climate-plot) and the version of the Château-d'Oex temperature series homogenised by Berget et al. [@Bergert2005].
+There may be, probably small, differences between the data shown in Fig. S\@ref(fig:seeberg-climate-plot) and the version of the Château-d'Oex temperature series homogenised by Berget et al. [-@Bergert2005].
 
 
 ## Nurmijärvi
