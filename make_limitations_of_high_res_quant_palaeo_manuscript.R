@@ -250,10 +250,16 @@ analyses <- drake_plan(
   
   ##prepare ms
   #add extra packages to bibliography
-  biblio2 = package_citations(
+  biblio2 = {package_citations(
     packages = c("vegan", "rioja", "analogue", "palaeoSig"), 
     old_bib = file_in("Rmd/extra/chironomid.bib"), 
-    new_bib = file_out("Rmd/extra/chironomid2.bib")),
+    new_bib = file_out("Rmd/extra/chironomid2.bib"))
+    
+    #make sure "Quaternary"
+    bib <- readLines("Rmd/extra/chironomid2.bib")
+    bib <- gsub(" Quaternary", " {Quaternary}", bib)
+    writeLines(text = bib, con = "Rmd/extra/chironomid2.bib")
+    },
   
   #knit manuscript
   manuscript = target(
