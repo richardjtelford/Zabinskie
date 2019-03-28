@@ -100,6 +100,11 @@ Version: 0.2.2
 Hash: 8ce499301f0dc5c7ff69f0b42e33f5c1
 Requires: Rcpp, bindr, plogr
 
+Package: bitops
+Source: CRAN
+Version: 1.0-6
+Hash: 67d0775189fd0041d95abca618c5c07e
+
 Package: bookdown
 Source: CRAN
 Version: 0.7
@@ -117,6 +122,12 @@ Source: CRAN
 Version: 0.5.0
 Hash: 9f383b5f4632f82878222399b5fa7bbd
 Requires: backports, dplyr, purrr, reshape2, stringr, tibble, tidyr
+
+Package: caTools
+Source: CRAN
+Version: 1.17.1.1
+Hash: 1764f9cb70825aa7a1c461e7514ffb73
+Requires: bitops
 
 Package: callr
 Source: CRAN
