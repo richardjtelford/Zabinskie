@@ -44,6 +44,16 @@ What limits the resolution of reconstructions from assemblage data with transfer
 Time consuming
 </div>
 
+## Microfossil-based reconstructions 
+
+```{r, fig.height=4}
+# par(mar = rep(0, 4))
+# plot(0:1, 0:1, type = "n", ann = FALSE, axes = FALSE)
+# rasterImage(readJPEG("stockholm/figures/wx6BKK.jpg", native = TRUE), 0, 0, 1, 1)
+knitr::include_graphics("stockholm/figures/wx6BKK.jpg", dpi = 350)
+```
+
+
 ## Validated reconstructions: diatoms
 
 Baldegersee diatom-inferred total phosphorous (Lotter, 1998)  
