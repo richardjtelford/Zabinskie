@@ -4,7 +4,7 @@ library(tidyverse)
 min_pc <- function(x) min(x[x > 0])
 
 getCore <- function(lake){
-  LAKE <- read_excel("abisko/data/abisko2004 Gaute.xlsx", sheet = lake, col_names = FALSE)
+  LAKE <- read_excel("data/abisko/abisko2004 Gaute.xlsx", sheet = lake, col_names = FALSE)
   depth <- unlist(LAKE[1, -1])
   spp <- LAKE[-1, 1] %>% pull()
   LAKE <- t(LAKE[-1, -1]) %>%
@@ -57,11 +57,11 @@ gridExtra::grid.arrange(
 
 ##redo reconstructions
 library("assertr")
-env <- read_excel("abisko/data/SwedenEnvData.xlsx", sheet = "EnvData") %>% 
+env <- read_excel("data/abisko/SwedenEnvData.xlsx", sheet = "EnvData") %>% 
   mutate(`Lake number` = as.numeric(`Lake number`)) %>% 
   filter(!is.na(`Lake number`))
 
-spp <- read_excel("abisko/data/Sweden chiro.xlsx", sheet = "Sheet1") %>% 
+spp <- read_excel("data/abisko/Sweden chiro.xlsx", sheet = "Sheet1") %>% 
   verify(X__1 == paste0("T", env$`Lake number`)) %>% 
   select(-X__1)
 
@@ -150,3 +150,8 @@ Vuoskku_fos$chiron %>%
   select(which(sapply(., max) > 5)) %>% as.data.frame( ) %>% 
   strat.plot(., yvar = Vuoskku_est$depth, scale.percent = TRUE, y.rev = TRUE)
 
+####
+Njulla_fos$depth
+Vuoskku_fos$depth
+L850_fos$depth
+Njulla_fos$chiron %>% slice(1:2) %>% select_if(~sum(.) > 0) %>% as.data.frame()
