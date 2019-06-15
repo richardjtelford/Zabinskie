@@ -1,5 +1,5 @@
 ---
-title: "Review and test of reproducibility of sub-decadal resolution palaeoenvironmental reconstructions from microfossil assemblages"
+title: "Review and test of reproducibility of subdecadal resolution palaeoenvironmental reconstructions from microfossil assemblages"
 author:
   - name: Richard J. Telford
     email: richard.telford@uib.no
@@ -11,7 +11,7 @@ address:
 abstract: |
   Very high, even annual, resolution quantitative palaeoenvironmental reconstructions have been generated from microfossil assemblage data using transfer functions. 
   Evidence of the utility of some of these reconstructions is given by the high correlations between the reconstructions and instrumental records.
-  Such performance is despite several ecological and taphonomic issues that can become more problematic at sub-decadal resolution than at multidecadal resolution.
+  Such performance is despite several ecological and taphonomic issues that can become more problematic at subdecadal resolution than at multidecadal resolution.
   This paper explores these timescale dependent issues and tests the reproducibility of the reconstructions.
   It  demonstrates that the exceptionally good performance of several published reconstructions is not reproducible.
 journal: "Quaternary Science Reviews"
@@ -64,11 +64,11 @@ loadd(seeberg_sums, seeberg_n, seeberg_cit_perf, seeberg_ca)
 
 # Highlights{-}
 
- - Microfossil assemblage-based palaeoenvironmental reconstructions with sub-decadal resolution that are validated against instrumental records are reviewed.
+ - Microfossil assemblage-based palaeoenvironmental reconstructions with subdecadal resolution that are validated against instrumental records are reviewed.
  - Ecological and taphonomic processes and chronological uncertainty mean that only in favourable circumstances will precise reconstructions be possible.
  - Conditions are favourable for reconstructing recent changes in lake nutrient status with diatoms.
-  - Conditions are not favourable for sub-decadal chironomid-temperature reconstructions.
-  - Serious problems with several of the sub-decadal chironomid-temperature reconstructions are discussed.
+  - Conditions are not favourable for subdecadal chironomid-temperature reconstructions.
+  - Serious problems with several of the subdecadal chironomid-temperature reconstructions are discussed.
   - Chrysophyte-based reconstructions are difficult to evaluate due to a dearth of archived data.
 
 **Keywords:** Microfossils; Quantitative palaeoenvironmental reconstructions; Transfer functions; Reproducibility; Anthropocene; Palaeoclimatology; Palaeolimnology; Global; Data treatment, data analysis
@@ -79,7 +79,7 @@ Palaeoecologists, amongst others, value high-resolution palaeoecological data [@
 Of the `r nrow(pagesHi)` very high resolution palaeolimnological time series in the PAGES2k Consortium's [-@Pages2017] compilation of temperature-sensitive proxy records, most are the thickness or other physical property of varves, which can be difficult to interpret [@Blass2007], but `r sum(pagesHi$proxy %in% c("chironomid")) %>% as.english()` series are derived from microfossil assemblages using transfer functions.
 Evidence for the utility of these high, even annual, resolution microfossil-based palaeoenvironmental reconstructions comes from comparisons of these reconstructions, typically from varved sediments, with instrumental records.
 As such records require large investments of time [@Green1983], it is important to understand the circumstances in which they are likely to yield good results.
-All validated sub-decadal microfossil-assemblage based reconstructions identified by a literature search are listed in Table 1.
+All validated subdecadal microfossil-assemblage based reconstructions identified by a literature search are listed in Table 1.
 Lotter [-@Lotter1998] and Alefs and Müller [-@Alefs1999] reconstruct the slowly varying total phosphorus concentrations from annually-resolved, mainly planktic, lacustrine diatom assemblages.
 High-resolution chrysophyte stomatocyst stratigraphies have been used to reconstruct winter conditions as reflected by the date of spring mixing [@DeJong2011] and the duration of cold water [@HernandezAlmeida2015].
 Since there are no long instrumental time series of these limnological variables, the reconstructions are correlated with winter air temperatures.
@@ -137,7 +137,7 @@ Interpretation of this reconstruction of August air temperature since 1896 at ~a
 
 # Challenges for high-resolution reconstructions
 
-This section explores the ecological, chronological, and taphonomic challenges faced by sub-decadal resolution reconstructions, with a focus on chironomid inferred-air temperature reconstructions, and considering other reconstructions when they differ in important ways.
+This section explores the ecological, chronological, and taphonomic challenges faced by subdecadal resolution reconstructions, with a focus on chironomid inferred-air temperature reconstructions, and considering other reconstructions when they differ in important ways.
 Many of these challenges discussed below will also affect sedimentary geochemical proxies to some extent. 
 
 ## Ecological sensitivity 
@@ -155,7 +155,7 @@ The phenology of chironomid emergence [@Tokeshi1995] suggests that many chironom
 At Polish latitudes, many of the chironomids in shallow water are likely to be bivoltine [@Tokeshi1995] with two generations a year.
 The first generation of adults, along with some univoltine species from deeper water, will emerge in spring [@Tokeshi1995] and so might be influenced by the previous year's August temperatures, introducing a lagged response.
 The second generation, emerging in late summer/autumn [@Tokeshi1995], will be affected by August temperatures but also temperatures throughout the summer and by the original species composition of the eggs.
-Lags can also be expected for sub-decadal pollen-climate reconstructions: van der Knaap et al. [-@vanderKnaap2010] used annual pollen trap data to show that the pollen accumulation rate for many taxa tend to depend on the conditions of the previous summer.
+Lags can also be expected for subdecadal pollen-climate reconstructions: van der Knaap et al. [-@vanderKnaap2010] used annual pollen trap data to show that the pollen accumulation rate for many taxa tend to depend on the conditions of the previous summer.
 
 With a few exceptions [@Kamenik2009; @Larocque-Tobler2011; @LarocqueTobler2011b; @Luoto2016], transfer-function models for quantitative palaeoclimate reconstructions are calibrated on a spatial calibration set of sites with paired microfossil and climatological normals that span a wide climatic range [@Birks2010].
 Over a spatial calibration set, the correlation between air temperature in different months can be expected to be high.
@@ -239,7 +239,7 @@ The impact of chronological error will depend on the magnitude of the chronologi
 In cases such as the diatom reconstructions of total phosphorus [@Lotter1998; @Alefs1999], where the target environmental variable rises and declines over decades, a small chronological error will have little effect on the agreement between the reconstruction and the instrumental records.
 If, however, the target variable has little or no autocorrelation, as for example with the Lake `r Zabinskie` regional August air-temperature composite which has a lag-1 autocorrelation coefficient of `r ar(fat_composite$Aug, order.max = 1)$ar`, then even an error of a single year would seriously degrade the agreement.
 
-The chronologies supporting the sub-decadal resolution reconstructions listed in Table 1 are either ^210^Pb or varve based, with the exception of Kamenik et al. [-@Kamenik2009] who use bomb-^14^C to date the peat sequence from Mauntschas Mire and report a dating uncertainty of 1--2 years.
+The chronologies supporting the subdecadal resolution reconstructions listed in Table 1 are either ^210^Pb or varve based, with the exception of Kamenik et al. [-@Kamenik2009] who use bomb-^14^C to date the peat sequence from Mauntschas Mire and report a dating uncertainty of 1--2 years.
 ^210^Pb chronologies typically have an uncertainty of 5--10 years on sediment 100 years old [@Appleby2006].
 Varved chronologies are usually more precise, with a typical uncertainty of 1--3% [@OJALA2012] and allow the sediment from a single year (or known number of years) to be analysed.
 The error in varved chronologies tends to accumulate, becoming higher further back in time. 
@@ -286,7 +286,7 @@ With _h_-block cross-validation [@Trachsel2016], a scheme that is robust to auto
 
 # Discussion
 
-Some proxy-environment systems appear more promising for sub-decadal to annual resolution reconstructions than others.
+Some proxy-environment systems appear more promising for subdecadal to annual resolution reconstructions than others.
 Some attributes of lakes, proxies and environmental variables associated with promising or unpromising systems are given in Table 2. 
 
 ```{r table2}
@@ -306,7 +306,7 @@ Chronology|Varves|Other|More precise"
 ```
 
 The diatom-total phosphorus reconstructions [@Lotter1998; @Alefs1999] derived from planktic diatoms hold the most promise.
-The planktic diatoms have a short generation time; nutrient availability has a strong control on diatom communities [@Tilman1981]; the taphonomy of sinking diatoms is relatively simple; and the slow changes in the target environmental variable mean that small chronological errors are inconsequential (conversely, this might make it difficult to demonstrate skill on sub-decadal rather than on decadal scales).  
+The planktic diatoms have a short generation time; nutrient availability has a strong control on diatom communities [@Tilman1981]; the taphonomy of sinking diatoms is relatively simple; and the slow changes in the target environmental variable mean that small chronological errors are inconsequential (conversely, this might make it difficult to demonstrate skill on subdecadal rather than on decadal scales).  
 
 The chrysophyte-cyst climate system shares several of the advantages of the diatoms, but is less promising because the target climate variable has strong high-frequency variability so any chronological error or taphonomic mixing will degrade the reconstruction.
 The three-year running mean used in all the chrysophyte studies will partially mitigate the high-frequency variability.
@@ -315,15 +315,15 @@ If both variables are ecologically important then the assumption [@Birks2010] th
 The mean summer wind reconstruction, relying on wind-induced upwelling of calcium to change species composition, seems particularly fragile, and is physically dubious as it seeks to find a relationship with mean wind velocity rather than mean wind speed.
 No data have been archived for either of these studies so their reproducibility cannot be verified.
 
-Chironomids are even less promising for sub-decadal reconstructions.
+Chironomids are even less promising for subdecadal reconstructions.
 In addition to the high-frequency variability in the target climatic variable, a chironomid's life-span is long relative to the month-long target variable, the taphonomy is complex as most head capsules need to be transported from the littoral zone, and chironomid phenology means that many chironomids will have emerged before the summer so cannot be affected by summer temperatures in the year they emerge.
 
-Doubts about the plausibility of sub-decadal resolution chironomid reconstructions do not imply that reconstructions on longer timescales [@Brooks2012] are flawed (but see Velle et al. [-@Velle2010]).
-At multi-decadal to centennial time scales, most of the issues discussed above are mitigated: single month and whole summer temperatures correlate well with each other as climate forcings rather than weather dominate; secondary variables such as dissolved organic carbon might correlate with climate change in time as they do in space and exert some influence on the assemblages; and lags due to taphonomic processes and phenology become largely irrelevant.
+Doubts about the plausibility of subdecadal resolution chironomid reconstructions do not imply that reconstructions on longer timescales [@Brooks2012] are flawed (but see Velle et al. [-@Velle2010]).
+At multidecadal to centennial time scales, most of the issues discussed above are mitigated: single month and whole summer temperatures correlate well with each other as climate forcings rather than weather dominate; secondary variables such as dissolved organic carbon might correlate with climate change in time as they do in space and exert some influence on the assemblages; and lags due to taphonomic processes and phenology become largely irrelevant.
 It is not yet clear at what time scale the signal in the chironomid-inferred reconstruction can be expected to emerge from the noise.
 
-While sub-decadal resolution reconstructions from microfossil assemblages can only be expected to correlate well with instrumental data only in favourable circumstances, very high-resolution palaeoecological analyses from varved sediments can be extremely valuable [@Lotter2012].
-For example, Allison et al. [-@Allison1986] and Peglar [-@Peglar1993] use sub-decadally (even annually) resolved pollen data to show the mid-Holocene _Tsuga_ (Hemlock) and _Ulmus_ (Elm) declines in North America and Europe, respectively, took just a few years.
+While subdecadal resolution reconstructions from microfossil assemblages can only be expected to correlate well with instrumental data only in favourable circumstances, very high-resolution palaeoecological analyses from varved sediments can be extremely valuable [@Lotter2012].
+For example, Allison et al. [-@Allison1986] and Peglar [-@Peglar1993] use subdecadally (even annually) resolved pollen data to show the mid-Holocene _Tsuga_ (Hemlock) and _Ulmus_ (Elm) declines in North America and Europe, respectively, took just a few years.
 
 ## Reproducibility issues with high-resolution chironomid reconstructions  
 
@@ -462,7 +462,7 @@ In view of the very poor cross-validated performance of the calibration-in-time 
 
 The main features of the reconstruction of mid-summer water temperature from Baker Lake [@Medeiros2012] can be reproduced from the raw data (Andrew S. Medeiros, pers comm), and the correlation with the smoothed annual temperature anomaly is high.
 Baker Lake is a relatively favourable study system: changes in the short ice-free period of this arctic lake due to climate change will have ecological consequences; and the lake experienced a large, year-round warming trend during the studied interval.
-However, chronological uncertainties, the relatively low resolution, and autocorrelation due to both the relatively smooth chironomid stratigraphy, which may be due to taphonomic processes, and the smoothing of the instrumental data, act together to preclude the detection of a sub-decadal signal so the authors never attempted to interpret one.  
+However, chronological uncertainties, the relatively low resolution, and autocorrelation due to both the relatively smooth chironomid stratigraphy, which may be due to taphonomic processes, and the smoothing of the instrumental data, act together to preclude the detection of a subdecadal signal so the authors never attempted to interpret one.  
 
 ### Nurmijärvi
 
@@ -499,7 +499,7 @@ The reported correlation between the reconstruction and instrumental data, based
 
 ## Recommendations for increasing reproducibility
 
-One of the main impediments to investigating the issues with sub-decadal resolution reconstructions was the lack of archived data.
+One of the main impediments to investigating the issues with subdecadal resolution reconstructions was the lack of archived data.
 Some papers had no data archived [@Larocque2003; @LarocqueTobler2011b; @HernandezAlmeida2015; @Luoto2016; @Lang2017], others had partial data [@Larocque-Tobler2015; @Zhang2017].
 Some data were provided on request, and some could be digitised, which is slow and imprecise.
 
@@ -523,16 +523,16 @@ Using state-of-the-art methods for generating reproducible analyses [@Cooper2017
 
 # Conclusions
 
-Reliable sub-decadal resolution reconstructions depend on the conjunction of a strong direct ecological link to the variable being reconstructed and a simple taphonomy.
+Reliable subdecadal resolution reconstructions depend on the conjunction of a strong direct ecological link to the variable being reconstructed and a simple taphonomy.
 Accurate and precise chronologies are also needed for a direct comparison with instrumental records.
 These requirements might be met by diatom-total phosphorus reconstructions, and perhaps by chrysophyte reconstructions of winter climate.
 It appears unlikely that they will be met by the relatively long-lived, predominately littoral chironomids for reconstructions of a single month's temperature. 
 
-The apparently extensive evidence for the utility of sub-decadal resolution temperature reconstructions is shown to be illusory.
+The apparently extensive evidence for the utility of subdecadal resolution temperature reconstructions is shown to be illusory.
 The papers reporting chironomid-temperature reconstructions from Lake `r Zabinskie`, the lakes near Abisko, Lake Silvaplana, and Seebergsee are plagued by pervasive errors and improbabilities and key results cannot be reproduced.
 The reported correlation between instrumental data and the reconstruction from Tiancai Lake cannot be reproduced and at least some results from Nurmijärvi cannot be reproduced.
 The Speke Hall Lake reconstruction can be reproduced, but this study is unlikely to replicate in a similar site.
-The Baker Lake reconstruction is reproducible and it is plausible that the result could be replicated at a similar site, but there is no sub-decadal signal.
+The Baker Lake reconstruction is reproducible and it is plausible that the result could be replicated at a similar site, but there is no subdecadal signal.
 
 The number and severity of errors in some of the papers reviewed highlights the importance of adopting reproducible practices and archiving all the raw data and computer code needed to reproduce the results.
 
