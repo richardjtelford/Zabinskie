@@ -15,18 +15,18 @@ set.seed(7931) #from random.org
 white_runs <- rerun(.n = n, {
   data <- rnorm((nyear - 2) * (ntaxa + 1)) %>% 
       matrix(ncol = ntaxa + 1) %>% 
-      as_data_frame() %>%
+      as_tibble() %>%
       filter(!is.na(V1)) %>% 
       rename(response = V1)
   
   mod <- lm(response ~ ., data = data)
   
-  data_frame(
+  tibble(
     response = data$response,
     pred = response - resid(mod)/(1 - lm.influence(mod, do.coef = FALSE)$hat)#identical to loo cv - but faster
   )
 }) %>% 
-  map_df(~data_frame(
+  map_df(~tibble(
     r =  cor(.$response, .$pred), 
     r2 = r^2
   ))
@@ -41,7 +41,7 @@ mk_data <- function(nyear, ntaxa){
   matrix(ncol = ntaxa + 1) %>% 
   zoo::rollmean(na.pad = TRUE, k = 2, align = "left") %>% 
   zoo::rollmean(na.pad = TRUE, k = 2, align = "right") %>% 
-  as_data_frame() %>%
+  as_tibble() %>%
   filter(!is.na(V1)) %>% 
   rename(response = V1)
 }
@@ -51,12 +51,12 @@ auto_runs <- rerun(.n = n, {
 
   mod <- lm(response ~ ., data = data)
   
-  data_frame(
+  tibble(
     response = data$response,
     pred = response - resid(mod)/(1 - lm.influence(mod, do.coef = FALSE)$hat)#identical to loo cv - but faster
   )
 }) %>% 
-  map_df(~data_frame(
+  map_df(~tibble(
     r =  cor(.$response, .$pred), 
     r2 = r^2
     ))
@@ -79,12 +79,12 @@ auto_pred_runs <- rerun(.n = n, {
   
   mod <- best_lm(formula  = response ~ ., data = data,method = "exhaustive", nvmax = ntaxa)
   
-  data_frame(
+  tibble(
     response = data$response,
     pred = response - resid(mod)/(1 - lm.influence(mod, do.coef = FALSE)$hat)#identical to loo cv - but faster
   )
 }) %>% 
-  map_df(~data_frame(
+  map_df(~tibble(
     r =  cor(.$response, .$pred), 
     r2 = r^2
   ))
@@ -104,7 +104,7 @@ all_runs <- bind_rows(
 all_runs %>% 
   ggplot(aes(x = r2, fill = run)) + 
   geom_histogram(boundary = 0, show.legend = FALSE) +
-  geom_vline(data = all_runs %>% group_by(run) %>% do(data_frame(p = c(0.95, .99), pp = paste("p =", p), q = quantile(.$r2, prob = p))), mapping = aes(xintercept = q, linetype = pp), colour = "black") +
+  geom_vline(data = all_runs %>% group_by(run) %>% do(tibble(p = c(0.95, .99), pp = paste("p =", p), q = quantile(.$r2, prob = p))), mapping = aes(xintercept = q, linetype = pp), colour = "black") +
   scale_linetype_manual(values = c("dashed", "dotted")) +
   scale_x_continuous(expand = c(0.02, 0)) +
   facet_wrap( ~ run, ncol = 1, scales = "free_y") +

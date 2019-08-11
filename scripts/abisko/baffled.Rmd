@@ -55,7 +55,7 @@ With the digitised data, I can only replicate the reported correlation for one o
 
 ```{r all_lakes_cor}
 all_lakes %>% 
-  do(data_frame(r = cor(.$reconstruction, .$instrumental))) %>% 
+  do(tibble(r = cor(.$reconstruction, .$instrumental))) %>% 
   knitr::kable(digits = 2)
 ```
 

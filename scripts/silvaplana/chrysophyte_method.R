@@ -85,8 +85,8 @@ colnames(winters) <- sapply(combinations, function(com){
   })
 
 
-ggplot(data_frame(year = unique(silva_met2$Year), oct_may = winters[, ".10.11.12.1.2.3.4.5"], smo105 = rollmean(oct_may, k = 3, fill = NA)), aes(x = year, y = smo105)) + geom_line() + 
-geom_line(data = data_frame(year = unique(silva_met2$Year), april = winters[, ".4"], smo4 = rollmean(april, k = 3, fill = NA)), aes(x = year, y = smo4), colour = "red")
+ggplot(tibble(year = unique(silva_met2$Year), oct_may = winters[, ".10.11.12.1.2.3.4.5"], smo105 = rollmean(oct_may, k = 3, fill = NA)), aes(x = year, y = smo105)) + geom_line() + 
+geom_line(data = tibble(year = unique(silva_met2$Year), april = winters[, ".4"], smo4 = rollmean(april, k = 3, fill = NA)), aes(x = year, y = smo4), colour = "red")
 
 
 cor(winters) %>% 
@@ -102,7 +102,7 @@ winter_cor <- plyr::raply(1000, {
   max(apply(winters, 2, cor, x = x))
 })
 mean(winter_cor)
-ggplot(data_frame(winter_cor = winter_cor), aes(x = winter_cor)) + 
+ggplot(tibble(winter_cor = winter_cor), aes(x = winter_cor)) + 
   geom_density()
 
 
@@ -115,7 +115,7 @@ ggplot(data_frame(winter_cor = winter_cor), aes(x = winter_cor)) +
 ice2 <- ice2 %>%   
   semi_join(silva_met2)
   
-ice_cors <- data_frame(
+ice_cors <- tibble(
   months = sapply(combinations, paste, collapse = "."), 
   v = apply(winters, 2, cor, pull(ice2, doy))
   )

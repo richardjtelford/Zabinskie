@@ -13,7 +13,7 @@
 # size_sd <- map_df(min(count_sums):70, function(size){
 #   sim <- rmultinom(nrep, size = size, prob = all_fos)/size * 100
 #   sim<- t(sim)
-#   data_frame(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
+#   tibble(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
 # })
 # 
 # mod_nls <- nls(sd ~ a + b/size^c, data = size_sd, start = list(a = 0, b = 5, c = 0.5))
@@ -25,10 +25,10 @@
 #   ylim(0, NA) +
 #   labs(x = "Count sum", y = "Standard deviation °C")
 # 
-# est_error <- predict(mod_nls, newdata = data_frame(size = rowSums(fos_counts))) %>%
+# est_error <- predict(mod_nls, newdata = tibble(size = rowSums(fos_counts))) %>%
 #   mean()
 # 
-# # est_error <- predict(mod_nls, newdata = data_frame(size = rowSums(fos_counts)))^2 %>%
+# # est_error <- predict(mod_nls, newdata = tibble(size = rowSums(fos_counts)))^2 %>%
 # #   mean() %>% sqrt() # should probably be do like this but diff is small and this is more pessimistic
 
 ## ---- fossil_residual_sd
@@ -60,7 +60,7 @@ fos_residuals_sd <- function(recon, instrumental_temperature){
 # size_sd2 <- map_df(seq(5, 200, 5), function(size){
 #   sim <- rmultinom(1000, size = size, prob = all_fos)/size * 100
 #   sim<- t(sim)
-#   data_frame(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
+#   tibble(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
 # })
 # 
 # mod_nls2 <- nls(sd ~ a + b/size^c, data = size_sd2, start = list(a = 0, b = 5, c = 1))
@@ -77,7 +77,7 @@ fos_residuals_sd <- function(recon, instrumental_temperature){
 #   geom_point() # not a perfect fit - small ~quadratic term needed
 # 
 # 
-# data_frame(spp = names(all_fos), abun = all_fos) %>% 
+# tibble(spp = names(all_fos), abun = all_fos) %>% 
 #   arrange(desc(abun)) %>%mutate(n = 1:n()) %>%
 #   mutate(n = 1:n()) %>%
 #   ggplot(aes(x = n, y = abun)) + geom_col() + scale_y_log10()
@@ -103,7 +103,7 @@ count_error <- function(spp, env, sites, estimated_countsum, fos_counts)  {
       sim<- t(sim)
       focal <- sites$Lake == .$Lake[1]
       mod <- WAPLS(sqrt(spp[-focal, ]), env[-focal])
-      data_frame(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
+      tibble(size = size, sd = sd(predict(mod, sqrt(sim))$fit[, 2]))
     })
     size_sd
   })
@@ -118,7 +118,7 @@ count_error <- function(spp, env, sites, estimated_countsum, fos_counts)  {
 #   p <- setNames(.$perc, .$taxon)
 #   sim30 <- rmultinom(nrep, size = 30, prob = p)
 #   sim50 <- rmultinom(nrep, size = 50, prob = p)
-#   data_frame(
+#   tibble(
 #     mean30 = mean(colSums(sim30 == 1) > 0),
 #     mean50 = mean(colSums(sim50 == 1) > 0)
 #   )

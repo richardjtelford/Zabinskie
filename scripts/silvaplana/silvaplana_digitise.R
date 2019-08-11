@@ -65,7 +65,7 @@ random_wapls2 <- rerun(.n = 1000, rnorm(64)) %>%
   map(WAPLS, y = sqrt(spp), npls = 2) %>% 
   map(crossval, verbose = FALSE) %>% 
   map(performance) %>% 
-  map_df(~data_frame(
+  map_df(~tibble(
     apparent = .$object[2, "R2"],
     crossval = .$crossval[2, "R2"]
     ))
@@ -111,9 +111,9 @@ sil_space_temp <- read.table("data/silvaplana/calibration_in_space.txt") %>%
   select(1:2) %>% 
    set_names(c("year", "temperature")) %>% 
   bind_rows(#overplotted points
-    data_frame(year = 1933, temperature = 11.3144),
-    data_frame(year = 1941, temperature = 11.1127),
-    data_frame(year = 1944, temperature = 11.5991)) %>% 
+    tibble(year = 1933, temperature = 11.3144),
+    tibble(year = 1941, temperature = 11.1127),
+    tibble(year = 1944, temperature = 11.5991)) %>% 
   arrange(year)
 
 #%>% 
@@ -234,7 +234,7 @@ env_c = env[sites$source != "Poland"]
 
 mod <- WAPLS(sqrt(spp_c), env_c) %>% crossval()
 performance(mod)
-pred <- data_frame(depth = sil_fos_c$depth, recon = predict(mod, sqrt(sil_fos_c %>% select(-depth)))$fit[, 2])
+pred <- tibble(depth = sil_fos_c$depth, recon = predict(mod, sqrt(sil_fos_c %>% select(-depth)))$fit[, 2])
 pred %>% ggplot(aes(x = depth, y = recon)) + 
   geom_point() + 
   geom_line() +

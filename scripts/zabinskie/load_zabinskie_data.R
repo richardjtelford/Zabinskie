@@ -92,7 +92,7 @@ zabiniskie_instrumental <- function(instrumental_file = "data/chart1.xml"){
   bad_format <- bad_format[!is.na(bad_format)]
   instrumental_temperature <- bad_format %>% 
     matrix(ncol = 4) %>%
-    as_data_frame() %>% 
+    as_tibble() %>% 
     select(year = V1, old = V2, new = V4)
   
   instrumental_temperature

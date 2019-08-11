@@ -107,7 +107,7 @@ seeberg_calc_random_perform <- function(seeberg_pc, seeberg_nrep){
 }
 
 
-# random_hist <- ggplot(data_frame(r = random_perf^0.5), aes(x = r)) + 
+# random_hist <- ggplot(tibble(r = random_perf^0.5), aes(x = r)) + 
 #   geom_histogram() + 
 #   geom_vline(xintercept = performance(sbs_mod)$object[2, 2]^0.5)
 
@@ -125,7 +125,7 @@ seeberg_calc_random_perform <- function(seeberg_pc, seeberg_nrep){
 #   geom_line() + 
 #   scale_y_reverse()
 # 
-# seeberg_chron2011 <- data_frame(depth = c(4, 16), years = 2005 - c(1970, 1920))
+# seeberg_chron2011 <- tibble(depth = c(4, 16), years = 2005 - c(1970, 1920))
 # 
 # used_chron <- sbs_digitised %>% 
 #   mutate(years = 2005 - year) %>% 

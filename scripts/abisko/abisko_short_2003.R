@@ -44,7 +44,7 @@ abisko_similar_correlations <- function(abisko_short){
   p_low_cor <- mean(sd_cor_sim <= sd(abisko_short$r))
   p_low_cor
 }
-# data_frame(sd = sd_cor_sim) %>% 
+# tibble(sd = sd_cor_sim) %>% 
 #   ggplot(aes(x = sd)) + 
 #   geom_histogram() + 
 #   geom_vline(xintercept = sd(abisko_short$r))
@@ -118,7 +118,7 @@ abisko_plot_all_lakes <- function(abisko_all_lakes){
 abisko_correlations <- function(abisko_all_lakes){ 
   abisko_all_lakes %>% 
     group_by(lake) %>% 
-    do(data_frame(r = cor(.$reconstruction, .$instrumental)))
+    do(tibble(r = cor(.$reconstruction, .$instrumental)))
 }
 
 abisko_check <- function(abisko_short, abisko_cor){

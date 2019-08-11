@@ -130,7 +130,7 @@ last_chance_est %>%
   ggplot(aes(x = n, y = est_n, ymax = est_max, ymin = est_min)) + 
   geom_pointrange() + 
   geom_abline(aes(slope = slope, intercept = 0, colour = as.factor(slope)), 
-              data = data_frame(slope = 1:2), 
+              data = tibble(slope = 1:2), 
               show.legend = TRUE) +
   labs(x = "Reported count sum", y = "Estimated count sum") + 
   scale_colour_discrete(name = "Minimum\ncount", limits = c("2", "1"), labels = c("half", "whole")) +
@@ -213,7 +213,7 @@ zab_est %>%
   geom_vline(xintercept = 50, colour = scales::muted("red"), linetype = "dashed") +
   geom_hline(yintercept = 50, colour = scales::muted("red"), linetype = "dashed") +
   geom_abline(aes(slope = slope, intercept = 0, colour = as.factor(slope)), 
-              data = data_frame(slope = 1:2), 
+              data = tibble(slope = 1:2), 
               show.legend = TRUE) +
   labs(x = "Reported count sum", y = "Estimated count sum") + 
   scale_colour_discrete(name = "Minimum\ncount", limits = c("2", "1"), labels = c("half", "whole")) +
@@ -426,7 +426,7 @@ size <- 50
 prob <- 20/100
 nrep <- 10000
 set.seed(95)
-data_frame(x = rbinom(n = nrep, size = size, prob = prob)) %>% 
+tibble(x = rbinom(n = nrep, size = size, prob = prob)) %>% 
   count(x) %>% 
   mutate(n = n/nrep) %>% 
   ggplot(aes(x = x, y = n)) +
@@ -460,7 +460,7 @@ d <- dat %>%
   vegan::vegdist(method = "bray")
 
 d %>% as.vector() %>%
-  as_data_frame() %>% 
+  as_tibble() %>% 
   ggplot(aes(x = value)) + 
   geom_histogram(aes(y = ..density..)) +
   labs(x = "Bray-Curtis distance", y = "Density") + 
@@ -530,7 +530,7 @@ random_dist <- (random_count / max(mx_count$sum)) %>%
 
 random_dist %>% 
   as.vector() %>% 
-  as_data_frame() %>% 
+  as_tibble() %>% 
   ggplot(aes(x = value)) + 
   geom_histogram(aes(y = ..density..), bins = 60) + 
   geom_vline(xintercept = min(d), colour = scales::muted("red"), linetype = "dashed") +

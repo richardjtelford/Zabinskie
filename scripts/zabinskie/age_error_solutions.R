@@ -19,7 +19,7 @@ res <- plyr::rdply(100, {
   x <- MASS::mvrnorm(101, mu = c(0, 0), 
                      Sigma = cbind(c(1, r), c(r, 1)), 
                      empirical = FALSE) %>% 
-    as_data_frame() %>% 
+    as_tibble() %>% 
     set_names(c("climate", "proxy"))
   
   
@@ -29,7 +29,7 @@ res <- plyr::rdply(100, {
     slice(1:100)
   
   xs <- x %>% zoo::rollmean(k = 3, na.pad = TRUE) %>% 
-    as_data_frame()
+    as_tibble()
   
   xst <- xs[c(FALSE, TRUE, FALSE), ]
   
@@ -37,7 +37,7 @@ res <- plyr::rdply(100, {
   r2 <- ar(na.omit(xs$proxy), order.max = 1, aic = FALSE)$ar
   DFeff <- (length(na.omit(xs$climate)) - 2) * (1 - r1 * r2) / (1 + r1 * r2) 
   
-  data_frame(
+  tibble(
     expected = r,
     raw = with(x, cor(climate, proxy, use = "pair")),
     smoothed = with(xs, cor(climate, proxy, use = "pair")),

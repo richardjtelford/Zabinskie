@@ -73,7 +73,7 @@ library(vegan)
 nspp <- 11
 spp <- rnorm((nrow(an) + 2) * nspp) %>% 
   matrix(ncol = nspp) %>% 
-  as_data_frame() %>% 
+  as_tibble() %>% 
   rowid_to_column(var = "depth")
 
 spp  %>% gather(key = species, value = value, -depth) %>% 
@@ -122,7 +122,7 @@ sims <- plyr::rdply(1000, {
   nspp <- 11
   spp <- rnorm((nrow(an) + 2) * nspp) %>% 
     matrix(ncol = nspp) %>% 
-    as_data_frame() %>% 
+    as_tibble() %>% 
     rowid_to_column(var = "depth")
   
   mod <- rda(select(spp, -depth) %>% slice(-c(1, nrow(spp))) ~ meanT, data = an)
@@ -136,7 +136,7 @@ sims <- plyr::rdply(1000, {
   pred.cv <- loo(cbind(meanT = an$meanT, select(spps, V1:V6) %>% slice(-c(1, nrow(spp)))), formula = "meanT ~ .")
   pred.cv2 <- loo(cbind(smo = an$smo, select(spps, V1:V6) %>% slice(-c(1, nrow(spp)))), formula = "smo ~ .")
   
-  data_frame(
+  tibble(
     raw_e =   eigenvals(mod)[1]/sum(eigenvals(mod)),
     smo_e =  eigenvals(mods)[1]/sum(eigenvals(mods)),
 

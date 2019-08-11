@@ -58,7 +58,7 @@ baker_mod <- WAPLS(sqrt(baker_spp), baker_env$MSSWT) %>%
 performance(baker_mod) 
 
 baker_pred <- predict(baker_mod, select(baker_fosR, -Depth) %>% sqrt())$fit %>% 
-  as_data_frame() %>% 
+  as_tibble() %>% 
   mutate(Depth = baker_fosR$Depth)
 
 baker_year <- c(129, 127, 125, 120, 116, 109, 103, 93, 77, 66, 62, 60, 51, 38, 22, 4, 2, 0)/133 * 60 + 1950#from figure 8

@@ -13,11 +13,11 @@ perform <- list(
   `ML` = performance(ml)$crossval,
   `MAT` = performance(mat)$object["N03.wm", , drop = FALSE]
 ) %>% 
-  map_df(as_data_frame, .id = "Method") %>% 
+  map_df(as_tibble, .id = "Method") %>% 
   select(Method, RMSEP = RMSE, R2, `Maximum Bias` = Max.Bias)
 
 
-recons <- data_frame(
+recons <- tibble(
   year = chron$year, 
   WAPLS_2 = predict(wapls2, sqrt(fos), npls = 2)$fit[, 2],
   PLS_3 = predict(pls3, sqrt(fos))$fit[, 3],

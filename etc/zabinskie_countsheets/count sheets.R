@@ -158,7 +158,7 @@ Tanytarsus chyniensis, 1899 1929"
 
 countCheck %>% select(sampleNo, extra) %>% filter(extra != "")
 
-res <- data_frame(
+res <- tibble(
   year = fos_counts$X__1,
   mincount =  fos_counts %>% select(-X__1, -Total) %>% apply(1, function(r) min(r[r > 0])), 
   total = round(fos_counts$Total, 1)
@@ -220,7 +220,7 @@ R <- R/rowSums(R)
 wapls.sqrt <- predict(mod1, sqrt(R))$fit[, "Comp02"]
 instrumental %>% filter(date == y)
 
-sheet_archive <- data_frame(date= y, temperature = wapls.sqrt, new = c("sheet", "archive") )
+sheet_archive <- tibble(date= y, temperature = wapls.sqrt, new = c("sheet", "archive") )
 
 ## 1996
 y <- 1996
@@ -231,7 +231,7 @@ R <- R/rowSums(R)
 wapls.sqrt <- predict(mod1, sqrt(R))$fit[, "Comp02"]
 instrumental %>% filter(date == y)
 
-sheet_archive <- sheet_archive %>% bind_rows(data_frame(date= y, temperature = wapls.sqrt, new = c("sheet", "archive")))
+sheet_archive <- sheet_archive %>% bind_rows(tibble(date= y, temperature = wapls.sqrt, new = c("sheet", "archive")))
 
 ## 1927
 y <- 1927
@@ -243,7 +243,7 @@ wapls.sqrt <- predict(mod1, sqrt(R))$fit[, "Comp02"]
 wapls.sqrt
 instrumental %>% filter(date == y)
 
-sheet_archive <- sheet_archive %>% bind_rows(data_frame(date= y, temperature = wapls.sqrt, new = c("sheet", "archive")))
+sheet_archive <- sheet_archive %>% bind_rows(tibble(date= y, temperature = wapls.sqrt, new = c("sheet", "archive")))
 
 
 

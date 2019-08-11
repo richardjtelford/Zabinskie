@@ -75,4 +75,4 @@ names(Lake_V)
 
 preds <- predict(mod, log1p(select(Lake_V, -Year, -counts)))
 
-ggplot(data_frame(year = Lake_V$Year, pred = preds$fit[, "Comp02"]), aes(year, pred)) + geom_line() + geom_point()
+ggplot(tibble(year = Lake_V$Year, pred = preds$fit[, "Comp02"]), aes(year, pred)) + geom_line() + geom_point()

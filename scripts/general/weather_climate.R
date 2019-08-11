@@ -7,7 +7,7 @@ weather_climate_process <- function(x){
     #remove partial years
     filter(!apply(. == -99.9, 1, any)) %>% 
     #calculate mean summer
-    mutate(summer = rowMeans(data_frame(Jun, Jul, Aug)))
+    mutate(summer = (Jun + Jul + Aug)/3)
   
   cet2
 }
@@ -23,7 +23,7 @@ weather_climate <- function(N, month1 = "Jun", month2 = "Aug", dat = cet, cor = 
     summarise_all(mean) 
   ct <- cor.test(pull(dat, month1), pull(dat, month2))
   if(cor){
-  data_frame(N, low = ct$conf.int[1], high = ct$conf.int[2], est = ct$estimate, n = nrow(dat), last = max(dat$year))
+  tibble(N, low = ct$conf.int[1], high = ct$conf.int[2], est = ct$estimate, n = nrow(dat), last = max(dat$year))
   } else{
     dat
   }

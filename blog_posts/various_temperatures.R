@@ -71,7 +71,7 @@ composite %>%
 #mean for multiple years/ single years
 composite_as_zab <- zab %>% 
   mutate(year2 = year) %>% 
-  full_join(data_frame(year = 1896:2010)) %>% 
+  full_join(tibble(year = 1896:2010)) %>% 
   arrange(year) %>% 
   fill(year2, .direction = "down") %>% 
   left_join(composite, by = "year", suffix = c(".Zab", ".composite")) %>% 

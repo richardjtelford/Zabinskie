@@ -33,7 +33,7 @@ res <- plyr::rdply(.n = nrep, {
   
   constantd <- mapply(glengthPerform, glength = glengths, nlake = nlakes * glengths/min(glengths))
   
-  out <- data_frame(glengths, constantn, constantd)
+  out <- tibble(glengths, constantn, constantd)
   out <- tidyr::gather(out, key = constant, value = RMSEP, -glengths) %>% 
     mutate(grp = paste0(constant, glengths))
   out

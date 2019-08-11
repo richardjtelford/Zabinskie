@@ -2,11 +2,11 @@
 N <-seq(5, 100, 5)
 nrep <- 1000
 cors <- plyr::ldply(N, function(n){ 
-  data_frame(n = n, cor = replicate(nrep, cor(rnorm(n), rnorm(n))))
+  tibble(n = n, cor = replicate(nrep, cor(rnorm(n), rnorm(n))))
   })
 
 s100 <- replicate(nrep, {
-  df <- data_frame(x = rnorm(110), y = rnorm(110)) %>% 
+  df <- tibble(x = rnorm(110), y = rnorm(110)) %>% 
    # zoo::rollmean(k = 3, align = "left", na.pad = TRUE) %>% 
     zoo::rollmean(k = 3, align = "right", na.pad = TRUE)
    df <- df[5:104, ]
@@ -15,10 +15,10 @@ s100 <- replicate(nrep, {
 })
 
 set.seed(42)
-df <- data_frame(x = rnorm(120), y = rnorm(120)) %>% 
+df <- tibble(x = rnorm(120), y = rnorm(120)) %>% 
   #zoo::rollmean(k = 3, align = "left", na.pad = TRUE) %>% 
   zoo::rollmean(k = 3, align = "right", na.pad = TRUE) %>% 
-  as_data_frame() %>% 
+  as_tibble() %>% 
   slice(5:104) %>%# cor()
   rowid_to_column("pos") 
 
@@ -28,7 +28,7 @@ df <- data_frame(x = rnorm(120), y = rnorm(120)) %>%
 cors %>%
   ggplot(aes(x = n, y = cor, group = n)) + 
   geom_violin() +
-  geom_violin(data = data_frame(cor = s100, n = 110), fill = "red")
+  geom_violin(data = tibble(cor = s100, n = 110), fill = "red")
 
 
 cors %>% 

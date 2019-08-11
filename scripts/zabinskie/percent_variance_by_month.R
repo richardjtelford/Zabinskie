@@ -14,7 +14,7 @@ zabinskie_perform_by_month <- function(climate, spp, fos, fat_composite_as_zab_p
       pred <- predict(mod, fos)$fit[, 2]
       target <- fat_composite_as_zab_published[, as.character(.$month[1])]
       r_pred <- cor(pred, target)
-      data_frame(pc_explained, r2_mod, r_pred = as.vector(r_pred))
+      tibble(pc_explained, r2_mod, r_pred = as.vector(r_pred))
     })
   return(perform_by_month)
 }

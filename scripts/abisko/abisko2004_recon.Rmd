@@ -121,7 +121,7 @@ marcott_850 %>% ggplot(aes(x = Age, y = Depth)) + geom_path() +
   geom_abline(intercept = 1, slope = 120/9150, col = 2) + 
   geom_abline(intercept = 1, slope = 0.013, col = 3)
 
-marcott_850 %>% mutate(newAge = Depth * 10/0.13, delta = Age - newAge) %>% ggplot(aes(x = Depth, y = delta)) + geom_path() + geom_rug(data = data_frame(), aes(x = c(32.5, 49.5, 72.5, 96.5, 106.5)), inherit.aes = FALSE)
+marcott_850 %>% mutate(newAge = Depth * 10/0.13, delta = Age - newAge) %>% ggplot(aes(x = Depth, y = delta)) + geom_path() + geom_rug(data = tibble(), aes(x = c(32.5, 49.5, 72.5, 96.5, 106.5)), inherit.aes = FALSE)
 
 ```
 Lake V Recon initial matches, then chron offset. No obvious match in EH. Replication only matches after ~6000BP

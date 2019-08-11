@@ -51,7 +51,7 @@ run_simulation <- function(data, recon, nrep = 100){
     pre39_correlation <- with(data4 %>% filter(year_recon < 1939), cor(temperature_o, temperature_d, use = "pair"))
     post1939_correlation <- with(filter(data4, year_recon >= 1939), cor(temperature_o, temperature_d, use = "pair"))
     
-    data_frame(correlation, mismatch, ag_correlation, pre39_correlation, post1939_correlation)
+    tibble(correlation, mismatch, ag_correlation, pre39_correlation, post1939_correlation)
   })
 }#end run_simulation
 

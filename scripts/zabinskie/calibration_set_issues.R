@@ -19,7 +19,7 @@ zabinskie_lac_AH <- function(spp, sites){
 # ## ---- count_sums
 # countSums <- spp_all %>% 
 #   rowwise() %>% 
-#   do(data_frame(min = min(unlist(.)[unlist(.) > 0]))) %>% 
+#   do(tibble(min = min(unlist(.)[unlist(.) > 0]))) %>% 
 #   mutate(apparent_count = 100/min) %>% 
 #   bind_cols(sites_all) %>% 
 #   mutate(lowCount = Lake %in% lowCount) %>% 
@@ -48,7 +48,7 @@ zabinskie_lac_AH <- function(spp, sites){
 # 
 # fos_countSums <- fos %>% 
 #   rowwise() %>% 
-#   do(data_frame(min = min(unlist(.)[unlist(.) > 0]))) %>% 
+#   do(tibble(min = min(unlist(.)[unlist(.) > 0]))) %>% 
 #   mutate(apparent_count = 100/min) %>% 
 #   ungroup() %>% 
 #   mutate(reported_count = rowSums(fos_counts))

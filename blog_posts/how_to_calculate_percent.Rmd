@@ -78,7 +78,7 @@ So far, this has assummed that all the taxa are part of a single count sum as wi
 The BCI tree data obviously doesn't have any aquatic macrophytes, but I'm going to treat all species beginning with 'A' as aquatic, 'T' as tree, 'S' as shrub and other taxa as herbs. First we need a dictionary, which you would normally have already.
 
 ```{r dictionary}
-dictionary <- data_frame(taxon = names(BCI), group = substring(taxon, 1, 1)) %>% 
+dictionary <- tibble(taxon = names(BCI), group = substring(taxon, 1, 1)) %>% 
   mutate(group = if_else(group %in% c("A", "S", "T"), group, "H"),
          sum = case_when(
            group == "A" ~ "Aquatic",

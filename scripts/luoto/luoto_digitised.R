@@ -95,7 +95,7 @@ luoto_run_cit_mod <- function(fig2_fat, inst){
 #get optima from fitted model and from figures in papers.
 luoto_get_optima <- function(mod){
   cit_optima <- coef(mod) %>% 
-    as_data_frame(rownames = "taxon") %>% 
+    as_tibble(rownames = "taxon") %>% 
     mutate(n2 = Hill.N2(fig2_fat %>% select(-depth))) %>% 
     filter(n2 > 5) %>% 
     arrange(taxon) 
@@ -162,7 +162,7 @@ luoto_plot_optima <- function(optima){
 # anova(rda)
 # c_rda <- rda(fig2_fat %>% select(-depth) %>% slice(1:nrow(inst)) %>% sqrt(), inst$temp, inst$year)           
 # 
-# result <- data_frame(
+# result <- tibble(
 #   year = c(inst$year, seq(1827, 1785, length = 7)),
 #   temp = c(inst$temp, rep(NA, 7)),
 #   depth = fig2_fat$depth,

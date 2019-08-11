@@ -94,7 +94,7 @@ sbs_digitised %>% filter(round(year) <= 1980) %$% cor(july, cis)
 ## -- recon_2012 ####
 sbs_2012 <- read_table("data/seebergsee/seebergsee2012.txt", skip = 105) %>% select(Dates, anomaly = `11-year`)
 
-data_frame(Reconstruction  = sbs_mod$fitted.values[, 2], 
+tibble(Reconstruction  = sbs_mod$fitted.values[, 2], 
            #  cv = sbs_mod$predicted[, 2], 
            Instrumental =rev(sbs_digitised$july), 
            year = rev(sbs_digitised$year)) %>% 
@@ -104,7 +104,7 @@ data_frame(Reconstruction  = sbs_mod$fitted.values[, 2],
 
 ## ---- digitised_seebergsee_climate
 
-data_frame(Reconstruction  = sbs_mod$fitted.values[, 2], 
+tibble(Reconstruction  = sbs_mod$fitted.values[, 2], 
          #  cv = sbs_mod$predicted[, 2], 
            Instrumental =rev(sbs_digitised$july), 
            year = rev(sbs_digitised$year)) %>% 

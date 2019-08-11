@@ -92,9 +92,9 @@ silva_load_digitised_climate <- function(){
     select(1:2) %>% 
     set_names(c("year", "temperature")) %>% 
     bind_rows(#overplotted points
-      data_frame(year = 1933, temperature = 11.3144),
-      data_frame(year = 1941, temperature = 11.1127),
-      data_frame(year = 1944, temperature = 11.5991)) %>% 
+      tibble(year = 1933, temperature = 11.3144),
+      tibble(year = 1941, temperature = 11.1127),
+      tibble(year = 1944, temperature = 11.5991)) %>% 
     arrange(year)
   
   # sil_swe <- read.csv(file_in("data/silvaplana/Silvaplana_SE.csv"), skip = 4) %>% 

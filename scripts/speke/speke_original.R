@@ -49,7 +49,7 @@ speke_import <- function(){
 # 
 # autoplot(speke_mod, npls = 3)
 # 
-# speke_pred <- data_frame(
+# speke_pred <- tibble(
 #   year = speke_chron$CodeNum,
 #   year1 = lead(year),
 #   pred = predict(speke_mod, speke_fos1)$fit[, "Comp03"])
@@ -110,10 +110,10 @@ speke_randomtf <- function(speke){
 
 
 # #coverage plot
-# speke_n <- data_frame(taxa = names(speke_spp), 
+# speke_n <- tibble(taxa = names(speke_spp), 
 #                       max = sapply(speke_spp, max), 
 #                       n2 = Hill.N2(speke_spp))
-# speke_fosn <- data_frame(taxa = names(speke_fos), 
+# speke_fosn <- tibble(taxa = names(speke_fos), 
 #                       max = sapply(speke_fos, max), 
 #                       n2 = Hill.N2(speke_fos)) %>% 
 #   filter(max > 0) 

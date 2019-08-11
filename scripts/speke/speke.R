@@ -47,7 +47,7 @@ ggplot(speke_temp2, aes(x = year, y = inst)) +
   
 
 # july <- raster::raster("data/worldclim/wc2.0_10m_tavg_07.tif")
-# speke_location <- data_frame(long = -(2 + 52/60 + 23/3600), lat = 53 + 20/60 + 19/3600)
+# speke_location <- tibble(long = -(2 + 52/60 + 23/3600), lat = 53 + 20/60 + 19/3600)
 # coordinates(speke_location) <- ~ long + lat
 # 
 # raster::extract(july, speke_location)

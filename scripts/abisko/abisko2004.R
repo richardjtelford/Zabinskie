@@ -8,7 +8,7 @@ getCore <- function(lake){
   depth <- unlist(LAKE[1, -1])
   spp <- LAKE[-1, 1] %>% pull()
   LAKE <- t(LAKE[-1, -1]) %>%
-    as_data_frame() %>% 
+    as_tibble() %>% 
     mutate_all(as.numeric)
   
   #assume NA == 0
@@ -21,7 +21,7 @@ Njulla_fos <- getCore("Njulla")
 Vuoskku_fos <- getCore("Vuoskku")
 L850_fos <- getCore("850")
 
-Njulla_est <- data_frame(depth = as.numeric(Njulla_fos$depth), min_pc = apply(Njulla_fos$chiron, 1, min_pc), est_count = 100/min_pc)
+Njulla_est <- tibble(depth = as.numeric(Njulla_fos$depth), min_pc = apply(Njulla_fos$chiron, 1, min_pc), est_count = 100/min_pc)
 
 Njulla_est %>% filter(est_count < 50)
 
@@ -31,14 +31,14 @@ Njulla_plot <- ggplot(Njulla_est, aes(x = depth, y = est_count)) +
 Njulla_plot
 
 #Vuoskku
-Vuoskku_est <- data_frame(depth = as.numeric(Vuoskku_fos$depth), min_pc = apply(Vuoskku_fos$chiron, 1, min_pc), est_count = 100/min_pc)
+Vuoskku_est <- tibble(depth = as.numeric(Vuoskku_fos$depth), min_pc = apply(Vuoskku_fos$chiron, 1, min_pc), est_count = 100/min_pc)
 
 Vuoskku_est %>% filter(est_count < 50)
 
 Njulla_plot %+% Vuoskku_est
 
 #Lake 850
-L850_est <- data_frame(
+L850_est <- tibble(
   depth = as.numeric(gsub("^(\\d{1,3})-.*", "\\1", L850_fos$depth)), 
   min_pc = apply(L850_fos$chiron, 1, min_pc),
   est_count = 100/min_pc)
@@ -73,7 +73,7 @@ performance(mod)$crossval
 #V
 length(Vuoskku_fos$depth)
 nrow(Vuoskku)
-V_recons <- data_frame(
+V_recons <- tibble(
   depth = Vuoskku_fos$depth,
   Age = c(Vuoskku$Age, max(Vuoskku$Age) + seq(100, 400, 100)),
   Temperature = predict(mod, log1p(Vuoskku_fos$chiron))$fit[, 2],
@@ -91,13 +91,13 @@ V_recons_plot
 #850
 length(L850_fos$depth)
 nrow(L850)
-L850_recons <- data_frame(
+L850_recons <- tibble(
   depth = L850_est$depth,
   Age = L850$Age,
   Temperature = predict(mod, log1p(L850_fos$chiron))$fit[, 2],
   recon = "New"
 ) %>% bind_rows(
-    data_frame(
+    tibble(
       depth = L850_est$depth,
       Age = L850$Age,
       Temperature = predict(mod, (L850_fos$chiron))$fit[, 2],
@@ -111,14 +111,14 @@ V_recons_plot %+% L850_recons
 #N
 length(Njulla_fos$depth)
 nrow(Njulla)
-N_recons <- data_frame(
+N_recons <- tibble(
   depth = as.numeric(Njulla_fos$depth),
   Age = c(Njulla$Age, max(Njulla$Age) + seq(100, 500, length = 14)),
   Temperature = predict(mod, log1p(Njulla_fos$chiron))$fit[, 2],
   recon = "New"
 ) %>% 
   bind_rows(
-    data_frame(
+    tibble(
       depth = as.numeric(Njulla_fos$depth),
       Age = c(Njulla$Age, max(Njulla$Age) + seq(100, 500, length = 14)),
       Temperature = predict(mod, (Njulla_fos$chiron))$fit[, 2],

@@ -394,7 +394,7 @@ Apparent performance reported as crossvalidated
 
 ```{r}
 loadd(seeberg_cit_mod)
-data_frame(Measured = seeberg_cit_mod$x, Apparent = seeberg_cit_mod$fitted.values[, 2], Crossvalidated = seeberg_cit_mod$predicted[, 2]) %>% 
+tibble(Measured = seeberg_cit_mod$x, Apparent = seeberg_cit_mod$fitted.values[, 2], Crossvalidated = seeberg_cit_mod$predicted[, 2]) %>% 
   gather(key  = key, value = Predicted, -Measured) %>% 
   ggplot(aes(x = Measured, y = Predicted)) +
   geom_abline(colour = "grey50") +

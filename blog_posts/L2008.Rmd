@@ -173,7 +173,7 @@ The taxonomic adjustments seem to have lead to a worse performance: the apparent
 npls <- 2
 
 fortify.WAPLS <- function(mod, npls){
-  fmod <- data_frame(
+  fmod <- tibble(
     sites = rownames(mod$y),
     observed  = mod$x,
     predicted = mod$predicted[, npls],
