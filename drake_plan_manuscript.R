@@ -56,6 +56,8 @@ source("scripts/speke/speke_original.R")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
+#set up parallel processing for drake
+future::plan(future::multiprocess) 
 
 #construct drake plan
 analyses <- drake_plan(
@@ -262,40 +264,25 @@ analyses <- drake_plan(
     },
   
   #knit manuscript
-  manuscript = target(
-    command = rmarkdown::render(
+  manuscript = {
+    file_in(Rmd/extra/chironomid2.bib)#force dependency
+    supplementary_data#force dependency
+    
+    rmarkdown::render(
       input = knitr_in("Rmd/limitations_of_high_resolution_quant_palaeo.Rmd"),
       knit_root_dir = "../", 
-   #   output_dir = "./output", 
-      clean = FALSE), 
-    trigger = trigger(change =list(biblio2, supplementary_data))
-    ),
-  supplementary_data = target(
-    command = rmarkdown::render(
+      clean = FALSE)
+    },
+  supplementary_data = {
+    file_in(Rmd/extra/chironomid2.bib)#force dependency
+    rmarkdown::render(
       input = knitr_in("Rmd/Telford_supplementary_data.Rmd"),
       knit_root_dir = "../",
-    #  output_dir = "./output", 
-      clean = FALSE),
-    trigger = trigger(change =list(biblio2))
-  )
+      clean = FALSE)
+  }
 )
 
 #configure and make drake plan
-config <- drake_config(analyses)
-#outdated(config)        # Which targets need to be (re)built?
-make(analyses, jobs = 2) # Build the right things.
+config <- drake_config(analyses, jobs = 3, parallelism = "future", keep_going = TRUE)
 
-float_tex("Rmd/Telford_supplementary_data.tex", clean = FALSE)
-setwd("Rmd/")#only appears to work when tex file is in working directory
-tinytex::pdflatex("limitations_of_high_resolution_quant_palaeo.tex", clean=TRUE)
-tinytex::pdflatex("Telford_supplementary_data.tex", clean=TRUE)
-setwd("../")
-
-system("evince Rmd/limitations_of_high_resolution_quant_palaeo.pdf", wait = FALSE)#display pdf - only linux
-
-system("evince Rmd/Telford_supplementary_data.pdf", wait = FALSE)#display pdf - only linux
-
-#show dependency graph
-vis_drake_graph(config)
-vis_drake_graph(config, targets_only = TRUE, main = "Zabinskie ms dependency graph")
-options(digits = 6)#reset
+config
