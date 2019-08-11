@@ -31,7 +31,7 @@ zabinskie_regional_composite <- function(){
     summarise(normal = mean(temperature, na.rm = TRUE))
   
   composite <- allStations %>% 
-    left_join(normals) %>% 
+    left_join(normals, by = c("station", "month")) %>% 
     group_by(station, month) %>% 
     mutate(temperature = temperature - normal) %>% 
     group_by(year, month) %>% 
