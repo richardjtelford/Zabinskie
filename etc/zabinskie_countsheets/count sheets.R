@@ -4,9 +4,9 @@ library("tidyverse")
 
 fos_counts <- read_excel("data/zabinskie2015cit.xls", sheet = "Chironomids Zabinskie counts")
 
-fos_counts$X__1
+fos_counts$...1
 get_count <- function(y){
-  x <- fos_counts %>% filter(X__1 == y) %>% as.data.frame()
+  x <- fos_counts %>% filter(...1 == y) %>% as.data.frame()
   x[, x > 0]
 }
 
@@ -159,8 +159,8 @@ Tanytarsus chyniensis, 1899 1929"
 countCheck %>% select(sampleNo, extra) %>% filter(extra != "")
 
 res <- tibble(
-  year = fos_counts$X__1,
-  mincount =  fos_counts %>% select(-X__1, -Total) %>% apply(1, function(r) min(r[r > 0])), 
+  year = fos_counts$...1,
+  mincount =  fos_counts %>% select(-...1, -Total) %>% apply(1, function(r) min(r[r > 0])), 
   total = round(fos_counts$Total, 1)
  ) %>% 
   mutate( mincount = round(mincount, 1)) %>% 
@@ -196,7 +196,7 @@ names(recon) <- c("date", "temperature")
 
 lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
 
-spp <- spp %>% filter(!X__1 %in% lowCount) %>% select(-X__1)
+spp <- spp %>% filter(!...1 %in% lowCount) %>% select(-...1)
 env <- env %>% filter(!Name %in% lowCount)
 
 env <- env$Temp
@@ -214,7 +214,7 @@ coef(mod1)
 #1941
 y <- 1941
 countCheck %>% filter(year == y)
-R <- fos_counts %>% mutate(Cricotopus = 0) %>% bind_rows(fos_counts) %>% filter(X__1 == y) %>% select(-X__1, -Total)
+R <- fos_counts %>% mutate(Cricotopus = 0) %>% bind_rows(fos_counts) %>% filter(...1 == y) %>% select(-...1, -Total)
 R <- R/rowSums(R)
 
 wapls.sqrt <- predict(mod1, sqrt(R))$fit[, "Comp02"]
@@ -225,7 +225,7 @@ sheet_archive <- tibble(date= y, temperature = wapls.sqrt, new = c("sheet", "arc
 ## 1996
 y <- 1996
 countCheck %>% filter(year == y)
-R <- fos_counts  %>% mutate(`Dicrotendipes nervosus` = 2, `Endochironomus albipennis` = 2, `Polypedilum nubeculosum` = 2, `Tanytarsus sp` = 3, Cricotopus = 1, `Paratendipes nudisquama` = 1, `Parachironomus varus` = 0) %>% bind_rows(fos_counts) %>% filter(X__1 == y) %>% select(-X__1, -Total)
+R <- fos_counts  %>% mutate(`Dicrotendipes nervosus` = 2, `Endochironomus albipennis` = 2, `Polypedilum nubeculosum` = 2, `Tanytarsus sp` = 3, Cricotopus = 1, `Paratendipes nudisquama` = 1, `Parachironomus varus` = 0) %>% bind_rows(fos_counts) %>% filter(...1 == y) %>% select(-...1, -Total)
 R <- R/rowSums(R)
 
 wapls.sqrt <- predict(mod1, sqrt(R))$fit[, "Comp02"]
@@ -236,7 +236,7 @@ sheet_archive <- sheet_archive %>% bind_rows(tibble(date= y, temperature = wapls
 ## 1927
 y <- 1927
 countCheck %>% filter(year == y)
-R <- fos_counts  %>% mutate(`Tanytarsus sp` = 1, `Tanytarsus lactesens` = 0) %>% bind_rows(fos_counts) %>% filter(X__1 == y) %>% select(-X__1, -Total)
+R <- fos_counts  %>% mutate(`Tanytarsus sp` = 1, `Tanytarsus lactesens` = 0) %>% bind_rows(fos_counts) %>% filter(...1 == y) %>% select(-...1, -Total)
 R <- R/rowSums(R)
 R
 wapls.sqrt <- predict(mod1, sqrt(R))$fit[, "Comp02"]

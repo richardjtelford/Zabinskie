@@ -20,7 +20,7 @@ excel_sheets("data/baker/thesisMedeiros-w3may7.xls")
 baker_fosR <- read_excel("data/baker/thesisMedeiros-w3may7.xls", sheet = "core-R")
 
 baker_spp0 <- read_excel("data/baker/thesisMedeiros-w3may7.xls", sheet = "TS-R") %>% 
-  rename(lake_name = X__1)
+  rename(lake_name = ...1)
 baker_env0 <- read_excel("data/baker/thesisMedeiros-w3may7.xls", sheet = "env") %>% 
   rename(lake_name = CodeName)
 

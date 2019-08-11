@@ -27,8 +27,8 @@ env <- read_excel("abisko/data/SwedenEnvData.xlsx", sheet = "EnvData") %>%
   filter(!is.na(`Lake number`))
 
 spp <- read_excel("abisko/data/Sweden chiro.xlsx", sheet = "Sheet1") %>% 
-  verify(X__1 == paste0("T", env$`Lake number`)) %>% 
-  select(-X__1)
+  verify(...1 == paste0("T", env$`Lake number`)) %>% 
+  select(-...1)
 
 list(sort(names(Lake_V)), sort(names(spp)))
 

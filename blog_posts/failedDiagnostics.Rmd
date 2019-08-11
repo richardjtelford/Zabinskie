@@ -38,12 +38,12 @@ fname <- "data/zabinskie2015cit.xls"
 excel_sheets(fname)
 spp <- read_excel(fname, sheet = "Training species")
 env <- read_excel(fname, sheet = "Training temperature")
-fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages") %>% rename(year = X__1)
+fos <- read_excel(fname, sheet = "Chironomids Zabinsk percentages") %>% rename(year = ...1)
 
 
 lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
 env <- env %>% filter(!Name %in% lowCount) %>% select(-Name)
-spp <- spp %>% filter(!X__1 %in% lowCount) %>% select(-X__1)
+spp <- spp %>% filter(!...1 %in% lowCount) %>% select(-...1)
 
 env <- env$Temp
 

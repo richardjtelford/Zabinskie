@@ -9,15 +9,15 @@
 # env_all <- read_excel(fname, sheet = "Training temperature")
 # 
 # #check siteIDs match
-# assertthat::assert_that(assertthat::are_equal(spp_all$X__1, env_all$Name))
+# assertthat::assert_that(assertthat::are_equal(spp_all$...1, env_all$Name))
 
 
 #remove low count sites from modern data
 #lowCount <- c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB")
 #env <- env_all %>% filter(!Name %in% lowCount) 
-# spp <- spp_all %>% filter(!X__1 %in% lowCount) %>% select(-X__1)
+# spp <- spp_all %>% filter(!...1 %in% lowCount) %>% select(-...1)
 # 
-# spp_all <- spp_all %>% select(-X__1)
+# spp_all <- spp_all %>% select(-...1)
 # 
 # # remove rare species from calibration set
 # spp <- spp[, colSums(spp > 0) > 0]# remove taxa only in low count sites - cannot find evidence of stricter inclusion criteria
@@ -52,22 +52,23 @@ zabinskie_all_sites <- function(env_all0, lowCount){
 #fossil spp
 zabinskie_fossil_percent <- function(zabinskie_excel_file){
   fos <- read_excel(zabinskie_excel_file, sheet = "Chironomids Zabinsk percentages") %>%
-    rename(year = X__1) 
+    rename(year = ...1) 
   fos <- fos %>% select(-year, -`Nb head capsules`)
   fos
 }
 
 #chronology
 zabinskie_chronology <- function(zabinskie_excel_file){
-  chron <- read_excel(zabinskie_excel_file, sheet = "Chironomids Zabinsk percentages") %>% select(year = X__1) %>% 
-     mutate(year = if_else(year == 1927, 1925, year)) #harmonise  chronology for stratigraphic data with reconstruction and instrumental data
+  chron <- read_excel(zabinskie_excel_file, sheet = "Chironomids Zabinsk percentages") %>% 
+    select(year = ...1) %>% 
+    mutate(year = if_else(year == 1927, 1925, year)) #harmonise  chronology for stratigraphic data with reconstruction and instrumental data
   chron
 }
 
 #fossil_counts
 zabinskie_fossil_counts  <- function(zabinskie_excel_file){
   fos_counts <- read_excel(zabinskie_excel_file, sheet = "Chironomids Zabinskie counts") %>% 
-    select(-X__1, -Total) %>% 
+    select(-...1, -Total) %>% 
     mutate_all(round, digits = 1)#remove spurious digits
   fos_counts 
 }

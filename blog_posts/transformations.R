@@ -12,8 +12,8 @@ env <- read_excel("abisko/data/SwedenEnvData.xlsx", sheet = "EnvData") %>%
   filter(!is.na(`Lake number`))
 
 spp <- read_excel("abisko/data/Sweden chiro.xlsx", sheet = "Sheet1") %>% 
-  verify(X__1 == paste0("T", env$`Lake number`)) %>% 
-  select(-X__1)
+  verify(...1 == paste0("T", env$`Lake number`)) %>% 
+  select(-...1)
 
 calibration_sets$Larocque2001 <- list(group = "chironomids", spp = spp, env = env$`Tjul (°C)`)
 
