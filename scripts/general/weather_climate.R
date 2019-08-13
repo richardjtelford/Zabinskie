@@ -2,7 +2,7 @@
 weather_climate_process <- function(x){
   #process data
   cet2 <- x %>% 
-    as.tibble() %>%
+    as_tibble() %>%
     set_names(c("year", month.abb, "annual")) %>% 
     #remove partial years
     filter(!apply(. == -99.9, 1, any)) %>% 

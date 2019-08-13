@@ -35,7 +35,7 @@ seeberg_calc_percent <- function(seeberg_merged){
   seeberg_pc <- seeberg_merged[, -1] / rowSums(seeberg_merged[, -1]) * 100
   #reorder taxa to match published figure
   seeberg_pc <- seeberg_pc %>% 
-    select_("Chironomus.plumosus", "Dicrotendipes", "Microtendipes", "Parachironomus", "Pseudochironomus", "Paratanytarsus", "Tanytarsus.sp", "Tanytasus.lugens", "Tanytrsus.mendax", "Tanytarsus.sp..C",  "Corynoneura", "Corynoneura.arctica", "Corynoneura.edwardsi", "Cricotopus", "Eukiefferiella", "Limnophyes", "Orthocladius", "Parakiefferiella", "Psectrocladius.sordidellus", "Pseudosmittia", "Smittia", "Telopelopia", "Procladius")
+    select(one_of(c("Chironomus.plumosus", "Dicrotendipes", "Microtendipes", "Parachironomus", "Pseudochironomus", "Paratanytarsus", "Tanytarsus.sp", "Tanytasus.lugens", "Tanytrsus.mendax", "Tanytarsus.sp..C",  "Corynoneura", "Corynoneura.arctica", "Corynoneura.edwardsi", "Cricotopus", "Eukiefferiella", "Limnophyes", "Orthocladius", "Parakiefferiella", "Psectrocladius.sordidellus", "Pseudosmittia", "Smittia", "Telopelopia", "Procladius")))
   return(seeberg_pc)
 }
 #strat.plot(d = seeberg_pc, yvar = seeberg_merged$merged_depth, y.rev = TRUE, plot.line = FALSE, plot.bar = TRUE, scale.percent = TRUE)
