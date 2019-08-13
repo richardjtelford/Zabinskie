@@ -3,7 +3,7 @@ title: "Evaluation of the Lake Silvaplana chironomid papers"
 author: "Richard J. Telford"
 date: "August 19, 2017"
 output: html_document
-csl: ../Rmd/extra/journal-of-paleolimnology.csl
+csl: ../Rmd/extra/elsevier-harvard_rjt.csl
 bibliography: ../Rmd/extra/chironomid.bib
 ---
 ```{r setup, message = FALSE, echo=FALSE}

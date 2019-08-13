@@ -25,6 +25,12 @@ library("countChecker")
 #devtools::install_github("richardjtelford/ggpalaeo")
 library("ggpalaeo")
 
+#force packrat to include some packages
+if(FALSE){
+  library("visNetwork")
+  library("rgdal")
+}
+
 #import scripts
 source("scripts/general/pages2k.R")
 source("scripts/general/weather_climate.R")

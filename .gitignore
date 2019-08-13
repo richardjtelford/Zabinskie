@@ -63,6 +63,7 @@ packrat/src/
 
 #drake
 .drake/
+.drake_history/
 
 #other
 etc/*
