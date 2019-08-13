@@ -1,10 +1,11 @@
 ---
-title: "Supplementary Data for 'Review and test of reproducibility of sub-decadal resolution palaeoenvironmental reconstructions from microfossil assemblages'"
+title: "Supplementary Data for 'Review and test of reproducibility of subdecadal resolution palaeoenvironmental reconstructions from microfossil assemblages'"
 author: "Richard J. Telford"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 header-includes:
    - \usepackage{float}
    - \floatplacement{figure}{H}
+   - \renewcommand{\thefigure}{S\arabic{figure}}
 output: 
   bookdown::pdf_document2:
     keep_tex: true
@@ -29,7 +30,7 @@ Zabinskie <- "Żabińskie" #avoid upsetting spell checker with special character
 readd(zabinskie_dist_analogue_plot)
 ```
 
-```{r zab-residlen, fig.cap = "Goodness of fit of the Lake Żabińskie fossil samples added passively to a CCA of the Canadian-Polish calibration set constrained by temperature."}
+```{r zab-residlen, fig.cap = "Goodness of fit of the Lake Żabińskie fossil samples added passively to a canonical correspondence analysis of the Canadian-Polish calibration set constrained by temperature."}
 readd(zabinskie_residLen_plot)
 ```
 
@@ -41,11 +42,11 @@ readd(abisko_all_lakes_plot)
 
 ## Lake Silvaplana
 
-```{r silva-climate-plot, fig.cap="Instrumental July air temperatures from Selg-Maria [@Bergert2005] and the instrumental data as digitised from different papers. Digitised data are labelled after the calibration set used to make the reconstruction the instrumental data were compared against. All the digitised instrumental data should be identical, unless fossil samples have been merged/unmerged."}
+```{r silva-climate-plot, fig.cap="Instrumental July air temperatures from Selg-Maria [@Bergert2005] and the instrumental data as digitised from different papers. Digitised data are labelled after the calibration set used to make the reconstruction against which the instrumental data were compared. All the digitised instrumental time series should be identical, unless fossil samples have been merged/unmerged."}
 readd(silva_climate_plot)
 ```
 
-Long Swiss climate series were homogenised by Berget et al. [-@Bergert2005]. They were reprocessed in 2009 [@meteoswiss2010]. The Silvaplana papers probably all used the version of the Segl Maria series by Berget et al. [-@Bergert2005], which is shown in Fig. S\@ref(fig:silva-climate-plot). The differences between these data and the current version of the data are minimal (r^2^  = `r readd(silva_version_r2) %>% insist(. > 0.99) %>% format(digits = 3)`).
+Long Swiss climate series were homogenised by Berget et al. [-@Bergert2005]. They were reprocessed in 2009 [@meteoswiss2010]. The Silvaplana papers probably all used the version of the Segl Maria series by Berget et al. [-@Bergert2005], which is shown here. The differences between these data and the current version of the data are minimal (r^2^  = `r readd(silva_version_r2) %>% insist(. > 0.99) %>% format(digits = 3)`).
 
 ## Seebergsee
 
@@ -57,7 +58,7 @@ readd(seeberg_cit_plot)
 readd(seeberg_climate_plot)
 ```
 
-There may be, probably small, differences between the data shown in Fig. S\@ref(fig:seeberg-climate-plot) and the version of the Château-d'Oex temperature series homogenised by Berget et al. [-@Bergert2005].
+There may be, probably small, differences between the data shown in here and the version of the Château-d'Oex temperature series homogenised by Berget et al. [-@Bergert2005].
 
 
 ## Nurmijärvi
