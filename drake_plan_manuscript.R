@@ -26,7 +26,6 @@ library("countChecker")
 library("ggpalaeo")
 
 #import scripts
-source("scripts/general/utils.R")
 source("scripts/general/pages2k.R")
 source("scripts/general/weather_climate.R")
 source("scripts/general/air_water_correlation.R")
@@ -56,7 +55,9 @@ source("scripts/speke/speke_original.R")
 
 #drake configuration
 pkgconfig::set_config("drake::strings_in_dots" = "literals")
+
 #set up parallel processing for drake
+options(future.fork.enable = TRUE)
 future::plan(future::multiprocess) 
 
 #construct drake plan
@@ -84,19 +85,19 @@ analyses <- drake_plan(
   #modern environment
   env_all0 = read_excel(zabinskie_excel_file, sheet = "Training temperature"),
   #check siteIDs match
-  check_z1 = assertthat::assert_that(assertthat::are_equal(spp_all0$X__1, env_all0$Name)),
+  check_z1 = assertthat::assert_that(assertthat::are_equal(spp_all0$...1, env_all0$Name)),
   #sites with low counts
   lowCount = c("GOR", "KOS", "LEK", "SAL", "SZE", "SZOS", "TRZ", "WAS", "ZAB"),
   #environment without low count sites
   env0 = env_all0 %>% filter(!Name %in% lowCount),
   #species without low count sites or absent taxa
   spp = spp_all0 %>% 
-    filter(!X__1 %in% lowCount) %>% 
-    select(-X__1) %>% 
+    filter(!...1 %in% lowCount) %>% 
+    select(-...1) %>% 
     select_if(~(sum(.) > 0)),# remove taxa only in low count sites - cannot find evidence of stricter inclusion criteria
   
   #species at all sites without site names
-  spp_all = spp_all0 %>% select(-X__1),
+  spp_all = spp_all0 %>% select(-...1),
   
   #make env a vector to simplify later code
   env = env0$Temp,
@@ -265,7 +266,7 @@ analyses <- drake_plan(
   
   #knit manuscript
   manuscript = {
-    file_in(Rmd/extra/chironomid2.bib)#force dependency
+    file_in("Rmd/extra/chironomid2.bib")#force dependency
     supplementary_data#force dependency
     
     rmarkdown::render(
@@ -274,7 +275,7 @@ analyses <- drake_plan(
       clean = FALSE)
     },
   supplementary_data = {
-    file_in(Rmd/extra/chironomid2.bib)#force dependency
+    file_in("Rmd/extra/chironomid2.bib")#force dependency
     rmarkdown::render(
       input = knitr_in("Rmd/Telford_supplementary_data.Rmd"),
       knit_root_dir = "../",
