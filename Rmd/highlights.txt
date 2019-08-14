@@ -1,6 +1,6 @@
-- Microfossil assemblage-based palaeoenvironmental reconstructions with sub-decadal resolution that are validated against instrumental records are reviewed.
+- Microfossil assemblage-based palaeoenvironmental reconstructions with subdecadal resolution that are validated against instrumental records are reviewed.
 - Ecological and taphonomic processes and chronological uncertainty mean that only in favourable circumstances will precise reconstructions be possible.
 - Conditions are favourable for reconstructing recent changes in lake nutrient status with diatoms.
-- Conditions are not favourable for sub-decadal chironomid-temperature reconstructions.
-- Serious problems with several of the sub-decadal chironomid-temperature reconstructions are discussed.
+- Conditions are not favourable for subdecadal chironomid-temperature reconstructions.
+- Serious problems with several of the subdecadal chironomid-temperature reconstructions are discussed.
 - Chrysophyte-based reconstructions are difficult to evaluate due to a dearth of archived data.
